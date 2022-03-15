@@ -13,7 +13,7 @@ const Home: NextPage = () => {
     <div>
       <h1>Hello World</h1>
       <Wallets />
-      <ContractForm contractId={ContractIds.HelloWorld} />
+      <ContractForm contractId={ContractIds.TitleV1_0} />
     </div>
   );
 };

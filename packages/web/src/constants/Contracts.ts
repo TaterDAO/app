@@ -1,5 +1,5 @@
 enum ContractIds {
-  HelloWorld = "HelloWorld"
+  TitleV1_0 = "TitleV1_0"
 }
 
 const CONSTRUCTOR_METHODS = ["constructor", "initialize"];

@@ -5,8 +5,8 @@
       "type": "node",
       "request": "launch",
       "name": "Test Contracts",
-      "cwd": "${workspaceFolder}/modules/contracts",
-      "program": "${workspaceFolder}/modules/contracts/node_modules/.bin/hardhat",
+      "cwd": "${workspaceFolder}/packages/contracts",
+      "program": "${workspaceFolder}/packages/contracts/node_modules/.bin/hardhat",
       "args": ["--network", "hardhat", "test"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**"]

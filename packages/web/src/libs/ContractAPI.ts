@@ -2,7 +2,7 @@
 import { ContractIds, CONSTRUCTOR_METHODS } from "../constants/Contracts";
 
 // ABIs
-import HelloWorld from "../data/contracts/HelloWorld.sol/HelloWorld.json";
+import TitleV1_0 from "../data/contracts/TitleV1_0.sol/TitleV1_0.json";
 
 // Types
 import type { AbiItem, AbiInput } from "web3-utils/types";
@@ -12,7 +12,7 @@ import type { Args, Returns } from "@T/Contract";
 type Methods = { [name: string]: (...args: any[]) => Promise<void> };
 
 const abiMap: any = {
-  [ContractIds.HelloWorld]: HelloWorld
+  [ContractIds.TitleV1_0]: TitleV1_0
 };
 
 class ContractAPI {
