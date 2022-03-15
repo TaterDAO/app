@@ -37,4 +37,24 @@ contract TitleV1_0 is
 
     proxyRegistryAddress = proxyRegistryAddress_;
   }
+
+  //////////////////////////////
+  /// OpenSea
+  //////////////////////////////
+
+  /// @dev Override isApprovedForAll to whitelist user's OpenSea proxy accounts to enable gas-less listings.
+  /// See: https://github.com/ProjectOpenSea/opensea-creatures/blob/a0db5ede13ffb2d43b3ebfc2c50f99968f0d1bbb/contracts/TradeableERC721Token.sol#L66
+  function isApprovedForAll(address owner_, address operator_)
+    public
+    view
+    override
+    returns (bool)
+  {
+    ProxyRegistry proxyRegistry = ProxyRegistry(proxyRegistryAddress);
+    if (address(proxyRegistry.proxies(owner_)) == operator_) {
+      return true;
+    }
+
+    return super.isApprovedForAll(owner_, operator_);
+  }
 }
