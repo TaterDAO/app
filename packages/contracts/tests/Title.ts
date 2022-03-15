@@ -7,7 +7,15 @@ import { expect } from "chai";
 
 import EVM from "./utils/EVM";
 
-//$ State
+// =====================
+// ===== Constants =====
+// =====================
+
+const OPENSEA_PROXY_ADDRESS = "0x58807baD0B376efc12F5AD86aAc70E78ed67deaE";
+
+// =================
+// ===== State =====
+// =================
 
 let provider: Web3Provider;
 let signers: Array<SignerWithAddress>;
@@ -21,9 +29,13 @@ let ownerAddress: string;
 let alice: Contract;
 let aliceAddress: string;
 
-//$ Helpers
+// ===================
+// ===== Helpers =====
+// ===================
 
-//$ Tests
+// =================
+// ===== Tests =====
+// =================
 
 describe("TitleV1_0.sol", async () => {
   before(async function () {
@@ -34,7 +46,7 @@ describe("TitleV1_0.sol", async () => {
 
     // Deploy contract
     factory = await ethers.getContractFactory("TitleV1_0");
-    contract = await upgrades.deployProxy(factory, []);
+    contract = await upgrades.deployProxy(factory, [OPENSEA_PROXY_ADDRESS]);
     await contract.deployed();
 
     owner = contract.connect(signers[0]);
@@ -54,10 +66,18 @@ describe("TitleV1_0.sol", async () => {
 
   it("deploys", async () => {
     expect(contract.address).to.not.be.null;
+    expect(await contract.name()).to.equal("Development");
+    expect(await contract.symbol()).to.equal("DEV");
+    expect(await contract.owner()).to.equal(ownerAddress);
   });
 
   it("upgrades", async () => {
     const upgraded = await upgrades.upgradeProxy(contract.address, factory);
     expect(upgraded.address).to.equal(contract.address);
+  });
+
+  it("can be transferred", async () => {
+    await owner.transferOwnership(aliceAddress);
+    expect(await contract.owner()).to.equal(aliceAddress);
   });
 });
