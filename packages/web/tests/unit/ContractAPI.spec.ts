@@ -33,7 +33,7 @@ describe("ContractAPI", async () => {
 
     api = new ContractAPI(
       web3,
-      ContractIds.HelloWorld,
+      ContractIds.TitleV1_0,
       instanceAddress,
       "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266" // Hardhat Chain Account #0
     );
@@ -45,77 +45,77 @@ describe("ContractAPI", async () => {
     await evm.snapshot();
   });
 
-  describe("#hello", async () => {
-    it("should be exposed", () => {
-      expect(api.methods).to.haveOwnProperty("hello");
-    });
+  // describe("#hello", async () => {
+  //   it("should be exposed", () => {
+  //     expect(api.methods).to.haveOwnProperty("hello");
+  //   });
 
-    it("has the expected signature", async () => {
-      const { args, returns } = api.getMethodSignature("hello");
-      expect(args).to.have.lengthOf(0);
-      expect(returns).to.have.lengthOf(1);
-      expect(returns[0].name).to.be.empty.string;
-      expect(returns[0].type).to.equal("string");
-    });
+  //   it("has the expected signature", async () => {
+  //     const { args, returns } = api.getMethodSignature("hello");
+  //     expect(args).to.have.lengthOf(0);
+  //     expect(returns).to.have.lengthOf(1);
+  //     expect(returns[0].name).to.be.empty.string;
+  //     expect(returns[0].type).to.equal("string");
+  //   });
 
-    it("should be callable", async () => {
-      const res = await api.methods.hello();
-      expect(res).to.equal("Hello World");
-    });
+  //   it("should be callable", async () => {
+  //     const res = await api.methods.hello();
+  //     expect(res).to.equal("Hello World");
+  //   });
 
-    it("accepts no args", async () => {
-      try {
-        await api.methods.hello(0);
-        expect.fail();
-      } catch (error) {
-        //@ts-ignore
-        expect(error.toString()).to.equal(
-          "Error: #hello was called with 1 args; expects 0."
-        );
-      }
-    });
-  });
+  //   it("accepts no args", async () => {
+  //     try {
+  //       await api.methods.hello(0);
+  //       expect.fail();
+  //     } catch (error) {
+  //       //@ts-ignore
+  //       expect(error.toString()).to.equal(
+  //         "Error: #hello was called with 1 args; expects 0."
+  //       );
+  //     }
+  //   });
+  // });
 
-  describe("#setMessage", async () => {
-    it("should be exposed", () => {
-      expect(api.methods).to.haveOwnProperty("setMessage");
-    });
+  // describe("#setMessage", async () => {
+  //   it("should be exposed", () => {
+  //     expect(api.methods).to.haveOwnProperty("setMessage");
+  //   });
 
-    it("has the expected signature", async () => {
-      const { args, returns } = api.getMethodSignature("setMessage");
-      expect(returns).to.have.lengthOf(0);
-      expect(args).to.have.lengthOf(1);
-      expect(args[0].name).to.equal("newMessage_");
-      expect(args[0].type).to.equal("string");
-    });
+  //   it("has the expected signature", async () => {
+  //     const { args, returns } = api.getMethodSignature("setMessage");
+  //     expect(returns).to.have.lengthOf(0);
+  //     expect(args).to.have.lengthOf(1);
+  //     expect(args[0].name).to.equal("newMessage_");
+  //     expect(args[0].type).to.equal("string");
+  //   });
 
-    it("is callable", async () => {
-      const msg = "Goodbye World";
-      await api.methods.setMessage(msg);
-      const res = await api.methods.hello();
-      expect(res).to.equal(msg);
-    });
+  //   it("is callable", async () => {
+  //     const msg = "Goodbye World";
+  //     await api.methods.setMessage(msg);
+  //     const res = await api.methods.hello();
+  //     expect(res).to.equal(msg);
+  //   });
 
-    it("fails if incorrect args are passed", async () => {
-      try {
-        await api.methods.setMessage();
-        expect.fail();
-      } catch (error) {
-        //@ts-ignore
-        expect(error.toString()).to.equal(
-          "Error: #setMessage was called with 0 args; expects 1."
-        );
-      }
+  //   it("fails if incorrect args are passed", async () => {
+  //     try {
+  //       await api.methods.setMessage();
+  //       expect.fail();
+  //     } catch (error) {
+  //       //@ts-ignore
+  //       expect(error.toString()).to.equal(
+  //         "Error: #setMessage was called with 0 args; expects 1."
+  //       );
+  //     }
 
-      try {
-        await api.methods.setMessage(0);
-        expect.fail();
-      } catch (error) {
-        //@ts-ignore
-        expect(error.toString()).to.equal(
-          "Error: #setMessage arg (newMessage_: string) was passed number."
-        );
-      }
-    });
-  });
+  //     try {
+  //       await api.methods.setMessage(0);
+  //       expect.fail();
+  //     } catch (error) {
+  //       //@ts-ignore
+  //       expect(error.toString()).to.equal(
+  //         "Error: #setMessage arg (newMessage_: string) was passed number."
+  //       );
+  //     }
+  //   });
+  // });
 });
