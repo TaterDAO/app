@@ -1,6 +1,6 @@
 /**
  * @name tasks/migrations/01.ts
- * @description Upgrades the HelloWorld contract.
+ * @description Upgrades the TitleV1_0 contract.
  */
 import { task } from "hardhat/config";
 import fs from "fs";
@@ -27,7 +27,7 @@ export default task("migration:01", "Upgrade")
       instanceAddress = address;
     }
 
-    const Factory = await hre.ethers.getContractFactory("HelloWorld");
+    const Factory = await hre.ethers.getContractFactory("TitleV1_0");
     await hre.upgrades.upgradeProxy(instanceAddress, Factory);
 
     console.log("Migration complete");

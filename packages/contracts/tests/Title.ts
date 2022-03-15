@@ -25,7 +25,7 @@ let aliceAddress: string;
 
 //$ Tests
 
-describe("HelloWorld.sol", async () => {
+describe("TitleV1_0.sol", async () => {
   before(async function () {
     //@ts-ignore
     provider = new ethers.providers.Web3Provider(web3.currentProvider);
@@ -33,7 +33,7 @@ describe("HelloWorld.sol", async () => {
     signers = await ethers.getSigners();
 
     // Deploy contract
-    factory = await ethers.getContractFactory("HelloWorld");
+    factory = await ethers.getContractFactory("TitleV1_0");
     contract = await upgrades.deployProxy(factory, []);
     await contract.deployed();
 
@@ -59,19 +59,5 @@ describe("HelloWorld.sol", async () => {
   it("upgrades", async () => {
     const upgraded = await upgrades.upgradeProxy(contract.address, factory);
     expect(upgraded.address).to.equal(contract.address);
-  });
-
-  describe("#hello", async () => {
-    it("Returns message", async () => {
-      expect(await owner.hello()).to.equal("Hello World");
-    });
-  });
-
-  describe("#setMessage", async () => {
-    it("Updates message", async () => {
-      const msg = "Goodbye World";
-      await owner.setMessage(msg);
-      expect(await owner.hello()).to.equal(msg);
-    });
   });
 });
