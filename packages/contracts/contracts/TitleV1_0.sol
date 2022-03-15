@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "./libs/Base64.sol";
 import "./OpenSea/ProxyRegistry.sol";
-import "./libs/Utils.sol";
+import "./structs/Title.sol";
 
 /// @title TitleV1_0
 /// @author 721 Labs (https://721.dev)
@@ -26,6 +26,8 @@ contract TitleV1_0 is
 
   address public proxyRegistryAddress;
 
+  mapping(uint256 => Title) private _titles;
+
   //////////////////////////////
   /// Constructor
   //////////////////////////////
@@ -36,6 +38,146 @@ contract TitleV1_0 is
     __Ownable_init();
 
     proxyRegistryAddress = proxyRegistryAddress_;
+  }
+
+  //////////////////////////////
+  /// Minting
+  //////////////////////////////
+
+  /// @notice Mints a title
+  function mint(
+    string memory name_,
+    string memory description_,
+    string memory externalUrl_,
+    string memory image_,
+    string memory attrLandClassification_,
+    string memory attrLocation_,
+    string memory attrDeed_,
+    string memory attrParcels_,
+    string memory attrOwner_,
+    string memory attrKml_,
+    string memory attrTag_
+  ) public nonReentrant returns (uint256) {
+    uint256 id = _owners.length;
+
+    _titles[id] = Title({
+      name: name_,
+      description: description_,
+      externalUrl: externalUrl_,
+      image: image_,
+      attrLandClassification: attrLandClassification_,
+      attrLocation: attrLocation_,
+      attrDeed: attrDeed_,
+      attrParcels: attrParcels_,
+      attrOwner: attrOwner_,
+      attrKml: attrKml_,
+      attrTag: attrTag_,
+      attrCreatedDate: block.timestamp,
+      attrMaxSupply: 1
+    });
+
+    _safeMint(msg.sender, id);
+
+    return id;
+  }
+
+  //////////////////////////////
+  /// Metadata
+  //////////////////////////////
+
+  /// @dev Creates a metadata attribute object
+  function _makeAttr(
+    string memory traitType_,
+    string memory value_,
+    string memory displayType_
+  ) private pure returns (string memory) {
+    return
+      string(
+        abi.encodePacked(
+          "{",
+          '"trait_type":"',
+          traitType_,
+          '","value":"',
+          value_,
+          '","display_type":"',
+          displayType_,
+          '"}'
+        )
+      );
+  }
+
+  function tokenURI(uint256 id_) public view override returns (string memory) {
+    require(_exists(id_), "ERC721Metadata: URI query for nonexistent token");
+
+    Title memory title = _titles[id_];
+
+    string memory owner = StringsUpgradeable.toHexString(
+      uint256(uint160(ownerOf(id_))),
+      20
+    );
+
+    string memory attributesA = string(
+      abi.encodePacked(
+        "[",
+        _makeAttr(
+          "Land Classification",
+          title.attrLandClassification,
+          "string"
+        ),
+        ",",
+        _makeAttr("Location", title.attrLocation, "string"),
+        ",",
+        _makeAttr("Legal/Deed", title.attrDeed, "string"),
+        ",",
+        _makeAttr("Parcels", title.attrParcels, "string"),
+        ",",
+        _makeAttr("Owner", title.attrOwner, "string"),
+        ",",
+        _makeAttr("KML Download", title.attrKml, "string"),
+        ",",
+        _makeAttr("Tag", title.attrTag, "string"),
+        ",",
+        _makeAttr("Created At", title.attrCreatedDate.toString(), "date"),
+        ","
+      )
+    );
+
+    string memory attributes = string(
+      abi.encodePacked(
+        attributesA,
+        _makeAttr("Max Supply", title.attrMaxSupply.toString(), "number"),
+        "]"
+      )
+    );
+
+    return
+      string(
+        abi.encodePacked(
+          "data:application/json;base64,",
+          Base64.encode(
+            bytes(
+              abi.encodePacked(
+                "{",
+                '"tokenId":"',
+                id_.toString(),
+                '","owner":"',
+                owner,
+                '","name":"',
+                title.name,
+                '","description":"',
+                title.description,
+                '","external_url":"',
+                title.externalUrl,
+                '","image":"',
+                title.image,
+                '","attributes":',
+                attributes,
+                "}"
+              )
+            )
+          )
+        )
+      );
   }
 
   //////////////////////////////

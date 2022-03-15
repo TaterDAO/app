@@ -3,6 +3,9 @@
   "plugins": ["prettier"],
   "rules": {
     "compiler-version": ["error", "^0.8.10"],
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "contract-name-camelcase": "off",
+    "reason-string": "off",
+    "quotes": "off"
   }
 }
