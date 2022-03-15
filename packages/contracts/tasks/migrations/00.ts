@@ -1,6 +1,6 @@
 /**
  * @name tasks/migrations/00.ts
- * @description Deploys the TitleV0_1 contract.
+ * @description Deploys the TitleV1_0 contract.
  */
 import { task } from "hardhat/config";
 import fs from "fs";
@@ -11,7 +11,7 @@ export default task("migration:00", "Initial deployment").setAction(
     console.log("Migration:00");
     console.log("Deploying contract");
 
-    const Factory = await hre.ethers.getContractFactory("TitleV0_1");
+    const Factory = await hre.ethers.getContractFactory("TitleV1_0");
     const instance = await hre.upgrades.deployProxy(Factory);
     await instance.deployed();
 
