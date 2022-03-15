@@ -66,8 +66,8 @@ describe("TitleV1_0.sol", async () => {
 
   it("deploys", async () => {
     expect(contract.address).to.not.be.null;
-    expect(await contract.name()).to.equal("Development");
-    expect(await contract.symbol()).to.equal("DEV");
+    expect(await contract.name()).to.equal("TaterNFT");
+    expect(await contract.symbol()).to.equal("TATR");
     expect(await contract.owner()).to.equal(ownerAddress);
   });
 

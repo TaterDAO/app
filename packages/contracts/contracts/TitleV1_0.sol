@@ -32,7 +32,7 @@ contract TitleV1_0 is
 
   /// @param proxyRegistryAddress_ OpenSea Proxy Registry Address
   function initialize(address proxyRegistryAddress_) public initializer {
-    __ERC721_init("Development", "DEV");
+    __ERC721_init("TaterNFT", "TATR");
     __Ownable_init();
 
     proxyRegistryAddress = proxyRegistryAddress_;
