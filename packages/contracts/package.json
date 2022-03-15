@@ -1,0 +1,42 @@
+{
+  "name": "contracts",
+  "license": "UNLICENSED",
+  "scripts": {
+    "console": "yarn hardhat console",
+    "compile": "yarn hardhat compile",
+    "test": "yarn hardhat --network hardhat test",
+    "prettier": "prettier --write 'contracts/**/*.sol'",
+    "solhint": "solhint contracts/*.sol",
+    "export-abi": "yarn run hardhat export-abi",
+    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/deploy.ts"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/contracts": "^4.3.2",
+    "@openzeppelin/contracts-upgradeable": "^4.3.3",
+    "@openzeppelin/hardhat-upgrades": "^1.12.0",
+    "@openzeppelin/test-helpers": "^0.5.13",
+    "@types/chai": "^4.2.21",
+    "@types/js-yaml": "^4.0.3",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.7.10",
+    "chai": "^4.3.4",
+    "dotenv": "^10.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.4.5",
+    "hardhat": "^2.6.2",
+    "hardhat-abi-exporter": "^2.8.0",
+    "hardhat-gas-reporter": "^1.0.6",
+    "prettier": "^2.5.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.6",
+    "solhint-plugin-prettier": "^0.0.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2",
+    "web3": "^1.5.2"
+  },
+  "dependencies": {}
+}
