@@ -1,0 +1,105 @@
+name: Tests
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  contract-tests:
+    name: "Contract:Tests"
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./packages/contracts
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@master
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+      - name: "Run tests"
+        run: "yarn test"
+        env:
+          REPORT_GAS: false
+  contract-migrations:
+    name: "Contract:Migrations"
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./packages/contracts
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@master
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+      - name: "Install pm2"
+        run: "yarn global add pm2"
+      - name: "Start standalone Hardhat chain daemon"
+        run: "pm2 start --name hardhat 'yarn hardhat node'"
+      - name: "Compile contracts"
+        run: "yarn compile"
+        # <-- Migrations -->
+      - name: "Run Migration:00"
+        run: "yarn hardhat migration:00 --network localhost --ci"
+      - name: "Run Migration:01"
+        run: "yarn hardhat migration:01 --network localhost --ci --address ''"
+        # <-- Migrations -->
+      - name: "Delete hardhat chain"
+        run: "pm2 delete 0"
+  web-tests-e2e:
+    name: "Web:Tests:E2E"
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./packages/web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          start: npm start
+          working-directory: ./packages/web
+  web-tests-unit:
+    name: "Web:Tests:Unit"
+    runs-on: ubuntu-latest
+    #needs: [contract-migrations]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+      # <-- Migrations -->
+        # TODO: When live, replace this with TCOD
+        # test chain
+      - name: "Install Contracts Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+        working-directory: ./packages/contracts
+      - name: "Install pm2"
+        run: "yarn global add pm2"
+      - name: "Start standalone Hardhat chain daemon"
+        run: "pm2 start --name hardhat 'yarn hardhat node'"
+        working-directory: ./packages/contracts
+      - name: "Compile contracts"
+        run: "yarn compile"
+        working-directory: ./packages/contracts
+      - name: "Run Migration:00"
+        run: "yarn hardhat migration:00 --network localhost --ci"
+        working-directory: ./packages/contracts
+      - name: "Run Migration:01"
+        run: "yarn hardhat migration:01 --network localhost --ci --address ''"
+        working-directory: ./packages/contracts
+        # <-- Migrations -->
+      - name: "Install Web Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+        working-directory: ./packages/web
+      - name: "Run tests"
+        run: 'yarn test:unit'
+        working-directory: ./packages/web
+      - name: "Stop hardhat chain"
+        run: "pm2 delete 0"

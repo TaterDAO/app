@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test Contracts",
+      "cwd": "${workspaceFolder}/modules/contracts",
+      "program": "${workspaceFolder}/modules/contracts/node_modules/.bin/hardhat",
+      "args": ["--network", "hardhat", "test"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
