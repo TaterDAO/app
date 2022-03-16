@@ -1,9 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
-
-  @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-
   :root {
     --color-accent-gray: #e2e2e2;
 
@@ -12,6 +9,14 @@ export default createGlobalStyle`
     --color-brand-mustard: #D99B29;
     --color-brand-gold: #A67924;
     --color-brand-black: #0D0D0D;
+
+    --color-brand-blue-a: #040959;
+    --color-brand-blue-b: #050840;
+    --color-brand-blue-c: #072BF2;
+    --color-brand-blue-d: #0726D9;
+    --color-brand-blue-e: #051DA6;
+
+    
 
 
     font-size: 15px;
@@ -40,5 +45,16 @@ export default createGlobalStyle`
   
   button {
     cursor: pointer;
+  }
+
+  nav, main, footer {
+    max-width: 1200px;
+    margin: auto;
+    padding: 1rem 2rem;
+  }
+
+  main {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
 `;

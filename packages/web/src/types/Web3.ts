@@ -13,6 +13,7 @@ type State = {
   };
   network: {
     chainId: number | null;
+    name: string;
   };
   loading: boolean;
   initialized: boolean;

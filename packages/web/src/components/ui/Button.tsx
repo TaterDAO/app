@@ -1,16 +1,28 @@
 import styled from "styled-components";
 
-const Button = styled.button`
+const Button = styled.button<{ primary?: boolean; big?: boolean }>`
   border: 0;
   border-radius: 0.25rem;
 
-  background-color: var(--color-brand-black);
+  background-color: ${({ primary }) =>
+    primary ? "var(--color-brand-blue-d)" : "var(--color-brand-black)"};
   color: white;
 
-  padding: 0.25rem 0.75rem;
+  padding: ${({ big }) => (big ? "1rem 2rem" : "0.25rem 0.75rem")};
 
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: ${({ big }) => (big ? "1.05rem" : "0.9rem")};
+
+  a {
+    color: inherit;
+    background-color: transparent;
+    text-decoration: none;
+  }
 `;
+
+Button.defaultProps = {
+  primary: false,
+  big: false
+};
 
 export default Button;

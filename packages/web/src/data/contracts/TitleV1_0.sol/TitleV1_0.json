@@ -166,12 +166,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "owner_",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "operator",
+        "name": "operator_",
         "type": "address"
       }
     ],
@@ -184,6 +184,75 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "externalUrl_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "image_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrLandClassification_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrLocation_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrDeed_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrParcels_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrOwner_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrKml_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrTag_",
+        "type": "string"
+      }
+    ],
+    "name": "mint",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -356,7 +425,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "id_",
         "type": "uint256"
       }
     ],

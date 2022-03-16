@@ -4,6 +4,8 @@ import type { AppProps } from "next/app";
 // Components
 import Web3Provider from "@components/providers/Web3Provider";
 import Menu from "@components/global/Menu";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Styles
 import GlobalStyle from "@styles/global";
@@ -20,6 +22,7 @@ function App({ Component, pageProps }: AppProps) {
           </main>
         </>
       </Web3Provider>
+      <ToastContainer hideProgressBar position="top-right" />
     </>
   );
 }

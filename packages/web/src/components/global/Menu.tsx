@@ -1,14 +1,15 @@
 // Components
 import Wallets from "@components/Wallets";
+import Button from "@components/ui/Button";
+import Link from "next/link";
 
 // Libs
 import styled from "styled-components";
 
+// Hooks
+import useWeb3 from "@hooks/useWeb3";
+
 const Container = styled.nav`
-  border-bottom: 1px solid var(--color-accent-gray);
-
-  padding: 1rem 2rem;
-
   display: flex;
 `;
 
@@ -28,6 +29,7 @@ const RightColumn = styled(Column)`
 `;
 
 const Menu: React.FC<{}> = ({}) => {
+  const web3 = useWeb3();
   return (
     <Container>
       <LeftColumn>
@@ -35,6 +37,11 @@ const Menu: React.FC<{}> = ({}) => {
       </LeftColumn>
       <RightColumn>
         <Wallets />
+        {web3.wallet.connected && (
+          <Button primary>
+            <Link href="/mint">Mint Title</Link>
+          </Button>
+        )}
       </RightColumn>
     </Container>
   );

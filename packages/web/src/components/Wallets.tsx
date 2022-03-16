@@ -15,12 +15,18 @@ const Connected = styled.div`
   border-radius: 100%;
 `;
 
+const ChainName = styled.small`
+  font-weight: 600;
+  color: var(--color-brand-green);
+`;
+
 const Wallets: React.FC<{}> = ({}) => {
   const web3 = useWeb3();
   return web3.loading ? (
     <p>Loading...</p>
   ) : web3.wallet.connected ? (
     <>
+      {web3.network.chainId !== 1 && <ChainName>{web3.network.name}</ChainName>}
       <Connected />
       <Button onClick={web3.wallet.disconnect}>Disconnect</Button>
     </>
