@@ -4,6 +4,7 @@ function Document() {
   return (
     <Html>
       <Head>
+        <title>TaterDAO</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
