@@ -7,6 +7,13 @@ export default createGlobalStyle`
   :root {
     --color-accent-gray: #e2e2e2;
 
+    --color-brand-pink: #F2275D;
+    --color-brand-green: #41A650;
+    --color-brand-mustard: #D99B29;
+    --color-brand-gold: #A67924;
+    --color-brand-black: #0D0D0D;
+
+
     font-size: 15px;
   }
   
@@ -22,6 +29,9 @@ export default createGlobalStyle`
     padding: 0;
 
     font-family: 'Inter', sans-serif;
+
+    color: var(--color-brand-black);
+    background-color: white;
   }
 
   a {

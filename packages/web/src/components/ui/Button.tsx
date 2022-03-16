@@ -4,7 +4,7 @@ const Button = styled.button`
   border: 0;
   border-radius: 0.25rem;
 
-  background-color: black;
+  background-color: var(--color-brand-black);
   color: white;
 
   padding: 0.25rem 0.75rem;
