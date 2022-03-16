@@ -33,14 +33,21 @@ const Menu: React.FC<{}> = ({}) => {
   return (
     <Container>
       <LeftColumn>
-        <h1>Name</h1>
+        <h1>
+          <Link href="/">TaterDAO</Link>
+        </h1>
       </LeftColumn>
       <RightColumn>
         <Wallets />
         {web3.wallet.connected && (
-          <Button primary>
-            <Link href="/mint">Mint Title</Link>
-          </Button>
+          <>
+            <Button primary>
+              <Link href="/mint">Mint Title</Link>
+            </Button>
+            <Link href="/profile">
+              <a>Profile</a>
+            </Link>
+          </>
         )}
       </RightColumn>
     </Container>
