@@ -8,7 +8,7 @@ import type { IProviderInfo } from "web3modal";
 // Libs
 import Web3 from "web3";
 import Web3Modal, { getProviderInfo } from "web3modal";
-import Fortmatic from "fortmatic";
+//import Fortmatic from "fortmatic";
 
 // Hooks
 import { useEffect, useState } from "react";
@@ -43,15 +43,16 @@ const Web3Provider: React.FC<{
     if (clientSideRendered) {
       setWeb3Modal(
         new Web3Modal({
-          cacheProvider: true,
-          providerOptions: {
-            fortmatic: {
-              package: Fortmatic,
-              options: {
-                key: process.env.NEXT_PUBLIC_FORTMATIC_KEY
-              }
-            }
-          }
+          cacheProvider: true
+          //! Only going with MetaMask for now
+          // providerOptions: {
+          //   fortmatic: {
+          //     package: Fortmatic,
+          //     options: {
+          //       key: process.env.NEXT_PUBLIC_FORTMATIC_KEY
+          //     }
+          //   }
+          // }
         })
       );
     }
@@ -76,11 +77,11 @@ const Web3Provider: React.FC<{
 
   useEffect(() => {
     return multiProvider
-      ? provider.on("chainChanged", (_chainId: number) => {
-          if (_chainId !== chainId) return; // noop
+      ? provider.on("chainChanged", (_chainId: string) => {
+          setChainId(web3?.utils.hexToNumber(_chainId) as number);
         })
       : null;
-  }, [multiProvider, provider, chainId]);
+  }, [web3, multiProvider, provider, chainId]);
 
   /**
    * Handle account change.
@@ -154,7 +155,15 @@ const Web3Provider: React.FC<{
       disconnect
     },
     network: {
-      chainId
+      chainId,
+      name:
+        chainId === 1
+          ? "mainnet"
+          : chainId === 4
+          ? "rinkeby"
+          : chainId === 31337
+          ? "localhost"
+          : "unknown"
     },
     loading: !initialized,
     initialized

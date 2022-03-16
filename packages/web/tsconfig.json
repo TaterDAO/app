@@ -9,6 +9,7 @@
       "@hooks/*": ["src/hooks/*"],
       "@contexts/*": ["src/contexts/*"],
       "@libs/*": ["src/libs/*"],
+      "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"]
     },
     "target": "es5",

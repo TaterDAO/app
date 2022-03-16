@@ -8,7 +8,10 @@
     "prettier": "prettier --write 'contracts/**/*.sol'",
     "solhint": "solhint contracts/*.sol",
     "export-abi": "yarn run hardhat export-abi",
-    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/deploy.ts"
+    "dev:chain": "yarn hardhat node",
+    "deploy:dev": "yarn hardhat migration:00 --network localhost",
+    "deploy:rinkeby": "yarn hardhat migration:00 --network rinkeby",
+    "deploy:mainnet": "yarn hardhat migration:00 --network mainnet"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

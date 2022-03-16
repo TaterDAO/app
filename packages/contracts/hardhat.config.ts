@@ -30,13 +30,12 @@ migrations.forEach((migration) => {
 export default {
   defaultNetwork: "hardhat",
   networks: {
-    // Dev: Uncomment to set up Rinkeby
-    // rinkeby: {
-    //   url: process.env.ALCHEMY_RINKEBY_URI,
-    //   chainId: 4,
-    //   // During CI testing, private key will not be made available
-    //   accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-    // },
+    rinkeby: {
+      url: process.env.ALCHEMY_RINKEBY_URI,
+      chainId: 4,
+      // During CI testing, private key will not be made available
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
   },
   solidity: {
     version: "0.8.10",
