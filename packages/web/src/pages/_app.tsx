@@ -2,6 +2,7 @@
 import type { AppProps } from "next/app";
 
 // Components
+import Head from "next/head";
 import Web3Provider from "@components/providers/Web3Provider";
 import Menu from "@components/global/Menu";
 import { ToastContainer } from "react-toastify";
@@ -13,6 +14,9 @@ import GlobalStyle from "@styles/global";
 function App({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <title>TaterDAO</title>
+      </Head>
       <GlobalStyle />
       <Web3Provider>
         <>
