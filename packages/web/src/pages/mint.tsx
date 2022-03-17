@@ -134,7 +134,7 @@ const MintPage: NextPage = ({}) => {
       toast.success(`Transaction submitted to ${web3.network.name}`);
       router.push("/profile");
     } catch (error) {
-      toast.error((error as unknown as any).toString() as string);
+      toast.error((error as unknown as any).message as string);
     } finally {
       setSubmitting(false);
     }
