@@ -10,9 +10,12 @@
     "prettier": "prettier --write ./**/*.{json,js,ts,tsx}",
     "test:e2e": "cypress run",
     "test:unit": "ts-mocha -p tests/unit/tsconfig.json tests/unit/*.spec.ts",
-    "build:addresses": "node scripts/gatherAddresses.js"
+    "build:addresses": "node scripts/gatherAddresses.js",
+    "indexContract:localhost": "yarn build:addresses && node scripts/indexContract.js localhost http://127.0.0.1:8545/"
   },
   "dependencies": {
+    "algoliasearch": "^4.13.0",
+    "dotenv": "^16.0.0",
     "fortmatic": "^2.2.1",
     "joi": "^17.6.0",
     "next": "^12.1.0",

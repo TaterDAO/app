@@ -31,9 +31,9 @@ export default {
   defaultNetwork: "hardhat",
   networks: {
     rinkeby: {
-      url: process.env.ALCHEMY_RINKEBY_URI,
+      // CI requires a non-null value.
+      url: process.env.ALCHEMY_RINKEBY_URI || "",
       chainId: 4,
-      // During CI testing, private key will not be made available
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },

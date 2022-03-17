@@ -1,0 +1,61 @@
+name: Index Contract
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/2 * * * *" # every 2 minutes
+env:
+  FOO: "foo"
+jobs:
+  index-rinkeby:
+    name: "Rinkeby"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/web
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@master
+      
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      - name: "Index"
+        run: yarn build:addresses && node scripts/indexContract.js rinkeby https://eth-rinkeby.alchemyapi.io/v2/LB4UIgVJob-7MZeVcgMCLJ2GJn-2QZSe
+
+  index-mainnet:
+    name: "Mainnet"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/web
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@master
+      
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      # - name: "Index"
+      #   run: yarn build:addresses && node scripts/indexContract.js mainnet 
