@@ -13,6 +13,12 @@ const Button = styled.button<{ primary?: boolean; big?: boolean }>`
   font-weight: 600;
   font-size: ${({ big }) => (big ? "1.05rem" : "0.9rem")};
 
+  &:disabled {
+    filter: grayscale(1);
+    opacity: 0.15;
+    cursor: default;
+  }
+
   a {
     color: inherit;
     background-color: transparent;
