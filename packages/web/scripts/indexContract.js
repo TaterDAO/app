@@ -4,6 +4,15 @@ const abi = require("../src/data/contracts/TitleV1_0.sol/TitleV1_0.json");
 
 // Libs
 const Web3 = require("web3");
+const algolia = require("algoliasearch");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: ".env.development.local" });
+
+const client = algolia(
+  process.env.ALGOLIA_APPLICATION_ID,
+  process.env.ALGOLIA_SEARCH_KEY
+);
 
 function validateNetworkArg(value) {
   if (!value) {
@@ -69,10 +78,11 @@ async function* Fetcher(network, networkEndpoint) {
   validateNetworkEndpointArg(networkEndpoint);
 
   const fetcher = Fetcher(network, networkEndpoint);
+  const titles = [];
 
   try {
     for await (const value of fetcher) {
-      console.log(value);
+      titles.push(value);
     }
   } catch (error) {
     const msg = error.message;
@@ -83,13 +93,37 @@ async function* Fetcher(network, networkEndpoint) {
     }
   }
 
-  // const dataMap = {};
-  // let queryId = 1;
+  const serializedTitles = titles.map(
+    ({ tokenId, owner, name, description, attributes }) => ({
+      objectID: tokenId,
+      tokenId: parseInt(tokenId),
+      owner,
+      name,
+      description,
+      attrLandClassification: attributes.find(
+        ({ trait_type }) => trait_type === "Land Classification"
+      ).value,
+      attrLocation: attributes.find(
+        ({ trait_type }) => trait_type === "Location"
+      ).value,
+      attrDeed: attributes.find(({ trait_type }) => trait_type === "Legal/Deed")
+        .value,
+      attrParcels: attributes.find(({ trait_type }) => trait_type === "Parcels")
+        .value,
+      attrOwner: attributes.find(({ trait_type }) => trait_type === "Owner")
+        .value,
+      attrTag: attributes.find(({ trait_type }) => trait_type === "Tag").value,
+      attrCreatedAt: parseInt(
+        attributes.find(({ trait_type }) => trait_type === "Created At").value
+      )
+    })
+  );
 
-  // try {
-  //   const data = await fetch(1);
-  //   console.log(data);
-  // } catch (error) {
-  //   console.log(error.message);
-  // }
+  const algoliaIndex = client.initIndex(`titles-${network}`);
+
+  try {
+    await algoliaIndex.saveObjects(serializedTitles);
+  } catch (error) {
+    console.error(error);
+  }
 })();
