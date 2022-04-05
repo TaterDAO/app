@@ -38,6 +38,9 @@ const Menu: React.FC<{}> = ({}) => {
         </h1>
       </LeftColumn>
       <RightColumn>
+        <Link href="/explore">
+          <a>Explore</a>
+        </Link>
         <Wallets />
         {web3.wallet.connected && (
           <>

@@ -51,6 +51,7 @@ async function* Fetcher(network, networkEndpoint) {
   async function fetch(tokenId) {
     const res = await contract.methods.tokenURI(tokenId).call({
       // Hardcoded for now...
+      // TODO:
       from: "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
     });
     return decodeMetadata(res);
@@ -94,28 +95,31 @@ async function* Fetcher(network, networkEndpoint) {
   }
 
   const serializedTitles = titles.map(
-    ({ tokenId, owner, name, description, attributes }) => ({
-      objectID: tokenId,
-      tokenId: parseInt(tokenId),
+    ({
+      tokenId,
       owner,
       name,
       description,
-      attrLandClassification: attributes.find(
-        ({ trait_type }) => trait_type === "Land Classification"
-      ).value,
-      attrLocation: attributes.find(
-        ({ trait_type }) => trait_type === "Location"
-      ).value,
-      attrDeed: attributes.find(({ trait_type }) => trait_type === "Legal/Deed")
-        .value,
-      attrParcels: attributes.find(({ trait_type }) => trait_type === "Parcels")
-        .value,
-      attrOwner: attributes.find(({ trait_type }) => trait_type === "Owner")
-        .value,
-      attrTag: attributes.find(({ trait_type }) => trait_type === "Tag").value,
-      attrCreatedAt: parseInt(
-        attributes.find(({ trait_type }) => trait_type === "Created At").value
-      )
+      externalUrl,
+      image,
+      attributes
+    }) => ({
+      objectID: tokenId,
+      tokenId: parseInt(tokenId),
+      owner: owner.toLowerCase(),
+      name,
+      description,
+      externalUrl,
+      image,
+      "attr.LandClassification": attributes[0].value,
+      "attr.Location": attributes[1].value,
+      "attr.Deed": attributes[2].value,
+      "attr.Parcels": attributes[3].value,
+      "attr.Owner": attributes[4].value,
+      "attr.Kml": attributes[5].value,
+      "attr.Tag": attributes[6].value,
+      "attr.CreatedDate": parseInt(attributes[7].value),
+      "attr.MaxSupply": parseInt(attributes[8].value)
     })
   );
 
