@@ -8,7 +8,10 @@ const NoResults = styled.h4`
   color: #bbb;
 `;
 
-const StateResults: React.FC<StateResultsProvided> = ({ searchResults }) => {
+const StateResults: React.FC<StateResultsProvided> = ({
+  searchResults,
+  ...props
+}) => {
   const noResults = searchResults?.nbHits === 0;
   return noResults ? <NoResults>0 Titles Minted</NoResults> : <></>;
 };
