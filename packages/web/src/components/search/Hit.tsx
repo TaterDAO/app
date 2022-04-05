@@ -8,6 +8,9 @@ import ProfileLink from "@components/ProfileLink";
 // Libs
 import styled from "styled-components";
 
+// Hooks
+import useWeb3 from "@hooks/useWeb3";
+
 const Container = styled.div`
   margin-top: 1rem;
 
@@ -17,9 +20,12 @@ const Container = styled.div`
 `;
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
+  const web3 = useWeb3();
   return (
     <Container>
-      <Link href={`/title/${data.objectID}`}>{data.name}</Link>
+      <Link href={`/title/${web3.network.name}/${data.objectID}`}>
+        {data.name}
+      </Link>
       <h5>
         Created by <ProfileLink address={data.owner} />
       </h5>

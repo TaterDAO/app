@@ -2,14 +2,8 @@
 import type { SearchState } from "react-instantsearch-core";
 
 // Components
-import {
-  InstantSearch,
-  Configure,
-  Pagination,
-  InfiniteHits
-} from "react-instantsearch-dom";
+import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
-import Hit from "./Hit";
 
 // Services
 import algolia from "@services/Algolia";

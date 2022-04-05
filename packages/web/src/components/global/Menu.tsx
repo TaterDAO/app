@@ -38,9 +38,6 @@ const Menu: React.FC<{}> = ({}) => {
         </h1>
       </LeftColumn>
       <RightColumn>
-        <Link href="/explore">
-          <a>Explore</a>
-        </Link>
         <Wallets />
         {web3.wallet.connected && (
           <>
@@ -49,6 +46,9 @@ const Menu: React.FC<{}> = ({}) => {
             </Button>
             <Link href="/profile">
               <a>Profile</a>
+            </Link>
+            <Link href="/explore">
+              <a>Explore</a>
             </Link>
           </>
         )}

@@ -16,7 +16,7 @@ export default createGlobalStyle`
     --color-brand-blue-d: #0726D9;
     --color-brand-blue-e: #051DA6;
 
-    
+    --color-gray: #bbb;
 
 
     font-size: 15px;

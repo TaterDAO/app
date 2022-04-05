@@ -17,7 +17,7 @@ const attrs = {
   "attr.Owner": "Unknown",
   "attr.Kml": "ipfs://QmPRgCAdRsTY6zL2j7PmvtoNf79Nx3xdhPA4vJdJQtJVjC",
   "attr.Tag": "Farm Sale, Iowa",
-  "attr.CreatedDate": 1644339784,
+  "attr.CreatedDate": 1644339784 * 1000,
   "attr.MaxSupply": 1
 };
 
@@ -127,11 +127,12 @@ const records = [
     objectID: "9",
     tokenId: 9,
     owner: "0xdd2fd4581271e230360230f9337d5c0430bf44c0",
-    name: "North Dakota Farm",
-    description: "North Dakota farm with great productivity.",
+    name: "Rhode Island Farm",
+    description: "Rhode Island farm with great productivity.",
     externalUrl:
       "test-spring-banner-839.appspot.com/project/public/ahZ0ZXN0LXNwcmluZy1iYW5uZXItODM5ch0LEhBQcm9qZWN0UHVibGljVXJsGICAgIH_zYcJDA",
-    image: "ipfs://QmdvS6ZpxGysgcXPS24tqAZX9c1f2VuQ3ZgFeeQSvQFCHo",
+    image:
+      "https://foodtank.com/wp-content/uploads/2020/04/COVID-19-Relief_Small-Farms-.jpg",
     ...attrs
   },
   {
