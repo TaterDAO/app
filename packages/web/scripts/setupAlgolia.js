@@ -17,14 +17,14 @@ const chains = ["localhost", "rinkeby", "mainnet"];
       const index = client.initIndex(`titles-${id}`);
       await index.setSettings({
         searchableAttributes: [
-          "tokenId",
+          //"tokenId",
           "name",
-          "description",
-          "attr.LandClassification",
-          "attr.Location",
-          "attr.Parcels",
-          "attr.Owner",
-          "attr.Tag"
+          "description"
+          // "attr.LandClassification",
+          // "attr.Location",
+          // "attr.Parcels",
+          // "attr.Owner",
+          // "attr.Tag"
         ],
         attributesForFaceting: ["filterOnly(owner)"]
       });

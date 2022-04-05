@@ -6,6 +6,10 @@ const Input = styled.input<{ invalid?: boolean }>`
       invalid ? "var(--color-brand-pink)" : "var(--color-accent-gray)"};
   padding: 1rem 2rem;
   border-radius: 0.25rem;
+
+  ::placeholder {
+    color: var(--color-gray);
+  }
 `;
 
 Input.defaultProps = {

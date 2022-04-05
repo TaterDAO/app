@@ -5,6 +5,7 @@ import type { SearchState } from "react-instantsearch-core";
 import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
 import StateResults from "./StateResults";
+import SearchBox from "./SearchBox";
 
 // Services
 import algolia from "@services/Algolia";
@@ -26,6 +27,7 @@ const Search: React.FC<{
       searchClient={algolia}
       indexName={`titles-${web3.network.name}`}
     >
+      <SearchBox />
       <Configure hitsPerPage={10} filters={filters} />
       <Hits />
       <StateResults />
