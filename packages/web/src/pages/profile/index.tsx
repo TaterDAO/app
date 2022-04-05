@@ -13,7 +13,7 @@ import ProfileLayout from "src/layouts/Profile";
 import styled from "styled-components";
 
 const MintingCaption = styled.div`
-  color: gray;
+  color: #bbb;
 `;
 
 const MyProfilePage: NextPage = ({}) => {
