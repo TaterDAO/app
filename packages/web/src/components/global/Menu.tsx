@@ -41,14 +41,14 @@ const Menu: React.FC<{}> = ({}) => {
         <Wallets />
         {web3.wallet.connected && (
           <>
-            <Link href="/explore">
-              <a>Explore</a>
-            </Link>
             <Button primary>
               <Link href="/mint">Mint Title</Link>
             </Button>
             <Link href="/profile">
               <a>Profile</a>
+            </Link>
+            <Link href="/explore">
+              <a>Explore</a>
             </Link>
           </>
         )}
