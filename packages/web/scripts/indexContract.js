@@ -106,7 +106,7 @@ async function* Fetcher(network, networkEndpoint) {
     }) => ({
       objectID: tokenId,
       tokenId: parseInt(tokenId),
-      owner,
+      owner: owner.toLowerCase(),
       name,
       description,
       externalUrl,

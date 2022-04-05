@@ -12,7 +12,8 @@
     "test:unit": "ts-mocha -p tests/unit/tsconfig.json tests/unit/*.spec.ts",
     "build:addresses": "node scripts/gatherAddresses.js",
     "algolia:index:localhost": "yarn build:addresses && node scripts/indexContract.js localhost http://127.0.0.1:8545/",
-    "algolia:setup": "node scripts/setupAlgolia.js"
+    "algolia:setup": "node scripts/setupAlgolia.js",
+    "algolia:index:seed": "node scripts/seedTitles.js"
   },
   "dependencies": {
     "algoliasearch": "^4.13.0",
@@ -22,7 +23,7 @@
     "next": "^12.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-instantsearch-dom": "^6.22.0",
+    "react-instantsearch-dom": "^6.23.3",
     "react-toastify": "^8.2.0",
     "styled-components": "^5.3.3",
     "web3": "^1.7.0",
