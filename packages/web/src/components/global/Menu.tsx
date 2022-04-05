@@ -38,12 +38,12 @@ const Menu: React.FC<{}> = ({}) => {
         </h1>
       </LeftColumn>
       <RightColumn>
-        <Link href="/explore">
-          <a>Explore</a>
-        </Link>
         <Wallets />
         {web3.wallet.connected && (
           <>
+            <Link href="/explore">
+              <a>Explore</a>
+            </Link>
             <Button primary>
               <Link href="/mint">Mint Title</Link>
             </Button>

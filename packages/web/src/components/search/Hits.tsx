@@ -16,6 +16,10 @@ const Footer = styled.div`
   justify-content: center;
 `;
 
+const NoResults = styled.h4`
+  color: #bbb;
+`;
+
 const Hits: React.FC<InfiniteHitsProvided> = ({
   hits,
   hasPrevious,
@@ -24,7 +28,7 @@ const Hits: React.FC<InfiniteHitsProvided> = ({
   refineNext
 }) => {
   const showFooter = hasPrevious || hasMore;
-  return (
+  return hits.length ? (
     <div>
       <div>
         {hits.map((hit) => (
@@ -37,6 +41,8 @@ const Hits: React.FC<InfiniteHitsProvided> = ({
         </Footer>
       )}
     </div>
+  ) : (
+    <NoResults>0 Titles Minted</NoResults>
   );
 };
 
