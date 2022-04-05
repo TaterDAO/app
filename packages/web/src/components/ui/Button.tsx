@@ -13,6 +13,11 @@ const Button = styled.button<{ primary?: boolean; big?: boolean }>`
   font-weight: 600;
   font-size: ${({ big }) => (big ? "1.05rem" : "0.9rem")};
 
+  &:hover {
+    opacity: 0.8;
+    transition: opacity ease 0.2s;
+  }
+
   &:disabled {
     filter: grayscale(1);
     opacity: 0.15;
