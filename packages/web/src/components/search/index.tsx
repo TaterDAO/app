@@ -4,6 +4,7 @@ import type { SearchState } from "react-instantsearch-core";
 // Components
 import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
+import StateResults from "./StateResults";
 
 // Services
 import algolia from "@services/Algolia";
@@ -27,6 +28,7 @@ const Search: React.FC<{
     >
       <Configure hitsPerPage={10} filters={filters} />
       <Hits />
+      <StateResults />
     </InstantSearch>
   );
 };
