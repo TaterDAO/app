@@ -148,7 +148,7 @@ const Web3Provider: React.FC<{
     provider: web3?.eth.currentProvider,
     web3API: web3,
     wallet: {
-      address,
+      address: address?.toLowerCase(),
       provider: !!provider ? providerInfo : null,
       connected: walletConnected,
       connect: connectWallet,
