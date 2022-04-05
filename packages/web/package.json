@@ -13,7 +13,7 @@
     "build:addresses": "node scripts/gatherAddresses.js",
     "algolia:index:localhost": "yarn build:addresses && node scripts/indexContract.js localhost http://127.0.0.1:8545/",
     "algolia:setup": "node scripts/setupAlgolia.js",
-    "algolia:index:seed": "node scripts/seedTitles.js"
+    "algolia:seed": "node scripts/seedTitles.js"
   },
   "dependencies": {
     "algoliasearch": "^4.13.0",
