@@ -1,5 +1,6 @@
 // Libs
 import { connectInfiniteHits } from "react-instantsearch-dom";
+import styled from "styled-components";
 
 // Components
 import Hit from "./Hit";
@@ -7,22 +8,34 @@ import Button from "@components/ui/Button";
 
 // Types
 import type { Hit as T_Hit } from "@T/Search";
+import type { InfiniteHitsProvided } from "react-instantsearch-core";
 
-const Hits: React.FC<{
-  hits: Array<any>;
-  hasPrevious: boolean;
-  refinePrevious: (...args: any[]) => any;
-  hasMore: boolean;
-  refineNext: (...args: any[]) => any;
-}> = ({ hits, hasPrevious, refinePrevious, hasMore, refineNext }) => {
+const Footer = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+`;
+
+const Hits: React.FC<InfiniteHitsProvided> = ({
+  hits,
+  hasPrevious,
+  refinePrevious,
+  hasMore,
+  refineNext
+}) => {
+  const showFooter = hasPrevious || hasMore;
   return (
     <div>
       <div>
         {hits.map((hit) => (
-          <Hit data={hit as T_Hit} />
+          <Hit key={hit.objectID} data={hit as T_Hit} />
         ))}
       </div>
-      {hasMore && <Button onClick={refineNext}>Load More</Button>}
+      {showFooter && (
+        <Footer>
+          <Button onClick={refineNext}>Load More</Button>
+        </Footer>
+      )}
     </div>
   );
 };

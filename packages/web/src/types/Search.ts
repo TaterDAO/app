@@ -20,13 +20,14 @@ type Hit = {
 enum IndexedFields {
   Name = "name",
   Description = "description",
-  LandClassification = "attrLandClassification",
-  Location = "attrLocation",
-  Deed = "attrDeed",
-  Parcels = "attrParcels",
-  Owner = "attrOwner",
-  Tag = "attrOwner",
-  CreatedAt = "attrCreatedAt"
+  Owner = "owner",
+  LandClassification = "attr.LandClassification",
+  Location = "attr.Location",
+  Deed = "attr.Deed",
+  Parcels = "attr.Parcels",
+  Tag = "attr.Tag",
+  AttrOwner = "attr.Owner",
+  CreatedAt = "attr.CreatedAt"
 }
 
 interface Filters {
