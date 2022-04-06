@@ -8,7 +8,7 @@ const Sort: React.FC<{
   items: Array<{ value: string; label: string }>;
   refine: (value: string) => void;
   currentRefinement: string;
-  disabled?: boolean;
+  disabled: boolean;
 }> = ({ items, refine, currentRefinement, disabled }) => {
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     refine(event.currentTarget.value);
