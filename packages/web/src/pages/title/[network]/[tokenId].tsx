@@ -91,7 +91,7 @@ const TitlePage: NextPage<{
     <div>
       {hasImage && !ipfsImage && (
         <ImageContainer>
-          <Image src={title.image} />
+          <Image src={title.image} alt={title.description} />
         </ImageContainer>
       )}
       <TokenID>Token ID: {title.tokenId}</TokenID>

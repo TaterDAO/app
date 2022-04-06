@@ -38,7 +38,7 @@ const ContractForm: React.FC<{ contractId: ContractIds }> = ({
         web3.wallet.address as string
       )
     );
-  }, [web3.web3API, web3.wallet.connected, web3.wallet.address]);
+  }, [web3.web3API, web3.wallet.connected, web3.wallet.address, contractId]);
 
   useEffect(() => {
     // Wait for API to load

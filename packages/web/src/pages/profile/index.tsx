@@ -27,7 +27,7 @@ const MyProfilePage: NextPage = ({}) => {
     if (web3.initialized && !web3.wallet.connected) {
       router.push("/");
     }
-  }, [web3.initialized, web3.wallet.connected]);
+  }, [web3.initialized, web3.wallet.connected, router]);
 
   return web3.initialized && web3.wallet.connected ? (
     <ProfileLayout
