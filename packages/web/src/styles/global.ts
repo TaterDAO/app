@@ -18,6 +18,57 @@ export default createGlobalStyle`
 
     --color-gray: #bbb;
 
+    --color-bright-pink: #ef5777;
+    --color-pink: #f28080;
+    --color-bright-red: #df002d;
+    --color-red: #dc143c;
+    --color-light-red: #ec5b55;
+    --color-dark-orange: #ab4033;
+    --color-orange: #fe5d26;
+    --color-bright-yellow: #ffa801;
+    --color-yellow: #ffdd59;
+    --color-pale-yellow: #fff5b0;
+    --color-dark-green: #388174;
+    --color-bright-green: #05c46b;
+    --color-green: #3fd690;
+    --color-pale-green: #d5fff3;
+    --color-bright-teal: #06e4e4;
+    --color-light-teal: #93dfd1;
+    --color-teal: #49c5b6;
+    --color-pale-teal: #c7f9ff;
+    --color-bright-blue: #0fbcf9;
+    --color-pastel-blue: #ebf2fb;
+    --color-soft-blue: #add9f4;
+    --color-pale-blue: #79abda;
+    --color-dark-blue: #3983dd;
+    --color-blue: #1e90ff;
+    --color-pale-lavender: #96f;
+    --color-lavender: #7a55e6;
+    --color-indigo: #5352ed;
+    --color-bright-indigo: #3742fa;
+    --color-dark-indigo: #333f90;
+    --color-black-blue: #002c59;
+    --color-cyan: #49c5b6;
+    --color-blue-magenta: #495de5;
+    --color-tangaroa: #172534;
+    --color-charcoal: #141414;
+    --color-mostly-black: #222;
+    --color-graphite: #3f3f37;
+    --color-smoke: #525252;
+    --color-fossil: #636e72;
+    --color-mud: #878787;
+    --color-granite: #909090;
+    --color-silver: #bfc0c0;
+    --color-cloud: #d2dae2;
+    --color-blanc: #e1e1e1;
+    --color-iron: #e8e8e8;
+    --color-athens: #f7f9fc;
+    --color-sand: #fbf9f9;
+    --color-ghost: #fafcfe;
+    --color-facebook: #3b5998;
+    --color-google: #4285f4;
+    --color-twitter: #56acee;
+    --color-linkedin: #088ec4;
 
     font-size: 15px;
   }

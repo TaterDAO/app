@@ -47,9 +47,6 @@ const Menu: React.FC<{}> = ({}) => {
             <Link href="/profile">
               <a>Profile</a>
             </Link>
-            <Link href="/explore">
-              <a>Explore</a>
-            </Link>
           </>
         )}
       </RightColumn>
