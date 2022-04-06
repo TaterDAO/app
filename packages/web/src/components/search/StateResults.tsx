@@ -5,6 +5,7 @@ import styled from "styled-components";
 import type { StateResultsProvided } from "react-instantsearch-core";
 
 const NoResults = styled.h4`
+  margin-top: 2rem;
   color: #bbb;
 `;
 

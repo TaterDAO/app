@@ -5,14 +5,13 @@ import type { SearchState } from "react-instantsearch-core";
 import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
 import StateResults from "./StateResults";
-import SearchBox from "./SearchBox";
-import Sort from "./Sort";
 
 // Services
 import algolia from "@services/Algolia";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
+import SearchHeader from "./Header";
 
 const Search: React.FC<{
   /**
@@ -26,46 +25,8 @@ const Search: React.FC<{
 
   return (
     <InstantSearch searchClient={algolia} indexName={index}>
-      <SearchBox />
       <Configure hitsPerPage={10} filters={filters} />
-      <Sort
-        defaultRefinement={index}
-        items={[
-          { value: index, label: "Ascending: Name" },
-          {
-            value: `${index}-landClassification_asc`,
-            label: "Ascending: Land Classification"
-          },
-          {
-            value: `${index}-location_asc`,
-            label: "Ascending: Location"
-          },
-          {
-            value: `${index}-owner_asc`,
-            label: "Ascending: Owner"
-          },
-          {
-            value: `${index}-parcels_asc`,
-            label: "Ascending: Parcels"
-          },
-          {
-            value: `${index}-landClassification_desc`,
-            label: "Descending: Land Classification"
-          },
-          {
-            value: `${index}-location_desc`,
-            label: "Descending: Location"
-          },
-          {
-            value: `${index}-owner_desc`,
-            label: "Descending: Owner"
-          },
-          {
-            value: `${index}-parcels_desc`,
-            label: "Descending: Parcels"
-          }
-        ]}
-      />
+      <SearchHeader index={index} />
       <Hits />
       <StateResults />
     </InstantSearch>

@@ -10,9 +10,8 @@ import Input from "@components/ui/Input";
 import Button from "@components/ui/Button";
 
 const Container = styled.div`
-  margin-bottom: 2rem;
-
   display: flex;
+  flex-grow: 1;
 `;
 
 const SearchInput = styled(Input).attrs({

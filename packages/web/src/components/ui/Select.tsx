@@ -8,7 +8,6 @@ const Container = styled.div`
   :after {
     content: "";
     position: absolute;
-    top: 20px;
     right: 20px;
     width: 0;
     height: 0;
@@ -20,6 +19,8 @@ const Container = styled.div`
 
   position: relative;
   max-width: 300px;
+  display: flex;
+  align-items: center;
 `;
 
 const El = styled.select`
