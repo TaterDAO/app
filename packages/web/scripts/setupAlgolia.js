@@ -42,12 +42,12 @@ const sortableFields = ["landClassification", "location", "parcels", "owner"];
         searchableAttributes: [
           //"tokenId",
           "name",
-          "description"
-          // "attr.LandClassification",
-          // "attr.Location",
-          // "attr.Parcels",
-          // "attr.Owner",
-          // "attr.Tag"
+          "description",
+          "attr.LandClassification",
+          "attr.Location",
+          "attr.Parcels",
+          "attr.Owner",
+          "attr.Tag"
         ],
         attributesForFaceting: ["filterOnly(owner)"],
         ranking: ["asc(name)", ...defaultRankings],
