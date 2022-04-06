@@ -14,6 +14,8 @@ export default task("migration:00", "Initial deployment").setAction(
     const network = hre.network.name;
     let proxyRegistryAddress: string;
 
+    console.log("CI DEV:", network);
+
     if (
       network === "rinkeby" ||
       network === "localhost" // CI
