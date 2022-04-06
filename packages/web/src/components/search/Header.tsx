@@ -4,6 +4,9 @@ import styled from "styled-components";
 import SearchBox from "./SearchBox";
 import Sort from "./Sort";
 
+// Hooks
+import useWeb3 from "@hooks/useWeb3";
+
 const Container = styled.div`
   display: flex;
   gap: 2rem;
@@ -52,10 +55,16 @@ function getSortItems(index: string) {
 }
 
 const SearchHeader: React.FC<{ index: string }> = ({ index }) => {
+  const web3 = useWeb3();
+  const needsConnection = web3.initialized && !web3.wallet.connected;
   return (
     <Container>
-      <SearchBox />
-      <Sort defaultRefinement={index} items={getSortItems(index)} />
+      <SearchBox disabled={needsConnection} />
+      <Sort
+        defaultRefinement={index}
+        items={getSortItems(index)}
+        disabled={needsConnection}
+      />
     </Container>
   );
 };

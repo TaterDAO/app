@@ -8,13 +8,18 @@ const Sort: React.FC<{
   items: Array<{ value: string; label: string }>;
   refine: (value: string) => void;
   currentRefinement: string;
-}> = ({ items, refine, currentRefinement }) => {
+  disabled?: boolean;
+}> = ({ items, refine, currentRefinement, disabled }) => {
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     refine(event.currentTarget.value);
   };
 
   return (
-    <Select onChange={handleSelect} value={currentRefinement}>
+    <Select
+      onChange={handleSelect}
+      value={currentRefinement}
+      disabled={disabled}
+    >
       {items.map((item) => (
         <option value={item.value} key={`sort-${item.value}`}>
           {item.label}
@@ -22,6 +27,10 @@ const Sort: React.FC<{
       ))}
     </Select>
   );
+};
+
+Sort.defaultProps = {
+  disabled: false
 };
 
 export default connectSortBy(Sort);

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+const Container = styled.div<{ disabled: boolean }>`
   border: 1px solid var(--color-accent-gray);
   padding: 1rem 2rem;
   border-radius: 0.25rem;
@@ -21,6 +21,8 @@ const Container = styled.div`
   max-width: 300px;
   display: flex;
   align-items: center;
+
+  opacity: ${({ disabled }) => (disabled ? 0.25 : 1)};
 `;
 
 const El = styled.select`
@@ -37,14 +39,19 @@ const Select: React.FC<{
   children: Array<React.ReactNode>;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-}> = ({ children, onChange, value }) => {
+  disabled: boolean;
+}> = ({ children, onChange, value, disabled }) => {
   return (
-    <Container>
-      <El onChange={onChange} value={value}>
+    <Container disabled={disabled}>
+      <El onChange={onChange} value={value} disabled={disabled}>
         {children}
       </El>
     </Container>
   );
+};
+
+Select.defaultProps = {
+  disabled: false
 };
 
 export default Select;

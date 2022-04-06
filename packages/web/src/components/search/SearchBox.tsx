@@ -9,9 +9,11 @@ import type { SearchBoxProvided } from "react-instantsearch-core";
 import Input from "@components/ui/Input";
 import Button from "@components/ui/Button";
 
-const Container = styled.div`
+const Container = styled.div<{ disabled: boolean }>`
   display: flex;
   flex-grow: 1;
+
+  opacity: ${({ disabled }) => (disabled ? 0.75 : 1)};
 `;
 
 const SearchInput = styled(Input).attrs({
@@ -31,9 +33,10 @@ const ResetButton = styled(Button)`
   border-bottom-left-radius: 0;
 `;
 
-const SearchBox: React.FC<SearchBoxProvided> = ({
+const SearchBox: React.FC<SearchBoxProvided & { disabled: boolean }> = ({
   currentRefinement,
-  refine
+  refine,
+  disabled
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.currentTarget.value as string;
@@ -45,15 +48,22 @@ const SearchBox: React.FC<SearchBoxProvided> = ({
   };
 
   return (
-    <Container>
+    <Container disabled={disabled}>
       <SearchInput
         placeholder="Search TaterDAO"
         value={currentRefinement}
         onChange={handleChange}
+        disabled={disabled}
       />
-      <ResetButton onClick={handleReset}>Reset</ResetButton>
+      <ResetButton onClick={handleReset} disabled={disabled}>
+        Reset
+      </ResetButton>
     </Container>
   );
+};
+
+SearchBox.defaultProps = {
+  disabled: false
 };
 
 export default connectSearchBox(SearchBox);
