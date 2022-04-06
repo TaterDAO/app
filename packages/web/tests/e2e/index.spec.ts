@@ -6,6 +6,6 @@ describe("Renders", () => {
   });
 
   it("Renders", () => {
-    cy.get("h1").contains("Hello World");
+    cy.get("h1").contains("TaterDAO");
   });
 });
