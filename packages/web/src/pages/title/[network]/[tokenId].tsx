@@ -62,7 +62,7 @@ const Attributes = styled.table`
 `;
 
 const ImageContainer = styled.div`
-  background-color: #fafafa;
+  background: var(--color-charcoal);
   padding: 3rem 0;
   margin-bottom: 5rem;
 `;
