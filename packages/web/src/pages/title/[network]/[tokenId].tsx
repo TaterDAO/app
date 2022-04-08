@@ -164,7 +164,9 @@ const TitlePage: NextPage<{
           </tr>
           <tr>
             <td>Created At</td>
-            <td>{new Date(title["attr.CreatedDate"]).toLocaleString()}</td>
+            <td>
+              {new Date(title["attr.CreatedDate"] * 1000).toLocaleString()}
+            </td>
           </tr>
           <tr>
             <td>Max Supply</td>
