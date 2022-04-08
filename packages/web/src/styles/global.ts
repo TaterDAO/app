@@ -71,6 +71,15 @@ export default createGlobalStyle`
     --color-linkedin: #088ec4;
 
     font-size: 15px;
+
+    --global-color-bg: black;
+    --global-color-font: var(--color-iron);
+    --global-color-brand: var(--color-bright-yellow);
+    --global-font-brand: 'Kanit';
+    --global-font-body: 'Anonymous Pro';
+    --global-border-radius: 0.25rem;
+
+    --toastify-color-error: var(--color-bright-red);
   }
   
   *,
@@ -83,16 +92,22 @@ export default createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
+  }
 
-    font-family: 'Inter', sans-serif;
+  html {
+    font-family: var(--global-font-body), monospace;
+    color: var(--global-color-font);
+    background-color: var(--global-color-bg);
+  }
 
-    color: var(--color-brand-black);
-    background-color: white;
+  h1 {
+    font-family: var(--global-font-brand);
   }
 
   a {
     cursor: pointer;
     text-decoration: none;
+    color: var(--color-bright-blue);
   }
   
   button {

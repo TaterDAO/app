@@ -10,14 +10,22 @@ import styled from "styled-components";
 const Connected = styled.div`
   height: 1rem;
   width: 1rem;
-  background: var(--color-brand-green);
-  background: radial-gradient(circle, var(--color-brand-green) 30%, white 100%);
+  background: var(--color-bright-green);
+  background: radial-gradient(
+    circle,
+    var(--color-bright-green) 30%,
+    var(--global-color-bg) 100%
+  );
   border-radius: 100%;
 `;
 
 const ChainName = styled.small`
   font-weight: 600;
-  color: var(--color-brand-green);
+  color: var(--color-bright-green);
+`;
+
+const DisconnectButton = styled(Button)`
+  color: var(--color-red);
 `;
 
 const Wallets: React.FC<{}> = ({}) => {
@@ -28,7 +36,9 @@ const Wallets: React.FC<{}> = ({}) => {
     <>
       {web3.network.chainId !== 1 && <ChainName>{web3.network.name}</ChainName>}
       <Connected />
-      <Button onClick={web3.wallet.disconnect}>Disconnect</Button>
+      <DisconnectButton onClick={web3.wallet.disconnect}>
+        Disconnect
+      </DisconnectButton>
     </>
   ) : (
     <Button onClick={web3.wallet.connect}>Connect Wallet</Button>

@@ -5,9 +5,8 @@ type Map = { [key: string]: string };
 type BooleanMap = { [key: string]: boolean };
 
 // Components
-import Input from "@components/ui/Input";
 import * as Form from "@components/ui/Form";
-import Button from "@components/ui/Button";
+import MintButton from "@components/ui/MintButton";
 import Error from "@components/ui/Error";
 
 // Hooks
@@ -151,11 +150,13 @@ const MintPage: NextPage = ({}) => {
           const id = `form-row-${fieldId}`;
           return (
             <Form.Row key={id} id={id}>
-              <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>
-              {requiredMap[fieldId] && (
-                <Form.FieldSecondaryLabel>Required</Form.FieldSecondaryLabel>
-              )}
-              <Input
+              <Form.FieldMeta>
+                <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>
+                {requiredMap[fieldId] && (
+                  <Form.FieldSecondaryLabel>Required</Form.FieldSecondaryLabel>
+                )}
+              </Form.FieldMeta>
+              <Form.Input
                 disabled={submitting}
                 value={state[fieldId]}
                 onChange={(e) =>
@@ -165,15 +166,16 @@ const MintPage: NextPage = ({}) => {
                   }))
                 }
                 invalid={errorField === fieldId}
+                placeholder={`Enter ${labelMap[fieldId]}...`}
               />
             </Form.Row>
           );
         })}
         <Form.Row>
           {web3.wallet.connected ? (
-            <Button primary big disabled={submitting} onClick={handleSubmit}>
+            <MintButton big disabled={submitting} onClick={handleSubmit}>
               Mint
-            </Button>
+            </MintButton>
           ) : (
             <Error>You must connect your wallet to mint</Error>
           )}

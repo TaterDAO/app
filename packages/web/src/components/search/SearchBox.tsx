@@ -6,7 +6,7 @@ import styled from "styled-components";
 import type { SearchBoxProvided } from "react-instantsearch-core";
 
 // Components
-import Input from "@components/ui/Input";
+import { Input } from "@components/ui/Form";
 import Button from "@components/ui/Button";
 
 const Container = styled.div<{ disabled: boolean }>`
@@ -22,15 +22,17 @@ const SearchInput = styled(Input).attrs({
   width: 100%;
   font-weight: 700;
   font-size: 1.5rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 `;
 
 const ResetButton = styled(Button)`
   width: 100px;
-  background-color: var(--color-blue-magenta);
+  background-color: var(--color-indigo);
+  border: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+  color: var(--global-color-bg);
 `;
 
 const SearchBox: React.FC<SearchBoxProvided & { disabled: boolean }> = ({

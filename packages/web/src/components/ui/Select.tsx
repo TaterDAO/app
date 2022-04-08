@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Container = styled.div<{ disabled: boolean }>`
-  border: 1px solid var(--color-accent-gray);
+  border: 1px solid var(--color-indigo);
   padding: 1rem 2rem;
   border-radius: 0.25rem;
 
@@ -13,7 +13,7 @@ const Container = styled.div<{ disabled: boolean }>`
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid #000;
+    border-top: 5px solid var(--color-indigo);
     clear: both;
   }
 
@@ -29,9 +29,17 @@ const El = styled.select`
   border: 0;
   width: 100%;
   appearance: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
 
   ::placeholder {
-    color: var(--color-gray);
+    color: var(--color-yellow);
+  }
+
+  option {
+    background-color: var(--global-color-bg);
   }
 `;
 

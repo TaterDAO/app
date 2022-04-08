@@ -4,6 +4,7 @@ import type { Hit as T_Hit } from "@T/Search";
 // Components
 import Link from "@components/ui/Link";
 import ProfileLink from "@components/ProfileLink";
+import Tags from "@components/ui/Tags";
 
 // Libs
 import styled from "styled-components";
@@ -12,10 +13,33 @@ import styled from "styled-components";
 import useWeb3 from "@hooks/useWeb3";
 
 const Container = styled.div`
-  margin-top: 1rem;
+  margin-top: 3rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
   h5 {
     padding-top: 0.25rem;
+  }
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: auto;
+  flex-grow: 1;
+  object-fit: contain;
+  background: var(--color-charcoal);
+  margin-bottom: 2rem;
+`;
+
+const Meta = styled.div`
+  margin-top: auto;
+`;
+
+const Name = styled.h2`
+  a {
+    color: var(--global-color-font);
   }
 `;
 
@@ -23,12 +47,28 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
   return (
     <Container>
-      <Link href={`/title/${web3.network.name}/${data.objectID}`}>
-        {data.name}
-      </Link>
-      <h5>
-        Created by <ProfileLink address={data.owner} />
-      </h5>
+      {data.image && <Image src={data.image} alt={data.name} />}
+      <Meta>
+        <Name>
+          <Link href={`/title/${web3.network.name}/${data.objectID}`}>
+            {data.name}
+          </Link>
+        </Name>
+        <h5>
+          Created by <ProfileLink address={data.owner} />
+        </h5>
+      </Meta>
+      {data["attr.Tag"] && (
+        <Tags
+          data={[
+            `Classification: ${data["attr.LandClassification"]}`,
+            `Location: ${data["attr.Location"]}`,
+            `Parcels: ${data["attr.Parcels"]}`
+          ]}
+          tokenId={data.objectID}
+          id="tags"
+        />
+      )}
     </Container>
   );
 };

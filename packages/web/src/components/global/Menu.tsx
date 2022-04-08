@@ -1,6 +1,6 @@
 // Components
 import Wallets from "@components/Wallets";
-import Button from "@components/ui/Button";
+import MintButton from "@components/ui/MintButton";
 import Link from "next/link";
 
 // Libs
@@ -9,6 +9,13 @@ import styled from "styled-components";
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
 
+const Wordmark = styled.h1`
+  color: var(--global-color-brand);
+  font-family: var(--global-font-brand);
+  font-style: italic;
+  font-size: 3rem;
+  cursor: pointer;
+`;
 const Container = styled.nav`
   display: flex;
 `;
@@ -33,18 +40,18 @@ const Menu: React.FC<{}> = ({}) => {
   return (
     <Container>
       <LeftColumn>
-        <h1>
-          <Link href="/">TaterDAO</Link>
-        </h1>
+        <Link href="/">
+          <Wordmark>🥔 dao</Wordmark>
+        </Link>
       </LeftColumn>
       <RightColumn>
         <Wallets />
         {web3.wallet.connected && (
           <>
-            <Button primary>
+            <MintButton>
               <Link href="/mint">Mint Title</Link>
-            </Button>
-            <Link href="/profile">
+            </MintButton>
+            <Link href="/profile" passHref>
               <a>Profile</a>
             </Link>
           </>

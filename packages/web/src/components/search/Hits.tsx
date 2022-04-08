@@ -10,6 +10,12 @@ import Button from "@components/ui/Button";
 import type { Hit as T_Hit } from "@T/Search";
 import type { InfiniteHitsProvided } from "react-instantsearch-core";
 
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5rem;
+`;
+
 const Footer = styled.div`
   margin-top: 2rem;
   display: flex;
@@ -26,11 +32,11 @@ const Hits: React.FC<InfiniteHitsProvided> = ({
   const showFooter = hasPrevious || hasMore;
   return (
     <div>
-      <div>
+      <Container>
         {hits.map((hit) => (
           <Hit key={hit.objectID} data={hit as T_Hit} />
         ))}
-      </div>
+      </Container>
       {showFooter && (
         <Footer>
           <Button onClick={refineNext}>Load More</Button>

@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
-const Button = styled.button<{ primary?: boolean; big?: boolean }>`
-  border: 0;
-  border-radius: 0.25rem;
+const Button = styled.button<{ big?: boolean }>`
+  border-radius: var(--global-border-radius);
 
-  background-color: ${({ primary }) =>
-    primary ? "var(--color-brand-blue-d)" : "var(--color-brand-black)"};
-  color: white;
+  background-color: transparent;
+  border: 1px solid;
+  color: var(--global-color-brand);
 
-  padding: ${({ big }) => (big ? "1rem 2rem" : "0.25rem 0.75rem")};
+  padding: ${({ big }) => (big ? "1rem 2rem" : "0.5rem 1rem")};
 
   font-weight: 600;
   font-size: ${({ big }) => (big ? "1.05rem" : "0.9rem")};
+  font-family: inherit;
 
   &:hover {
     opacity: 0.8;
@@ -32,7 +32,6 @@ const Button = styled.button<{ primary?: boolean; big?: boolean }>`
 `;
 
 Button.defaultProps = {
-  primary: false,
   big: false
 };
 

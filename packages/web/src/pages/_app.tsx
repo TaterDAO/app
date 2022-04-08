@@ -26,7 +26,7 @@ function App({ Component, pageProps }: AppProps) {
           </main>
         </>
       </Web3Provider>
-      <ToastContainer hideProgressBar position="top-right" />
+      <ToastContainer hideProgressBar position="top-right" theme="colored" />
     </>
   );
 }

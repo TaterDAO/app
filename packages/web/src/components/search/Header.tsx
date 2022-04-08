@@ -11,9 +11,6 @@ const Container = styled.div`
   display: flex;
   gap: 2rem;
   margin-bottom: 4rem;
-  border: 1px solid var(--color-accent-gray);
-  padding: 1rem;
-  border-radius: 8px;
 `;
 
 function getSortItems(index: string) {
