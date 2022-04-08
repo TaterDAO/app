@@ -8,7 +8,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: process.env.ALGOLIA_APPLICATION_ID,
     NEXT_PUBLIC_ALGOLIA_SEARCH_KEY: process.env.ALGOLIA_SEARCH_KEY
-  }
+  },
+  optimizeFonts: false
 };
 
 module.exports = nextConfig;
