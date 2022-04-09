@@ -36,12 +36,20 @@ function validateNetworkEndpointArg(value) {
 }
 
 function decodeMetadata(raw) {
-  const buff = Buffer.from(
-    raw.replace("data:application/json;base64,", ""),
-    "base64"
-  );
-  const text = buff.toString("utf8");
-  return JSON.parse(text);
+  let text;
+  try {
+    const buff = Buffer.from(
+      raw.replace("data:application/json;base64,", ""),
+      "base64"
+    );
+    text = buff.toString("utf8");
+    return JSON.parse(text);
+  } catch (error) {
+    console.log("\nError Decoding Metadata:");
+    console.log(text);
+    console.log(error);
+    return null;
+  }
 }
 
 async function* Fetcher(network, networkEndpoint) {
@@ -90,43 +98,46 @@ async function* Fetcher(network, networkEndpoint) {
     if (msg.includes("ERC721Metadata: URI query for nonexistent token")) {
       // noop
     } else {
-      console.log(msg);
+      throw new Error(error);
     }
   }
 
-  const serializedTitles = titles.map(
-    ({
-      tokenId,
-      owner,
-      name,
-      description,
-      externalUrl,
-      image,
-      attributes
-    }) => ({
-      objectID: tokenId,
-      tokenId: parseInt(tokenId),
-      owner: owner.toLowerCase(),
-      name,
-      description,
-      externalUrl,
-      image,
-      "attr.LandClassification": attributes[0].value,
-      "attr.Location": attributes[1].value,
-      "attr.Deed": attributes[2].value,
-      "attr.Parcels": attributes[3].value,
-      "attr.Owner": attributes[4].value,
-      "attr.Kml": attributes[5].value,
-      "attr.Tag": attributes[6].value,
-      "attr.CreatedDate": parseInt(attributes[7].value),
-      "attr.MaxSupply": parseInt(attributes[8].value)
-    })
-  );
+  const serializedTitles = titles
+    .filter((title) => title)
+    .map(
+      ({
+        tokenId,
+        owner,
+        name,
+        description,
+        externalUrl,
+        image,
+        attributes
+      }) => ({
+        objectID: tokenId,
+        tokenId: parseInt(tokenId),
+        owner: owner.toLowerCase(),
+        name,
+        description,
+        externalUrl,
+        image,
+        "attr.LandClassification": attributes[0].value,
+        "attr.Location": attributes[1].value,
+        "attr.Deed": attributes[2].value,
+        "attr.Parcels": attributes[3].value,
+        "attr.Owner": attributes[4].value,
+        "attr.Kml": attributes[5].value,
+        "attr.Tag": attributes[6].value,
+        "attr.CreatedDate": parseInt(attributes[7].value),
+        "attr.MaxSupply": parseInt(attributes[8].value)
+      })
+    );
 
   const algoliaIndex = client.initIndex(`titles-${network}`);
 
   try {
     await algoliaIndex.saveObjects(serializedTitles);
+    console.log("Successfully indexed");
   } catch (error) {
     console.error(error);
   }

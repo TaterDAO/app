@@ -116,7 +116,17 @@ const MintPage: NextPage = ({}) => {
       setErrorField("");
       setSubmitting(true);
 
-      const { error } = validationSchema.validate(state);
+      const cleanState: Map = {};
+
+      // Sanitize inputs
+      for (const field in state) {
+        // Remove double quotes
+        const value = state[field].replaceAll('"', "");
+        cleanState[field] = value;
+      }
+
+      // Validate the input against schema requirements
+      const { error } = validationSchema.validate(cleanState);
       if (error) {
         const fieldId = error.details[0].path[0] as string;
         toast.error(`${labelMap[fieldId]} is required`);
@@ -124,10 +134,13 @@ const MintPage: NextPage = ({}) => {
         return;
       }
 
+      // Submit the transaction on-chain
       const trxHash = (await minter?.mint(
-        state,
+        cleanState,
         web3.wallet.address as string
       )) as string;
+
+      console.log(trxHash);
 
       // Show success notification and redirect home
       toast.success(`Transaction submitted to ${web3.network.name}`);
