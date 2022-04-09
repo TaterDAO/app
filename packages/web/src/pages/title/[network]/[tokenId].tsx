@@ -76,9 +76,10 @@ const Image = styled.img`
 
 const TitlePage: NextPage<{
   title: Hit;
+  openseaHost: string;
   etherscanHost: string | null;
   contractAddress: string | undefined;
-}> = ({ title, etherscanHost, contractAddress }) => {
+}> = ({ title, openseaHost, etherscanHost, contractAddress }) => {
   const hasImage = Boolean(title.image);
   const ipfsImage = hasImage && title.image?.startsWith("ipfs");
 
@@ -86,6 +87,18 @@ const TitlePage: NextPage<{
     !!etherscanHost && !!contractAddress
       ? `${etherscanHost}/token/${contractAddress}?a=${title.tokenId}`
       : null;
+
+  const openseaUrl = `${openseaHost}/assets/${contractAddress}/${title.tokenId}`;
+
+  let deedURL: any = null;
+  try {
+    deedURL = new URL(title["attr.Deed"] as string);
+  } catch (error) {}
+
+  let kmlURL: any = null;
+  try {
+    kmlURL = new URL(title["attr.Kml"] as string);
+  } catch (error) {}
 
   return (
     <div>
@@ -115,8 +128,15 @@ const TitlePage: NextPage<{
       )}
       {etherscanUrl && (
         <Row>
-          <ExternalUrl href={etherscanUrl} target="_blank">
+          <ExternalUrl href={etherscanUrl} target="_blank" rel="noreferrer">
             View on Etherscan
+          </ExternalUrl>
+        </Row>
+      )}
+      {openseaUrl && (
+        <Row>
+          <ExternalUrl href={openseaUrl} target="_blank" rel="noreferrer">
+            View on OpenSea
           </ExternalUrl>
         </Row>
       )}
@@ -144,7 +164,15 @@ const TitlePage: NextPage<{
           </tr>
           <tr>
             <td>Deed</td>
-            <td>{title["attr.Deed"]}</td>
+            <td>
+              {deedURL ? (
+                <a href={title["attr.Deed"]} target="_blank" rel="noreferrer">
+                  View Deed
+                </a>
+              ) : (
+                "None Provided"
+              )}
+            </td>
           </tr>
           <tr>
             <td>Parcels</td>
@@ -156,7 +184,15 @@ const TitlePage: NextPage<{
           </tr>
           <tr>
             <td>KML</td>
-            <td>{title["attr.Kml"]}</td>
+            <td>
+              {kmlURL ? (
+                <a href={title["attr.Kml"]} target="_blank" rel="noreferrer">
+                  View KML
+                </a>
+              ) : (
+                "None Provided"
+              )}
+            </td>
           </tr>
           <tr>
             <td>Tags</td>
@@ -189,12 +225,18 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
       ? "https://etherscan.io"
       : `https://${network}.etherscan.io`;
 
+  const openseaHost =
+    network === "mainnet"
+      ? "https://opensea.io"
+      : "https://testnets.opensea.io";
+
   try {
     const hit = await index.getObject(query.tokenId as string);
     return {
       props: {
         title: hit,
         etherscanHost,
+        openseaHost,
         //@ts-expect-error
         contractAddress: addresses[network]
       }

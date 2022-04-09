@@ -30,6 +30,7 @@ const Image = styled.img`
   flex-grow: 1;
   object-fit: contain;
   background: var(--color-charcoal);
+  border-radius: 0.5rem;
   margin-bottom: 2rem;
 `;
 
