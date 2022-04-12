@@ -36,6 +36,13 @@ export default {
       chainId: 4,
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
+    hardhat: {
+      // Mines a new block every 10s.
+      mining: {
+        auto: false,
+        interval: 10000,
+      },
+    },
   },
   solidity: {
     version: "0.8.10",
