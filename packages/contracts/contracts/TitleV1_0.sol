@@ -106,6 +106,24 @@ contract TitleV1_0 is
       );
   }
 
+  function _makeStrAttr(string memory traitType_, string memory value_)
+    private
+    pure
+    returns (string memory)
+  {
+    return
+      string(
+        abi.encodePacked(
+          "{",
+          '"trait_type":"',
+          traitType_,
+          '","value":"',
+          value_,
+          '"}'
+        )
+      );
+  }
+
   function tokenURI(uint256 id_) public view override returns (string memory) {
     require(_exists(id_), "ERC721Metadata: URI query for nonexistent token");
 
@@ -116,37 +134,25 @@ contract TitleV1_0 is
       20
     );
 
-    string memory attributesA = string(
-      abi.encodePacked(
-        "[",
-        _makeAttr(
-          "Land Classification",
-          title.attrLandClassification,
-          "string"
-        ),
-        ",",
-        _makeAttr("Location", title.attrLocation, "string"),
-        ",",
-        _makeAttr("Legal/Deed", title.attrDeed, "string"),
-        ",",
-        _makeAttr("Parcels", title.attrParcels, "string"),
-        ",",
-        _makeAttr("Owner", title.attrOwner, "string"),
-        ",",
-        _makeAttr("KML Download", title.attrKml, "string"),
-        ",",
-        _makeAttr("Tag", title.attrTag, "string"),
-        ",",
-        _makeAttr("Created At", title.attrCreatedDate.toString(), "date"),
-        ","
-      )
-    );
-
     string memory attributes = string(
       abi.encodePacked(
-        attributesA,
-        _makeAttr("Max Supply", title.attrMaxSupply.toString(), "number"),
-        "]"
+        _makeStrAttr("Land Classification", title.attrLandClassification),
+        ",",
+        _makeStrAttr("Location", title.attrLocation),
+        ",",
+        _makeStrAttr("Legal/Deed", title.attrDeed),
+        ",",
+        _makeStrAttr("Parcels", title.attrParcels),
+        ",",
+        _makeStrAttr("Owner", title.attrOwner),
+        ",",
+        _makeStrAttr("KML Download", title.attrKml),
+        ",",
+        _makeStrAttr("Tag", title.attrTag),
+        ",",
+        _makeAttr("Created At", title.attrCreatedDate.toString(), "date"),
+        ",",
+        _makeAttr("Max Supply", title.attrMaxSupply.toString(), "number")
       )
     );
 
@@ -170,9 +176,9 @@ contract TitleV1_0 is
                 title.externalUrl,
                 '","image":"',
                 title.image,
-                '","attributes":',
+                '","attributes":[',
                 attributes,
-                "}"
+                "]}"
               )
             )
           )
