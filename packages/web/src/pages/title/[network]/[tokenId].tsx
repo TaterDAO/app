@@ -102,11 +102,16 @@ const TitlePage: NextPage<{
 
   return (
     <div>
-      {hasImage && !ipfsImage && (
-        <ImageContainer>
-          <Image src={title.image} alt={title.description} />
-        </ImageContainer>
-      )}
+      <ImageContainer>
+        <Image
+          src={
+            !!title.image && !ipfsImage
+              ? title.image
+              : "/images/placeholder.jpeg"
+          }
+          alt={title.description}
+        />
+      </ImageContainer>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
       <Row>

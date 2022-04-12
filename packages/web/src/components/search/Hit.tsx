@@ -2,6 +2,7 @@
 import type { Hit as T_Hit } from "@T/Search";
 
 // Components
+import NextLink from "next/link";
 import Link from "@components/ui/Link";
 import ProfileLink from "@components/ProfileLink";
 import Tags from "@components/ui/Tags";
@@ -46,14 +47,15 @@ const Name = styled.h2`
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
+  const endpoint = `/title/${web3.network.name}/${data.objectID}`;
   return (
     <Container>
-      {data.image && <Image src={data.image} alt={data.name} />}
+      <NextLink href={endpoint}>
+        <Image src={data.image || "/images/placeholder.jpeg"} alt={data.name} />
+      </NextLink>
       <Meta>
         <Name>
-          <Link href={`/title/${web3.network.name}/${data.objectID}`}>
-            {data.name}
-          </Link>
+          <Link href={endpoint}>{data.name}</Link>
         </Name>
         <h5>
           Created by <ProfileLink address={data.owner} />
