@@ -28,7 +28,7 @@ const Wallets: React.FC<{}> = ({}) => {
         <></>
       ) : web3.wallet.connected ? (
         <>
-          {web3.network.chainId !== 1 && (
+          {web3.network.chainId && (
             <ChainName>
               {web3.network.name.replace(
                 web3.network.name[0],
