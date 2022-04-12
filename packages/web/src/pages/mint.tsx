@@ -2,7 +2,6 @@
 import type Web3 from "web3";
 import type { NextPage } from "next";
 type Map = { [key: string]: string };
-type BooleanMap = { [key: string]: boolean };
 
 // Components
 import * as Form from "@components/ui/Form";
@@ -47,28 +46,29 @@ const labelMap: Map = {
   attrTag_: "Tags"
 };
 
-const requiredMap: BooleanMap = {
-  name_: true,
-  description_: true,
-  externalUrl_: false,
-  image_: false,
-  attrLandClassification_: true,
-  attrLocation_: true,
-  attrDeed_: false,
-  attrParcels_: true,
-  attrOwner_: false,
-  attrKml_: false,
-  attrTag_: false
-};
+const requiredFields = [
+  "name_",
+  "description_",
+  "attrLandClassification_",
+  "attrLocation_",
+  "attrParcels_"
+];
 
-const validationSchema = Joi.object(
-  inputs.reduce((memo, id) => {
-    return {
-      ...memo,
-      [id]: Joi.string().min(requiredMap[id] ? 1 : 0)
-    };
-  }, {})
-);
+const domainFields = ["externalUrl_", "image_", "attrDeed_", "attrKml_"];
+
+const validationSchema = Joi.object({
+  name_: Joi.string(),
+  description_: Joi.string(),
+  externalUrl_: Joi.string().allow("").domain(),
+  image_: Joi.string().allow("").domain(),
+  attrLandClassification_: Joi.string(),
+  attrLocation_: Joi.string(),
+  attrDeed_: Joi.string().allow("").domain(),
+  attrParcels_: Joi.string(),
+  attrOwner_: Joi.string().allow(""),
+  attrKml_: Joi.string().allow("").domain(),
+  attrTag_: Joi.string().allow("")
+});
 
 const MintPage: NextPage = ({}) => {
   // =============
@@ -117,22 +117,51 @@ const MintPage: NextPage = ({}) => {
       setErrorField("");
       setSubmitting(true);
 
+      // Validate the input against schema requirements
+      const { error } = validationSchema.validate(state);
+      if (error) {
+        const details = error.details[0];
+        const fieldId = details.path[0] as string;
+        const name = labelMap[fieldId];
+
+        let message: string;
+        switch (details.type) {
+          case "string.empty": {
+            message = `${name} is required`;
+            break;
+          }
+          case "string.domain": {
+            message = `${name} must be a valid url`;
+            break;
+          }
+          default: {
+            message = `${name} is invalid`;
+          }
+        }
+
+        toast.error(message);
+        setErrorField(fieldId);
+        return;
+      }
+
       const cleanState: Map = {};
 
       // Sanitize inputs
-      for (const field in state) {
-        // Remove double quotes
-        const value = state[field].replaceAll('"', "");
-        cleanState[field] = value;
-      }
+      for (const fieldId in state) {
+        let value = state[fieldId];
+        // Escape double quotes
+        value = value.replaceAll(/\\"/g, "&quot;");
 
-      // Validate the input against schema requirements
-      const { error } = validationSchema.validate(cleanState);
-      if (error) {
-        const fieldId = error.details[0].path[0] as string;
-        toast.error(`${labelMap[fieldId]} is required`);
-        setErrorField(fieldId);
-        return;
+        // Is this a domain field w/o {http|https}?
+        if (
+          domainFields.includes(fieldId) &&
+          value !== "" &&
+          !new RegExp(/https?:\/\//).test(value)
+        ) {
+          value = `http://${value}`;
+        }
+
+        cleanState[fieldId] = value;
       }
 
       // Submit the transaction on-chain
@@ -140,8 +169,6 @@ const MintPage: NextPage = ({}) => {
         cleanState,
         web3.wallet.address as string
       )) as string;
-
-      console.log(trxHash);
 
       // Show success notification and redirect home
       toast.success(`Transaction submitted to ${web3.network.name}`);
@@ -168,7 +195,7 @@ const MintPage: NextPage = ({}) => {
                 <Form.Row key={id} id={id}>
                   <Form.FieldMeta>
                     <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>
-                    {requiredMap[fieldId] && (
+                    {requiredFields.includes(fieldId) && (
                       <Form.FieldSecondaryLabel>
                         Required
                       </Form.FieldSecondaryLabel>
