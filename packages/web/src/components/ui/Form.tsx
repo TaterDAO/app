@@ -14,29 +14,27 @@ const Row = styled.div`
   }
 `;
 
-const FieldLabel = styled.h3`
-  padding-bottom: 0.5rem;
-  font-size: 1.2rem;
-`;
-
-const FieldSecondaryLabel = styled.div`
-  color: var(--color-bright-yellow);
-  font-size: 1rem;
-  font-weight: 600;
-  padding-bottom: 0.5rem;
-`;
-
 const FieldMeta = styled.div`
   width: 200px;
-  margin-right: 2rem;
+  margin-right: var(--global-space-x-margin);
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.2rem;
+`;
+
+const FieldLabel = styled.strong``;
+
+const FieldSecondaryLabel = styled.div`
+  color: var(--global-color-font-secondary);
+  font-weight: 600;
 `;
 
 const Input = styled.input<{ invalid?: boolean }>`
   border: 1px solid
     ${({ invalid }) =>
-      invalid ? "var(--color-bright-red)" : "var(--color-indigo)"};
+      invalid ? "var(--global-color-error)" : "var(--global-color-border)"};
   padding: 1rem 2rem;
-  border-radius: 0.25rem;
+  border-radius: var(--global-border-radius);
 
   background: transparent;
   color: inherit;
@@ -46,7 +44,24 @@ const Input = styled.input<{ invalid?: boolean }>`
   flex-grow: 1;
 
   ::placeholder {
-    color: var(--color-yellow);
+    color: var(--global-color-font);
+  }
+
+  transition: var(--global-transition);
+
+  &:hover {
+    border-color: var(--global-color-border-hover);
+  }
+
+  &:focus {
+    outline: 0;
+    border-color: var(--global-color-border-focused);
+  }
+
+  &:disabled {
+    background-color: var(--global-color-bg-disabled);
+    border-color: transparent;
+    cursor: default;
   }
 `;
 

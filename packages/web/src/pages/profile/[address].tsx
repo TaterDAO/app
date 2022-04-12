@@ -2,7 +2,7 @@
 import type { NextPage, GetServerSideProps } from "next";
 
 // Components
-import ProfileLayout from "src/layouts/Profile";
+import ProfileLayout from "@components/layouts/Profile";
 
 // Utils
 import { shortenAddress } from "@utils/Web3";

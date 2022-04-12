@@ -7,11 +7,7 @@ import NextLink from "next/link";
 // Hooks
 import { useRouter } from "next/router";
 
-const A = styled.a`
-  border-bottom: 1px dotted;
-`;
-
-const NoRedirectionLink = styled(A)`
+const NoRedirectionLink = styled.a`
   border-bottom: none;
   cursor: default;
 `;
@@ -26,7 +22,7 @@ const Link: React.FC<{ children: string; href: string }> = ({
     <NoRedirectionLink>{children}</NoRedirectionLink>
   ) : (
     <NextLink href={href} passHref>
-      <A>{children}</A>
+      <a>{children}</a>
     </NextLink>
   );
 };

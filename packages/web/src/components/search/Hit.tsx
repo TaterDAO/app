@@ -14,7 +14,10 @@ import styled from "styled-components";
 import useWeb3 from "@hooks/useWeb3";
 
 const Container = styled.div`
-  margin-top: 3rem;
+  margin-top: var(--global-space-y-margin);
+  border: 1px solid var(--global-color-border);
+  border-radius: var(--global-border-radius);
+  padding: var(--global-space-y-margin);
 
   display: flex;
   flex-direction: column;
@@ -26,23 +29,25 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: auto;
+  width: 125px;
+  height: 125px;
   flex-grow: 1;
-  object-fit: contain;
-  background: var(--color-charcoal);
-  border-radius: 0.5rem;
-  margin-bottom: 2rem;
+  object-fit: cover;
+  background: var(--global-color-bg-disabled);
+  margin: 0 auto var(--global-space-y-margin) auto;
+  border: 1px solid transparent;
+  border-radius: 100%;
+  cursor: pointer;
 `;
 
 const Meta = styled.div`
   margin-top: auto;
 `;
 
-const Name = styled.h2`
-  a {
-    color: var(--global-color-font);
-  }
+const Name = styled.h3`
+  text-align: center;
+  margin-bottom: calc(var(--global-space-y-margin) / 3);
+  cursor: pointer;
 `;
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
@@ -51,12 +56,12 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   return (
     <Container>
       <NextLink href={endpoint}>
-        <Image src={data.image || "/images/placeholder.jpeg"} alt={data.name} />
+        <Image src={data.image || "/images/placeholder.jpeg"} alt={""} />
       </NextLink>
       <Meta>
-        <Name>
-          <Link href={endpoint}>{data.name}</Link>
-        </Name>
+        <NextLink href={endpoint}>
+          <Name>{data.name}</Name>
+        </NextLink>
         <h5>
           Created by <ProfileLink address={data.owner} />
         </h5>

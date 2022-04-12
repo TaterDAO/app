@@ -1,38 +1,43 @@
 import styled from "styled-components";
 
-const Button = styled.button<{ big?: boolean }>`
+const Button = styled.button<{ primary?: boolean }>`
   border-radius: var(--global-border-radius);
-
-  background-color: transparent;
+  background-color: ${({ primary }) =>
+    primary ? "var(--color-bright-indigo)" : "transparent"};
   border: 1px solid;
-  color: var(--global-color-brand);
+  border-color ${({ primary }) =>
+    primary ? "var(--color-bright-indigo)" : "var(--global-color-border)"};
+  color: var(--global-color-font);
 
-  padding: ${({ big }) => (big ? "1rem 2rem" : "0.5rem 1rem")};
+  padding: ${({ primary }) => (primary ? "1" : "0.75")}rem 1.25rem;
+
+  width: ${({ primary }) => (primary ? "100%" : "auto")};
 
   font-weight: 600;
-  font-size: ${({ big }) => (big ? "1.05rem" : "0.9rem")};
+  font-size: ${({ primary }) => (primary ? "1" : "0.9")}rem;
   font-family: inherit;
 
+  transition: var(--global-transition);
+  cursor: pointer;
+
+
   &:hover {
-    opacity: 0.8;
-    transition: opacity ease 0.2s;
+    border-color ${({ primary }) =>
+      primary ? "transparent" : "var(--global-color-border-hover)"};
+    background-color: ${({ primary }) =>
+      primary ? "var(--color-indigo)" : "transparent"};
   }
 
   &:disabled {
-    filter: grayscale(1);
-    opacity: 0.15;
+    background-color: var(--global-color-bg-disabled);
+    border-color: transparent;
     cursor: default;
-  }
-
-  a {
-    color: inherit;
-    background-color: transparent;
-    text-decoration: none;
+    color: var(--global-color-font-secondary);
   }
 `;
 
 Button.defaultProps = {
-  big: false
+  primary: false
 };
 
 export default Button;

@@ -7,13 +7,25 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 // Components
-import ProfileLayout from "src/layouts/Profile";
+import ProfileLayout from "@components/layouts/Profile";
+import Button from "@components/ui/Button";
 
 // Libs
 import styled from "styled-components";
 
-const MintingCaption = styled.div`
-  color: #bbb;
+const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: var(--global-space-y-margin);
+`;
+
+const MintingCaption = styled.strong`
+  color: var(--global-color-font-secondary);
+  font-weight: 600;
+  font-style: italic;
+  align-self: center;
 `;
 
 const MyProfilePage: NextPage = ({}) => {
@@ -34,9 +46,12 @@ const MyProfilePage: NextPage = ({}) => {
       title="My Titles"
       address={web3.wallet.address as string}
       header={
-        <MintingCaption>
-          Titles still minting will appear momentarily
-        </MintingCaption>
+        <Header>
+          <MintingCaption>
+            Titles still minting will appear momentarily
+          </MintingCaption>
+          <Button onClick={web3.wallet.disconnect}>Disconnect</Button>
+        </Header>
       }
     />
   ) : (

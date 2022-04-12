@@ -2,13 +2,14 @@
 import type { NextPage } from "next";
 
 // Components
+import TitledPage from "@components/layouts/TitledPage";
 import Search from "@components/search";
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <TitledPage title="Explore Titles">
       <Search />
-    </div>
+    </TitledPage>
   );
 };
 

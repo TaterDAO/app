@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 const Container = styled.div<{ disabled: boolean }>`
-  border: 1px solid var(--color-indigo);
-  padding: 1rem 2rem;
-  border-radius: 0.25rem;
+  border: 1px solid;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--global-border-radius);
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
 
   :after {
     content: "";
@@ -13,7 +14,7 @@ const Container = styled.div<{ disabled: boolean }>`
     height: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5px solid var(--color-indigo);
+    border-top: 5px solid var(--global-color-border);
     clear: both;
   }
 
@@ -22,7 +23,10 @@ const Container = styled.div<{ disabled: boolean }>`
   display: flex;
   align-items: center;
 
-  opacity: ${({ disabled }) => (disabled ? 0.25 : 1)};
+  background-color: ${({ disabled }) =>
+    disabled ? "var(--global-color-bg-disabled)" : "transparent"};
+  border-color: ${({ disabled }) =>
+    disabled ? "transparent" : "var(--global-color-border)"};
 `;
 
 const El = styled.select`
@@ -33,6 +37,7 @@ const El = styled.select`
   color: inherit;
   font-family: inherit;
   font-size: 1rem;
+  cursor: pointer;
 
   ::placeholder {
     color: var(--color-yellow);
@@ -40,6 +45,11 @@ const El = styled.select`
 
   option {
     background-color: var(--global-color-bg);
+  }
+
+  &:disabled {
+    cursor: default;
+    color: var(--global-color-font-secondary);
   }
 `;
 

@@ -13,11 +13,11 @@ import type { InfiniteHitsProvided } from "react-instantsearch-core";
 const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5rem;
+  gap: var(--global-space-margin);
 `;
 
 const Footer = styled.div`
-  margin-top: 2rem;
+  margin-top: var(--global-space-y-margin);
   display: flex;
   justify-content: center;
 `;

@@ -3,45 +3,45 @@ import useWeb3 from "@hooks/useWeb3";
 
 // Components
 import Button from "./ui/Button";
+import ProfileButton from "./global/ProfileButton";
 
 // Libs
 import styled from "styled-components";
 
-const Connected = styled.div`
-  height: 1rem;
-  width: 1rem;
-  background: var(--color-bright-green);
-  background: radial-gradient(
-    circle,
-    var(--color-bright-green) 30%,
-    var(--global-color-bg) 100%
-  );
-  border-radius: 100%;
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--global-space-nav-margin);
 `;
 
 const ChainName = styled.small`
   font-weight: 600;
   color: var(--color-bright-green);
-`;
-
-const DisconnectButton = styled(Button)`
-  color: var(--color-red);
+  align-self: center;
 `;
 
 const Wallets: React.FC<{}> = ({}) => {
   const web3 = useWeb3();
-  return web3.loading ? (
-    <p>Loading...</p>
-  ) : web3.wallet.connected ? (
-    <>
-      {web3.network.chainId !== 1 && <ChainName>{web3.network.name}</ChainName>}
-      <Connected />
-      <DisconnectButton onClick={web3.wallet.disconnect}>
-        Disconnect
-      </DisconnectButton>
-    </>
-  ) : (
-    <Button onClick={web3.wallet.connect}>Connect Wallet</Button>
+  return (
+    <Container>
+      {web3.loading ? (
+        <></>
+      ) : web3.wallet.connected ? (
+        <>
+          {web3.network.chainId !== 1 && (
+            <ChainName>
+              {web3.network.name.replace(
+                web3.network.name[0],
+                web3.network.name[0].toUpperCase()
+              )}
+            </ChainName>
+          )}
+          <ProfileButton />
+        </>
+      ) : (
+        <Button onClick={web3.wallet.connect}>Connect Wallet</Button>
+      )}
+    </Container>
   );
 };
 

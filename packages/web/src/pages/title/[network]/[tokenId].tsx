@@ -10,41 +10,41 @@ import styled from "styled-components";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
+import Button from "@components/ui/Button";
 
 // Data
 import addresses from "@data/addresses.json";
 
+// Hooks
+import { useRouter } from "next/router";
+
 const Name = styled.h1``;
 
 const TokenID = styled.h5`
-  color: var(--color-gray);
+  color: var(--global-color-font-secondary);
 `;
 
 const Row = styled.div`
-  margin-top: 1rem;
+  margin-top: calc(var(--global-space-y-margin) / 2);
 `;
 
 const NamedProperty = styled.div`
   font-weight: 500;
   span {
     font-weight: 700;
-    color: var(--color-gray);
+    color: var(--global-color-font-secondary);
   }
-`;
-
-const ExternalUrl = styled.a`
-  text-decoration: underline;
 `;
 
 const Divider = styled.hr`
   border: 0;
-  border-bottom: 1px solid var(--color-accent-gray);
-  margin: 2rem 0;
+  border-bottom: 1px solid var(--global-color-border);
+  margin: var(--global-space-y-margin) 0;
 `;
 
 const Description = styled.p`
-  margin: 3rem 0;
-  padding-left: 1rem;
+  margin: calc(var(--global-space-margin) * 2);
+  line-height: 2;
 `;
 
 const Attributes = styled.table`
@@ -54,6 +54,7 @@ const Attributes = styled.table`
 
       &:first-of-type {
         padding-right: 2rem;
+        color: var(--global-color-font-secondary);
       }
       &:nth-of-type(2) {
       }
@@ -62,9 +63,9 @@ const Attributes = styled.table`
 `;
 
 const ImageContainer = styled.div`
-  background: var(--color-charcoal);
+  background: var(--global-color-bg-disabled);
   padding: 3rem 0;
-  margin-bottom: 5rem;
+  margin-bottom: calc(var(--global-space-y-margin) * 2);
 `;
 
 const Image = styled.img`
@@ -72,6 +73,17 @@ const Image = styled.img`
   max-width: 600px;
   margin: 0 auto;
   display: flex;
+  justify-content: center;
+  color: var(--global-color-font-secondary);
+  font-style: italic;
+  text-align: center;
+  font-weight: 700;
+`;
+
+const ExternalButtons = styled(Row)`
+  display: flex;
+  flex-direction: row;
+  gap: var(--global-space-nav-margin);
 `;
 
 const TitlePage: NextPage<{
@@ -80,6 +92,8 @@ const TitlePage: NextPage<{
   etherscanHost: string | null;
   contractAddress: string | undefined;
 }> = ({ title, openseaHost, etherscanHost, contractAddress }) => {
+  const router = useRouter();
+
   const hasImage = Boolean(title.image);
   const ipfsImage = hasImage && title.image?.startsWith("ipfs");
 
@@ -89,6 +103,13 @@ const TitlePage: NextPage<{
       : null;
 
   const openseaUrl = `${openseaHost}/assets/${contractAddress}/${title.tokenId}`;
+
+  const hasExternalUrl = !!title.externalUrl;
+  const formattedExternalUrl = hasExternalUrl
+    ? (title.externalUrl as string).startsWith("http")
+      ? ""
+      : `http://${title.externalUrl}`
+    : null;
 
   let deedURL: any = null;
   try {
@@ -109,7 +130,7 @@ const TitlePage: NextPage<{
               ? title.image
               : "/images/placeholder.jpeg"
           }
-          alt={title.description}
+          alt={"Could Not Load Image"}
         />
       </ImageContainer>
       <TokenID>Token ID: {title.tokenId}</TokenID>
@@ -119,31 +140,30 @@ const TitlePage: NextPage<{
           <span>Created by</span> <ProfileLink address={title.owner} />
         </NamedProperty>
       </Row>
-      {title.externalUrl && (
-        <Row>
-          <ExternalUrl
-            href={`${title.externalUrl.startsWith("http") ? "" : "http://"}${
-              title.externalUrl
-            }`}
-            target="_blank"
-          >
-            External URL
-          </ExternalUrl>
-        </Row>
-      )}
-      {etherscanUrl && (
-        <Row>
-          <ExternalUrl href={etherscanUrl} target="_blank" rel="noreferrer">
-            View on Etherscan
-          </ExternalUrl>
-        </Row>
-      )}
-      {openseaUrl && (
-        <Row>
-          <ExternalUrl href={openseaUrl} target="_blank" rel="noreferrer">
-            View on OpenSea
-          </ExternalUrl>
-        </Row>
+      {(hasExternalUrl || etherscanUrl || openseaUrl) && (
+        <ExternalButtons>
+          {hasExternalUrl && (
+            <Row>
+              <Button
+                onClick={() => router.push(formattedExternalUrl as string)}
+              >
+                External URL
+              </Button>
+            </Row>
+          )}
+          {etherscanUrl && (
+            <Row>
+              <Button onClick={() => router.push(etherscanUrl)}>
+                Etherscan
+              </Button>
+            </Row>
+          )}
+          {openseaUrl && (
+            <Row>
+              <Button onClick={() => router.push(openseaUrl)}>OpenSea</Button>
+            </Row>
+          )}
+        </ExternalButtons>
       )}
       {ipfsImage && (
         <Row>
@@ -157,7 +177,7 @@ const TitlePage: NextPage<{
         <Description>{title.description}</Description>
       </Row>
       <Row>
-        <h3>Attributes</h3>
+        <h2>Attributes</h2>
         <Attributes>
           <tr>
             <td>Land Classification</td>

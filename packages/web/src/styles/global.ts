@@ -2,22 +2,6 @@ import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   :root {
-    --color-accent-gray: #e2e2e2;
-
-    --color-brand-pink: #F2275D;
-    --color-brand-green: #41A650;
-    --color-brand-mustard: #D99B29;
-    --color-brand-gold: #A67924;
-    --color-brand-black: #0D0D0D;
-
-    --color-brand-blue-a: #040959;
-    --color-brand-blue-b: #050840;
-    --color-brand-blue-c: #072BF2;
-    --color-brand-blue-d: #0726D9;
-    --color-brand-blue-e: #051DA6;
-
-    --color-gray: #bbb;
-
     --color-bright-pink: #ef5777;
     --color-pink: #f28080;
     --color-bright-red: #df002d;
@@ -72,14 +56,28 @@ export default createGlobalStyle`
 
     font-size: 15px;
 
-    --global-color-bg: black;
-    --global-color-font: var(--color-iron);
-    --global-color-brand: var(--color-bright-yellow);
-    --global-font-brand: 'Kanit';
-    --global-font-body: 'Anonymous Pro';
-    --global-border-radius: 0.25rem;
+    --global-color-bg: var(--color-charcoal);
+    --global-color-border: var(--color-graphite);
+    --global-color-border-hover: var(--color-silver);
+    --global-color-border-focused: var(--global-color-font);
+    --global-color-bg-disabled: var(--color-mostly-black);
 
-    --toastify-color-error: var(--color-bright-red);
+    --global-color-font: var(--color-ghost);
+    --global-color-brand: var(--color-bright-yellow);
+    --global-color-font-secondary: var(--color-fossil);
+    --global-color-error: var(--color-bright-red);
+
+    --global-font: 'Open Sans';
+    --global-border-radius: 2rem;
+
+    --global-transition: all ease-in-out 0.2s;
+
+    --global-space-nav-margin: 1rem;
+    --global-space-margin: 2rem;
+    --global-space-y-margin: var(--global-space-margin);
+    --global-space-x-margin: var(--global-space-margin);
+
+    --toastify-color-error: var(--global-color-error);
   }
   
   *,
@@ -95,9 +93,14 @@ export default createGlobalStyle`
   }
 
   html {
-    font-family: var(--global-font-body), monospace;
+    font-family: var(--global-font), sans-serif;
     color: var(--global-color-font);
     background-color: var(--global-color-bg);
+  }
+
+  html, body, #__next {
+    min-width: 100vw;
+    min-height: 100vh;
   }
 
   h1 {
@@ -107,7 +110,8 @@ export default createGlobalStyle`
   a {
     cursor: pointer;
     text-decoration: none;
-    color: var(--color-bright-blue);
+    color: var(--global-color-font);
+    border-bottom: 1px dotted;
   }
   
   button {

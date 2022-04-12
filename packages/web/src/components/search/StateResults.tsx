@@ -8,9 +8,12 @@ import type { StateResultsProvided } from "react-instantsearch-core";
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
 
-const NoResults = styled.h4`
-  margin-top: 2rem;
-  color: #bbb;
+// Components
+import ConnectWalletForm from "@components/ConnectWalletForm";
+
+const NoResults = styled.h3`
+  margin-top: var(--global-space-y-margin);
+  color: var(--global-color-font-secondary);
 `;
 
 const StateResults: React.FC<StateResultsProvided> = ({
@@ -21,7 +24,7 @@ const StateResults: React.FC<StateResultsProvided> = ({
 
   const noResults = searchResults?.nbHits === 0;
   return web3.initialized && !web3.wallet.connected ? (
-    <NoResults>Please connect your wallet to continue</NoResults>
+    <ConnectWalletForm />
   ) : noResults ? (
     <NoResults>0 Titles Minted</NoResults>
   ) : (

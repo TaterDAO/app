@@ -1,17 +1,11 @@
 import styled from "styled-components";
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-`;
+const Container = styled.div``;
 
 const Tag = styled.div`
-  border: 1px solid var(--color-silver);
-  border-radius: var(--global-border-radius);
-  font-size: 0.85rem;
-  padding: 4px 8px;
+  color: var(--global-color-font-secondary);
+  font-size: 0.9rem;
+  margin: calc(var(--global-space-y-margin) / 3) 0;
 `;
 
 const Tags = ({

@@ -1,4 +1,5 @@
 // Components
+import TitledPage from "./TitledPage";
 import Search from "@components/search";
 
 const ProfileLayout: React.FC<{
@@ -7,17 +8,12 @@ const ProfileLayout: React.FC<{
   header?: React.ReactElement;
 }> = ({ title, address, header }) => {
   return (
-    <div>
-      <h1>{title}</h1>
-      <br />
-      {header && (
-        <div>
-          {header}
-          <br />
-        </div>
-      )}
-      <Search filters={`owner:${address}`} />
-    </div>
+    <TitledPage title={title}>
+      <>
+        {header && header}
+        <Search filters={`owner:${address}`} />
+      </>
+    </TitledPage>
   );
 };
 

@@ -3034,6 +3034,16 @@ human-signals@^1.1.1:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
+iconoir-react@^4.8.1:
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/iconoir-react/-/iconoir-react-4.8.1.tgz#d00565f288e5ea4c1f1cc2b61c36ae90ef243231"
+  integrity sha512-tCbEnw4XvLMfwG/mkjTntvBjOjqY+1W9alIABj7+DyiXfl+PhcEqLk1ZRDRiOpeJnYnMjtyz3tiEp14JsW5vMg==
+
+iconoir@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/iconoir/-/iconoir-1.0.0.tgz#8c9ade1c12044872dda1fdef5b0f5fc643cd4bc8"
+  integrity sha512-rZ4ZMMOarUfsRrfH7h3MGIFVNrcWsThtJWpTuZOp/FYhSomaa32HhHg8WH0V3VlN7MIVK4VMD2O7jNq6jRKY3w==
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"

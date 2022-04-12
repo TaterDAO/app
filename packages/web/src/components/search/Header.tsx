@@ -9,8 +9,8 @@ import useWeb3 from "@hooks/useWeb3";
 
 const Container = styled.div`
   display: flex;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  column-gap: calc(var(--global-space-y-margin) / 2);
+  margin-bottom: var(--global-space-y-margin);
 `;
 
 function getSortItems(index: string) {
