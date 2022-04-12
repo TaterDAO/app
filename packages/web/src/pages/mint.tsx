@@ -59,14 +59,14 @@ const domainFields = ["externalUrl_", "image_", "attrDeed_", "attrKml_"];
 const validationSchema = Joi.object({
   name_: Joi.string(),
   description_: Joi.string(),
-  externalUrl_: Joi.string().allow("").domain(),
-  image_: Joi.string().allow("").domain(),
+  externalUrl_: Joi.string().allow("").uri(),
+  image_: Joi.string().allow("").uri(),
   attrLandClassification_: Joi.string(),
   attrLocation_: Joi.string(),
-  attrDeed_: Joi.string().allow("").domain(),
+  attrDeed_: Joi.string().allow("").uri(),
   attrParcels_: Joi.string(),
   attrOwner_: Joi.string().allow(""),
-  attrKml_: Joi.string().allow("").domain(),
+  attrKml_: Joi.string().allow("").uri(),
   attrTag_: Joi.string().allow("")
 });
 
@@ -130,8 +130,8 @@ const MintPage: NextPage = ({}) => {
             message = `${name} is required`;
             break;
           }
-          case "string.domain": {
-            message = `${name} must be a valid url`;
+          case "string.uri": {
+            message = `${name} must be a valid url and include http:// or https://`;
             break;
           }
           default: {
