@@ -7,6 +7,8 @@ import Logo from "@components/global/Logo";
 import ExploreButton from "@components/global/ExploreButton";
 import CreateButton from "@components/global/CreateButton";
 import Wallets from "@components/Wallets";
+import SnapshotButton from "@components/global//SnapshotButton";
+import DiscordButton from "@components/global/DiscordButton";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -62,6 +64,8 @@ const Layout = ({ children }: { children: JSX.Element }) => {
         <Logo />
         <ExploreButton />
         <CreateButton />
+        <SnapshotButton />
+        <DiscordButton />
       </VerticalNav>
       <Main>
         <HeadNav>
