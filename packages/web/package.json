@@ -2,8 +2,9 @@
   "name": "web",
   "private": true,
   "scripts": {
+    "dev:env": "vercel pull ../.. --env packages/web/.env.development.local",
     "dev:server": "next dev",
-    "dev:start": "yarn build:addresses && yarn dev:server",
+    "dev:start": "yarn dev:env && yarn build:addresses && yarn dev:server",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -29,7 +30,7 @@
     "react-instantsearch-dom": "^6.23.3",
     "react-toastify": "^8.2.0",
     "styled-components": "^5.3.3",
-    "web3": "^1.7.0",
+    "web3": "^1.7.3",
     "web3modal": "^1.9.5"
   },
   "devDependencies": {

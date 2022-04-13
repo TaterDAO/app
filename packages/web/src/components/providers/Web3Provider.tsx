@@ -9,12 +9,21 @@ import type { IProviderInfo } from "web3modal";
 import Web3 from "web3";
 import Web3Modal, { getProviderInfo } from "web3modal";
 //import Fortmatic from "fortmatic";
+import Minter, { Events as MinterEvents } from "@libs/Minter";
 
 // Hooks
 import { useEffect, useState } from "react";
 
 // Utils
 import { csr } from "@utils/browser";
+
+declare global {
+  interface Window {
+    td: {
+      minter: Minter | null;
+    };
+  }
+}
 
 const Web3Provider: React.FC<{
   children: React.ReactChild;
@@ -57,6 +66,19 @@ const Web3Provider: React.FC<{
       );
     }
   }, [clientSideRendered]);
+
+  /**
+   * Scope minter to window.
+   */
+  useEffect(() => {
+    if (clientSideRendered && initialized) {
+      if (chainId && web3) {
+        window.td.minter = new Minter(web3 as Web3, chainId);
+      } else {
+        window.td.minter = null;
+      }
+    }
+  }, [clientSideRendered, initialized, web3, chainId]);
 
   /**
    * Once W3M is instantiated, check if it has a cached provider.

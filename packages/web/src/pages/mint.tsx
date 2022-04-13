@@ -16,7 +16,6 @@ import { useRouter } from "next/router";
 
 // Libs
 import Joi from "joi";
-import Minter from "@libs/Minter";
 import { toast } from "react-toastify";
 
 // Utils
@@ -79,8 +78,6 @@ const MintPage: NextPage = ({}) => {
   const [state, set] = useState<Map>(initialState);
   const [errorField, setErrorField] = useState<string>("");
 
-  const [minter, setMinter] = useState<Minter>();
-
   // =============
   // === Hooks ===
   // =============
@@ -90,15 +87,7 @@ const MintPage: NextPage = ({}) => {
 
   // ===============
   // === Effects ===
-  // ===============
-
-  useEffect(() => {
-    if (!!web3.network.chainId) {
-      setMinter(
-        new Minter(web3.web3API as Web3, web3.network.chainId as number)
-      );
-    }
-  }, [web3.web3API, web3.network.chainId]);
+  // ==============
 
   useEffect(() => {
     if (isClient && errorField) {
@@ -165,10 +154,7 @@ const MintPage: NextPage = ({}) => {
       }
 
       // Submit the transaction on-chain
-      const trxHash = (await minter?.mint(
-        cleanState,
-        web3.wallet.address as string
-      )) as string;
+      await window.td.minter?.mint(cleanState, web3.wallet.address as string);
 
       // Show success notification and redirect home
       toast.success(`Transaction submitted to ${web3.network.name}`);

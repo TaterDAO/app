@@ -1,5 +1,6 @@
 // Types
 import type { AppProps } from "next/app";
+import Minter from "@libs/Minter";
 
 // Components
 import Head from "next/head";
@@ -11,7 +12,33 @@ import Layout from "@components/layouts/Global";
 // Styles
 import GlobalStyle from "@styles/global";
 
+// Hooks
+import { useEffect } from "react";
+
+// Utils
+import { csr } from "@utils/browser";
+
+declare global {
+  interface Window {
+    td: {
+      minter: Minter | null;
+    };
+  }
+}
+
 function App({ Component, pageProps }: AppProps) {
+  /**
+   * Set up window-scoped properties.
+   */
+  const clientSideRendered = csr();
+  useEffect(() => {
+    if (clientSideRendered) {
+      window.td = {
+        minter: null
+      };
+    }
+  }, [clientSideRendered]);
+
   return (
     <>
       <Head>

@@ -1,9 +1,13 @@
 // Types
-import type Web3 from "web3";
+import Web3 from "web3";
+import type { TransactionReceipt, EventLog } from "web3-core";
 
 // Data
 import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
 import addresses from "@data/addresses.json";
+
+// Libs
+import { toast } from "react-toastify";
 
 const { localhost, rinkeby, mainnet } = addresses as {
   localhost?: string;
@@ -11,8 +15,19 @@ const { localhost, rinkeby, mainnet } = addresses as {
   mainnet?: string;
 };
 
+enum Events {
+  Receipt = "receipt",
+  Confirmation = "confirmation",
+  Error = "error"
+}
+
+type EventsLog = {
+  [eventName: string]: EventLog;
+};
+
 class Minter {
   private _web3: Web3;
+  private _chainId: number;
   //@ts-ignore
   private _contract: Web3.Eth.Contract;
 
@@ -31,26 +46,47 @@ class Minter {
       ABI,
       address
     );
+
+    this._chainId = chainId;
   }
 
+  async handleError(error: any, receipt: object) {
+    toast.error(error);
+  }
+
+  /**
+   * Calls Mint.
+   * @returns Transaction Hash once its been submitted to the chain
+   */
   async mint(values: any, fromAddress: string): Promise<string> {
-    const { transactionHash } = await this._contract.methods
-      .mint(
-        values.name_,
-        values.description_,
-        values.externalUrl_,
-        values.image_,
-        values.attrLandClassification_,
-        values.attrLocation_,
-        values.attrDeed_,
-        values.attrParcels_,
-        values.attrOwner_,
-        values.attrKml_,
-        values.attrTag_
-      )
-      .send({ from: fromAddress });
-    return transactionHash as string;
+    return new Promise((resolve, reject) => {
+      this._contract.methods
+        .mint(
+          values.name_,
+          values.description_,
+          values.externalUrl_,
+          values.image_,
+          values.attrLandClassification_,
+          values.attrLocation_,
+          values.attrDeed_,
+          values.attrParcels_,
+          values.attrOwner_,
+          values.attrKml_,
+          values.attrTag_
+        )
+        .send({ from: fromAddress })
+        .on("transactionHash", resolve)
+        .on("receipt", async (receipt: TransactionReceipt) => {
+          const tokenId = (receipt.events as EventsLog).Transfer.returnValues
+            .tokenId as string;
+          navigator.sendBeacon(
+            `/api/indexContract?chainId=${this._chainId}&tokenId=${tokenId}`
+          );
+        })
+        .on("error", this.handleError);
+    });
   }
 }
 
 export default Minter;
+export { Events };

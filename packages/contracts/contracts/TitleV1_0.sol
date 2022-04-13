@@ -57,7 +57,7 @@ contract TitleV1_0 is
     string memory attrOwner_,
     string memory attrKml_,
     string memory attrTag_
-  ) public nonReentrant returns (uint256) {
+  ) public nonReentrant {
     uint256 id = _owners.length;
 
     _titles[id] = Title({
@@ -77,8 +77,6 @@ contract TitleV1_0 is
     });
 
     _safeMint(msg.sender, id);
-
-    return id;
   }
 
   //////////////////////////////

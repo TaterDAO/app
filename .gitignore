@@ -1,2 +1,3 @@
 .ci/proxyInstanceAddress
 .DS_Store
+.vercel

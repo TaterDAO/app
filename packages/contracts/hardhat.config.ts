@@ -37,11 +37,8 @@ export default {
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     hardhat: {
-      // Mines a new block every 10s.
-      mining: {
-        auto: false,
-        interval: 10000,
-      },
+      // Mines a new block every 1s.
+      mining: { auto: false, interval: 1000 },
     },
   },
   solidity: {

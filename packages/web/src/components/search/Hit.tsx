@@ -31,7 +31,6 @@ const Container = styled.div`
 const Image = styled.img`
   width: 125px;
   height: 125px;
-  flex-grow: 1;
   object-fit: cover;
   background: var(--global-color-bg-disabled);
   margin: 0 auto var(--global-space-y-margin) auto;
@@ -40,9 +39,7 @@ const Image = styled.img`
   cursor: pointer;
 `;
 
-const Meta = styled.div`
-  margin-top: auto;
-`;
+const Meta = styled.div``;
 
 const Name = styled.h3`
   text-align: center;
