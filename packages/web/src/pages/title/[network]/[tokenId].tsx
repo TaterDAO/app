@@ -105,11 +105,6 @@ const TitlePage: NextPage<{
   const openseaUrl = `${openseaHost}/assets/${contractAddress}/${title.tokenId}`;
 
   const hasExternalUrl = !!title.externalUrl;
-  const formattedExternalUrl = hasExternalUrl
-    ? (title.externalUrl as string).startsWith("http")
-      ? ""
-      : `http://${title.externalUrl}`
-    : null;
 
   let deedURL: any = null;
   try {
@@ -145,7 +140,9 @@ const TitlePage: NextPage<{
           {hasExternalUrl && (
             <Row>
               <Button
-                onClick={() => router.push(formattedExternalUrl as string)}
+                onClick={() =>
+                  window.open(title.externalUrl as string, "_blank")
+                }
               >
                 External URL
               </Button>
@@ -153,14 +150,16 @@ const TitlePage: NextPage<{
           )}
           {etherscanUrl && (
             <Row>
-              <Button onClick={() => router.push(etherscanUrl)}>
+              <Button onClick={() => window.open(etherscanUrl, "_blank")}>
                 Etherscan
               </Button>
             </Row>
           )}
           {openseaUrl && (
             <Row>
-              <Button onClick={() => router.push(openseaUrl)}>OpenSea</Button>
+              <Button onClick={() => window.open(openseaUrl, "_blank")}>
+                OpenSea
+              </Button>
             </Row>
           )}
         </ExternalButtons>

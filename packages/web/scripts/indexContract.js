@@ -110,7 +110,7 @@ async function* Fetcher(network, networkEndpoint) {
         owner,
         name,
         description,
-        externalUrl,
+        external_url,
         image,
         attributes
       }) => ({
@@ -119,7 +119,7 @@ async function* Fetcher(network, networkEndpoint) {
         owner: owner.toLowerCase(),
         name,
         description,
-        externalUrl,
+        externalUrl: external_url,
         image,
         "attr.LandClassification": attributes[0].value,
         "attr.Location": attributes[1].value,
