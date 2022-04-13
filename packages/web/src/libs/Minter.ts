@@ -33,21 +33,20 @@ class Minter {
 
   constructor(web3: Web3, chainId: number) {
     this._web3 = web3;
+    this._chainId = chainId;
 
     let address = "";
 
     if (localhost && chainId === 31337) address = localhost;
     else if (rinkeby && chainId === 4) address = rinkeby;
     else if (mainnet && chainId === 1) address = mainnet;
-    else throw new Error("Unsupported chain!");
+    else return;
 
     this._contract = new this._web3.eth.Contract(
       //@ts-expect-error
       ABI,
       address
     );
-
-    this._chainId = chainId;
   }
 
   async handleError(error: any, receipt: object) {

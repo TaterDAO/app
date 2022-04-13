@@ -14,6 +14,7 @@ type State = {
   network: {
     chainId: number | null;
     name: string;
+    supported: boolean;
   };
   loading: boolean;
   initialized: boolean;

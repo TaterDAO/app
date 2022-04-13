@@ -8,6 +8,7 @@ import * as Form from "@components/ui/Form";
 import Button from "@components/ui/Button";
 import ConnectWalletForm from "@components/ConnectWalletForm";
 import TitledPage from "@components/layouts/TitledPage";
+import UnsupportedNetwork from "@components/UnsupportedNetwork";
 
 // Hooks
 import { useState, useEffect } from "react";
@@ -173,42 +174,46 @@ const MintPage: NextPage = ({}) => {
   return (
     <TitledPage title="Create a title">
       {web3.initialized && web3.wallet.connected ? (
-        <>
-          <Form.Container>
-            {inputs.map((fieldId) => {
-              const id = `form-row-${fieldId}`;
-              return (
-                <Form.Row key={id} id={id}>
-                  <Form.FieldMeta>
-                    <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>
-                    {requiredFields.includes(fieldId) && (
-                      <Form.FieldSecondaryLabel>
-                        Required
-                      </Form.FieldSecondaryLabel>
-                    )}
-                  </Form.FieldMeta>
-                  <Form.Input
-                    disabled={submitting}
-                    value={state[fieldId]}
-                    onChange={(e) =>
-                      set((prevState) => ({
-                        ...prevState,
-                        [fieldId]: e.target.value
-                      }))
-                    }
-                    invalid={errorField === fieldId}
-                    placeholder={`Enter ${labelMap[fieldId]}...`}
-                  />
-                </Form.Row>
-              );
-            })}
-            <Form.Row>
-              <Button primary disabled={submitting} onClick={handleSubmit}>
-                Mint
-              </Button>
-            </Form.Row>
-          </Form.Container>
-        </>
+        web3.network.supported ? (
+          <>
+            <Form.Container>
+              {inputs.map((fieldId) => {
+                const id = `form-row-${fieldId}`;
+                return (
+                  <Form.Row key={id} id={id}>
+                    <Form.FieldMeta>
+                      <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>
+                      {requiredFields.includes(fieldId) && (
+                        <Form.FieldSecondaryLabel>
+                          Required
+                        </Form.FieldSecondaryLabel>
+                      )}
+                    </Form.FieldMeta>
+                    <Form.Input
+                      disabled={submitting}
+                      value={state[fieldId]}
+                      onChange={(e) =>
+                        set((prevState) => ({
+                          ...prevState,
+                          [fieldId]: e.target.value
+                        }))
+                      }
+                      invalid={errorField === fieldId}
+                      placeholder={`Enter ${labelMap[fieldId]}...`}
+                    />
+                  </Form.Row>
+                );
+              })}
+              <Form.Row>
+                <Button primary disabled={submitting} onClick={handleSubmit}>
+                  Mint
+                </Button>
+              </Form.Row>
+            </Form.Container>
+          </>
+        ) : (
+          <UnsupportedNetwork />
+        )
       ) : (
         <ConnectWalletForm />
       )}

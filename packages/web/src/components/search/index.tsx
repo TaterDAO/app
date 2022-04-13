@@ -5,6 +5,7 @@ import type { SearchState } from "react-instantsearch-core";
 import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
 import StateResults from "./StateResults";
+import UnsupportedNetwork from "@components/UnsupportedNetwork";
 
 // Services
 import algolia from "@services/Algolia";
@@ -23,13 +24,15 @@ const Search: React.FC<{
   const web3 = useWeb3();
   const index = `titles-${web3.network.name}`;
 
-  return (
+  return web3.network.supported ? (
     <InstantSearch searchClient={algolia} indexName={index}>
       <Configure hitsPerPage={10} filters={filters} />
       <SearchHeader index={index} />
       <Hits />
       <StateResults />
     </InstantSearch>
+  ) : (
+    <UnsupportedNetwork />
   );
 };
 

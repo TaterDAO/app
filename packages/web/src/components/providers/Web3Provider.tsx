@@ -166,6 +166,17 @@ const Web3Provider: React.FC<{
 
   //$ Render
 
+  const chainName =
+    chainId === 1
+      ? "mainnet"
+      : chainId === 4
+      ? "rinkeby"
+      : chainId === 31337
+      ? "localhost"
+      : "unknown";
+
+  const supportedChain = chainName !== "unknown";
+
   const state = {
     provider: web3?.eth.currentProvider,
     web3API: web3,
@@ -178,14 +189,8 @@ const Web3Provider: React.FC<{
     },
     network: {
       chainId,
-      name:
-        chainId === 1
-          ? "mainnet"
-          : chainId === 4
-          ? "rinkeby"
-          : chainId === 31337
-          ? "localhost"
-          : "unknown"
+      name: chainName,
+      supported: supportedChain
     },
     loading: !initialized,
     initialized
