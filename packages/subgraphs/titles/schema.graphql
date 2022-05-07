@@ -20,15 +20,36 @@ type _Schema_
 
 type Title @entity {
   id: ID!
-  owner: Bytes!
   name: String!
   description: String!
   externalUrl: String
-  imageUrl: string
+  imageUrl: String
   attributes: TitleAttributes!
+  transfers: [Transfer!]!
+  """
+  Creation Stats
+  """
+  creator: Bytes!
+  createdAt: BigInt!
+}
+
+type Transfer @entity {
+  id: ID!
+  to: Account!
+  from: Account!
+  timestamp: BigInt!
+}
+
+type Account @entity {
+  id: Bytes!
+  titles: [Title!]!
 }
 
 type TitleAttributes @entity {
+  """
+  Should always match Title.id
+  """
+  id: ID!
   landClassification: String!
   location: String!
   deedUrl: String
@@ -36,6 +57,5 @@ type TitleAttributes @entity {
   owner: String
   kmlUrl: String
   tags: String
-  createdDate: BigInt
   maxSupply: Int
 }
