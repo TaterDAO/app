@@ -1,4 +1,5 @@
 specVersion: 0.0.2
+description: TaterDAO Titles 
 schema:
   file: ./schema.graphql
 dataSources:

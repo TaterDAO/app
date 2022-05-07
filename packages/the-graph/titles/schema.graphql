@@ -1,6 +1,41 @@
-type ExampleEntity @entity {
+type _Schema_
+  @fulltext(
+    name: "search"
+    language: en
+    algorithm: rank
+    include: [
+      { entity: "Title", fields: [{ name: "name" }, { name: "description" }] }
+      {
+        entity: "TitleAttributes"
+        fields: [
+          { name: "landClassification" }
+          { name: "location" }
+          { name: "parcels" }
+          { name: "owner" }
+          { name: "tag" }
+        ]
+      }
+    ]
+  )
+
+type Title @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  approved: Bytes! # address
+  owner: Bytes!
+  name: String!
+  description: String!
+  externalUrl: String
+  imageUrl: string
+  attributes: TitleAttributes!
+}
+
+type TitleAttributes @entity {
+  landClassification: String!
+  location: String!
+  deedUrl: String
+  parcels: String!
+  owner: String
+  kmlUrl: String
+  tags: String
+  createdDate: BigInt
+  maxSupply: Int
 }
