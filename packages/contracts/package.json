@@ -10,6 +10,7 @@
     "export-abi": "yarn run hardhat export-abi",
     "dev:chain": "yarn hardhat node",
     "deploy:dev": "yarn compile && yarn hardhat migration:00 --network localhost",
+    "deploy:arbitrum-testnet": "yarn compile && yarn hardhat migration:00 --network arbitrum_testnet",
     "deploy:rinkeby": "yarn compile && yarn hardhat migration:00 --network rinkeby",
     "deploy:mainnet": "yarn compile && yarn hardhat migration:00 --network mainnet"
   },

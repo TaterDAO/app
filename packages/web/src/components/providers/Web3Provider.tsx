@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 // Utils
 import { csr } from "@utils/browser";
 
+// Data
+import supportedNetworks from "@data/networks";
+
 declare global {
   interface Window {
     td: {
@@ -24,18 +27,6 @@ declare global {
     };
   }
 }
-
-enum SupportedChains {
-  ArbitrumTestnet = "Arbitrum Testnet",
-  Localhost = "Localhost"
-}
-
-const chainNames: { [id: number]: SupportedChains } = {
-  421611: SupportedChains.ArbitrumTestnet,
-  31337: SupportedChains.Localhost
-};
-
-const unsupportedName = "Unsupported Chain";
 
 const Web3Provider: React.FC<{
   children: React.ReactChild;
@@ -178,7 +169,9 @@ const Web3Provider: React.FC<{
 
   //$ Render
 
-  const chainName = chainNames[chainId as number] || unsupportedName;
+  //@ts-ignore
+  const chainInfo = supportedNetworks[chainId as number];
+  const supportedChain = !!chainInfo;
 
   const state = {
     provider: web3?.eth.currentProvider,
@@ -192,9 +185,8 @@ const Web3Provider: React.FC<{
     },
     network: {
       chainId,
-      name: chainName,
-      //@ts-expect-error
-      supported: chainName !== unsupportedName
+      name: supportedChain ? chainInfo.network.name : "Unsupported Chain",
+      supported: supportedChain
     },
     loading: !initialized,
     initialized

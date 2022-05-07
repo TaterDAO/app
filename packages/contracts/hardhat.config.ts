@@ -14,6 +14,15 @@ dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
 
+const {
+  PRIVATE_KEY,
+  ALCHEMY_RINKEBY_URI,
+  ALCHEMY_ARBITRUM_TESTNET_URI,
+  REPORT_GAS,
+  ETHERSCAN_API_KEY,
+  COINMARKETCAP_API_KEY,
+} = process.env;
+
 // Import Migrations
 import m00 from "./tasks/migrations/00";
 import m01 from "./tasks/migrations/01";
@@ -24,25 +33,21 @@ migrations.forEach((migration) => {
   migration.addFlag("ci", "Is migration being run in CI?");
 });
 
+const accounts = PRIVATE_KEY ? [PRIVATE_KEY] : [];
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 export default {
   defaultNetwork: "hardhat",
   networks: {
-    rinkeby: {
-      // CI requires a non-null value.
-      url: process.env.ALCHEMY_RINKEBY_URI || "",
-      chainId: 4,
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-    },
-    hardhat: {
-      // Mines a new block every 1s.
-      mining: { auto: false, interval: 1000 },
-    },
+    rinkeby: { url: ALCHEMY_RINKEBY_URI || "", chainId: 4, accounts },
+    hardhat: { mining: { auto: false, interval: 1000 } },
     arbitrum_testnet: {
-      url: process.env.ALCHEMY_ARBITRUM_TESTNET_URI || "",
+      url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
+      //url: "https://rinkeby.arbitrum.io/rpc",
       chainId: 421611,
+      accounts,
     },
   },
   solidity: {
@@ -65,12 +70,12 @@ export default {
   },
   // Docs: https://github.com/cgewecke/hardhat-gas-reporter
   gasReporter: {
-    enabled: process.env.REPORT_GAS === "true",
+    enabled: REPORT_GAS === "true",
     currency: "USD",
-    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    coinmarketcap: COINMARKETCAP_API_KEY,
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: ETHERSCAN_API_KEY,
   },
   abiExporter: {
     path: "../web/src/data",
