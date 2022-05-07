@@ -25,6 +25,18 @@ declare global {
   }
 }
 
+enum SupportedChains {
+  ArbitrumTestnet = "Arbitrum Testnet",
+  Localhost = "Localhost"
+}
+
+const chainNames: { [id: number]: SupportedChains } = {
+  421611: SupportedChains.ArbitrumTestnet,
+  31337: SupportedChains.Localhost
+};
+
+const unsupportedName = "Unsupported Chain";
+
 const Web3Provider: React.FC<{
   children: React.ReactChild;
 }> = ({ children }) => {
@@ -166,16 +178,7 @@ const Web3Provider: React.FC<{
 
   //$ Render
 
-  const chainName =
-    chainId === 1
-      ? "mainnet"
-      : chainId === 4
-      ? "rinkeby"
-      : chainId === 31337
-      ? "localhost"
-      : "unknown";
-
-  const supportedChain = chainName !== "unknown";
+  const chainName = chainNames[chainId as number] || unsupportedName;
 
   const state = {
     provider: web3?.eth.currentProvider,
@@ -190,7 +193,8 @@ const Web3Provider: React.FC<{
     network: {
       chainId,
       name: chainName,
-      supported: supportedChain
+      //@ts-expect-error
+      supported: chainName !== unsupportedName
     },
     loading: !initialized,
     initialized
