@@ -40,6 +40,10 @@ export default {
       // Mines a new block every 1s.
       mining: { auto: false, interval: 1000 },
     },
+    arbitrum_testnet: {
+      url: process.env.ALCHEMY_ARBITRUM_TESTNET_URI || "",
+      chainId: 421611,
+    },
   },
   solidity: {
     version: "0.8.10",
