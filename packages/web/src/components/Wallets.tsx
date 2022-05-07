@@ -18,6 +18,7 @@ const ChainName = styled.small`
   font-weight: 600;
   color: var(--color-bright-green);
   align-self: center;
+  text-transform: capitalize;
 `;
 
 const Wallets: React.FC<{}> = ({}) => {
@@ -28,14 +29,7 @@ const Wallets: React.FC<{}> = ({}) => {
         <></>
       ) : web3.wallet.connected ? (
         <>
-          {web3.network.chainId && (
-            <ChainName>
-              {web3.network.name.replace(
-                web3.network.name[0],
-                web3.network.name[0].toUpperCase()
-              )}
-            </ChainName>
-          )}
+          {web3.network.chainId && <ChainName>{web3.network.name}</ChainName>}
           <ProfileButton />
         </>
       ) : (
