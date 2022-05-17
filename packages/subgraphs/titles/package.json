@@ -5,9 +5,9 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ taterdao/titles",
-    "create-local": "graph create --node http://localhost:8020/ taterdao/titles",
-    "remove-local": "graph remove --node http://localhost:8020/ taterdao/titles",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 taterdao/titles"
+    "dev:create": "graph create titles --node http://localhost:8020/",
+    "dev:remove": "graph remove titles --node http://localhost:8020/",
+    "dev:deploy": "graph deploy titles manifests/arbitrum-localhost.yaml --node http://localhost:8020/ --ipfs http://localhost:5001"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.2",

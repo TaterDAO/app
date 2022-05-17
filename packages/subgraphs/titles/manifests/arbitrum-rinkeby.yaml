@@ -1,13 +1,13 @@
 specVersion: 0.0.2
-description: TaterDAO Titles 
+description: TaterDAO Titles
 schema:
-  file: ./schema.graphql
+  file: ./../schema.graphql
 dataSources:
   - kind: ethereum
     name: TitleV1_0
     network: arbitrum-rinkeby
     source:
-      address: "0x2fE2A12ee04d070ab2c8c258EB5547323923f5F8"
+      address: "0x9c073D6085FBeac8eB72114f2c2b30398229a314"
       abi: TitleV1_0
     mapping:
       kind: ethereum/events
@@ -20,7 +20,7 @@ dataSources:
         - Transfer
       abis:
         - name: TitleV1_0
-          file: ./abis/TitleV1_0.json
+          file: ./../abis/TitleV1_0.json
       eventHandlers:
         - event: Approval(indexed address,indexed address,indexed uint256)
           handler: handleApproval
@@ -30,4 +30,4 @@ dataSources:
           handler: handleOwnershipTransferred
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/mapping.ts
+      file: ./../src/mapping.ts
