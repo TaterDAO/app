@@ -49,7 +49,7 @@ const Name = styled.h3`
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
-  const endpoint = `/title/${web3.network.name}/${data.objectID}`;
+  const endpoint = `/title/${web3.network.id}/${data.objectID}`;
   return (
     <Container>
       <NextLink href={endpoint}>

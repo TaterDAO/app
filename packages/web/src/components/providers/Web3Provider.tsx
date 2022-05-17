@@ -186,6 +186,7 @@ const Web3Provider: React.FC<{
     network: {
       chainId,
       name: supportedChain ? chainInfo.network.name : "Unsupported Chain",
+      id: supportedChain ? chainInfo.network.id : null,
       supported: supportedChain
     },
     loading: !initialized,

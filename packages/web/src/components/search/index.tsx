@@ -22,7 +22,7 @@ const Search: React.FC<{
   filters?: string;
 }> = ({ state, filters }) => {
   const web3 = useWeb3();
-  const index = `titles-${web3.network.name}`;
+  const index = `titles-${web3.network.id}`;
 
   return web3.network.supported ? (
     <InstantSearch searchClient={algolia} indexName={index}>
