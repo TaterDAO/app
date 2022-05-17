@@ -1,5 +1,5 @@
 // Data
-const addresses = require("../src/data/addresses.json");
+const chainConfigs = require("../src/data/networks.js");
 const abi = require("../src/data/contracts/TitleV1_0.sol/TitleV1_0.json");
 
 // Libs
@@ -18,7 +18,7 @@ function validateNetworkArg(value) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
   }
-  if (!Object.keys(addresses).includes(value)) {
+  if (!Object.keys(chainConfigs).includes(value)) {
     throw new Error(`Network [${value}] does not have a contract address`);
   }
 }
@@ -54,7 +54,7 @@ function decodeMetadata(raw) {
 
 async function* Fetcher(network, networkEndpoint) {
   const web3 = new Web3(networkEndpoint);
-  const contract = new web3.eth.Contract(abi, addresses[network]);
+  const contract = new web3.eth.Contract(abi, chainConfigs.contract.address);
 
   async function fetch(tokenId) {
     const res = await contract.methods.tokenURI(tokenId).call({

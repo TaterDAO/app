@@ -12,8 +12,8 @@ import styled from "styled-components";
 import ProfileLink from "@components/ProfileLink";
 import Button from "@components/ui/Button";
 
-// Data
-import addresses from "@data/addresses.json";
+// Utils
+import { getChainConfig } from "@utils/chain";
 
 // Hooks
 import { useRouter } from "next/router";
@@ -88,21 +88,18 @@ const ExternalButtons = styled(Row)`
 
 const TitlePage: NextPage<{
   title: Hit;
-  openseaHost: string;
-  etherscanHost: string | null;
+  explorer: string | null;
   contractAddress: string | undefined;
-}> = ({ title, openseaHost, etherscanHost, contractAddress }) => {
+}> = ({ title, explorer, contractAddress }) => {
   const router = useRouter();
 
   const hasImage = Boolean(title.image);
   const ipfsImage = hasImage && title.image?.startsWith("ipfs");
 
-  const etherscanUrl =
-    !!etherscanHost && !!contractAddress
-      ? `${etherscanHost}/token/${contractAddress}?a=${title.tokenId}`
+  const explorerUrl =
+    !!explorer && !!contractAddress
+      ? `${explorer}/token/${contractAddress}?a=${title.tokenId}`
       : null;
-
-  const openseaUrl = `${openseaHost}/assets/${contractAddress}/${title.tokenId}`;
 
   const hasExternalUrl = !!title.externalUrl;
 
@@ -135,7 +132,7 @@ const TitlePage: NextPage<{
           <span>Created by</span> <ProfileLink address={title.owner} />
         </NamedProperty>
       </Row>
-      {(hasExternalUrl || etherscanUrl || openseaUrl) && (
+      {(hasExternalUrl || explorerUrl) && (
         <ExternalButtons>
           {hasExternalUrl && (
             <Row>
@@ -148,17 +145,10 @@ const TitlePage: NextPage<{
               </Button>
             </Row>
           )}
-          {etherscanUrl && (
+          {explorerUrl && (
             <Row>
-              <Button onClick={() => window.open(etherscanUrl, "_blank")}>
+              <Button onClick={() => window.open(explorerUrl, "_blank")}>
                 Etherscan
-              </Button>
-            </Row>
-          )}
-          {openseaUrl && (
-            <Row>
-              <Button onClick={() => window.open(openseaUrl, "_blank")}>
-                OpenSea
               </Button>
             </Row>
           )}
@@ -242,27 +232,17 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const network = query.network as string;
   const index = algolia.initIndex(`titles-${network}`);
 
-  const etherscanHost =
-    network === "localhost"
-      ? null
-      : network === "mainnet"
-      ? "https://etherscan.io"
-      : `https://${network}.etherscan.io`;
-
-  const openseaHost =
-    network === "mainnet"
-      ? "https://opensea.io"
-      : "https://testnets.opensea.io";
+  // TODO: Hardcoded for now – added Arb mainnet
+  const chainId = network === "localhost" ? 31337 : 421611;
+  const chainConfig = getChainConfig(chainId);
 
   try {
     const hit = await index.getObject(query.tokenId as string);
     return {
       props: {
         title: hit,
-        etherscanHost,
-        openseaHost,
-        //@ts-expect-error
-        contractAddress: addresses[network]
+        explorer: chainConfig?.explorer,
+        contractAddress: chainConfig?.contract.address
       }
     };
   } catch (error) {

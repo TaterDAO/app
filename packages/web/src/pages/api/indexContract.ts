@@ -6,8 +6,10 @@ import type { AbiItem } from "web3-utils";
 import algolia from "algoliasearch";
 import Web3 from "web3";
 
-import addresses from "@data/addresses.json";
 import abi from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
+
+// Utils
+import { getChainConfig } from "@utils/chain";
 
 const client = algolia(
   process.env.ALGOLIA_APPLICATION_ID as string,
@@ -31,32 +33,16 @@ function decodeMetadata(raw: string): object | null {
   }
 }
 
-const addressesByChainId: { [key: number]: string } = {
-  //1: addresses.mainnet
-  4: addresses.rinkeby,
-  31337: addresses.localhost
-};
-
-const rpcEndpointsByChainId: { [key: number]: string } = {
-  //1
-  4: process.env.RPC_RINKEBY_URL as string,
-  31337: process.env.RPC_LOCALHOST_URL as string
-};
-
-const networkNamesByChainId: { [key: number]: string } = {
-  1: "mainnet",
-  4: "rinkeby",
-  31337: "localhost"
-};
-
 async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
   const chainId = parseInt(req.query.chainId as string);
   const tokenId = parseInt(req.query.tokenId as string);
 
-  const web3 = new Web3(rpcEndpointsByChainId[chainId]);
+  const chainConfig = getChainConfig(chainId);
+
+  const web3 = new Web3(chainConfig?.rpc.endpoint as string);
   const contract = new web3.eth.Contract(
     abi as Array<AbiItem>,
-    addressesByChainId[chainId]
+    chainConfig?.contract.address as string
   );
 
   const contractResponse: string = await contract.methods
@@ -69,9 +55,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
 
   // If data was bad.
   if (data) {
-    const algoliaIndex = client.initIndex(
-      `titles-${networkNamesByChainId[chainId]}`
-    );
+    const algoliaIndex = client.initIndex(`titles-${chainConfig?.chain.id}`);
 
     try {
       await algoliaIndex.saveObject({

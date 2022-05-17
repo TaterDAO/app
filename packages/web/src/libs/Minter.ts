@@ -4,16 +4,12 @@ import type { TransactionReceipt, EventLog } from "web3-core";
 
 // Data
 import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
-import addresses from "@data/addresses.json";
+
+// Utils
+import { getChainConfig } from "@utils/chain";
 
 // Libs
 import { toast } from "react-toastify";
-
-const { localhost, rinkeby, mainnet } = addresses as {
-  localhost?: string;
-  rinkeby?: string;
-  mainnet?: string;
-};
 
 enum Events {
   Receipt = "receipt",
@@ -35,17 +31,10 @@ class Minter {
     this._web3 = web3;
     this._chainId = chainId;
 
-    let address = "";
-
-    if (localhost && chainId === 31337) address = localhost;
-    else if (rinkeby && chainId === 4) address = rinkeby;
-    else if (mainnet && chainId === 1) address = mainnet;
-    else return;
-
     this._contract = new this._web3.eth.Contract(
       //@ts-expect-error
       ABI,
-      address
+      getChainConfig(chainId)?.contract.address
     );
   }
 

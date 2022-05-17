@@ -16,9 +16,7 @@ import { useEffect, useState } from "react";
 
 // Utils
 import { csr } from "@utils/browser";
-
-// Data
-import supportedNetworks from "@data/networks";
+import { getChainConfig } from "@utils/chain";
 
 declare global {
   interface Window {
@@ -169,9 +167,7 @@ const Web3Provider: React.FC<{
 
   //$ Render
 
-  //@ts-ignore
-  const chainInfo = supportedNetworks[chainId as number];
-  const supportedChain = !!chainInfo;
+  const chainConfig = getChainConfig(chainId as number);
 
   const state = {
     provider: web3?.eth.currentProvider,
@@ -185,9 +181,9 @@ const Web3Provider: React.FC<{
     },
     network: {
       chainId,
-      name: supportedChain ? chainInfo.network.name : "Unsupported Chain",
-      id: supportedChain ? chainInfo.network.id : null,
-      supported: supportedChain
+      name: chainConfig?.chain.name || "Unsupported Chain",
+      id: chainConfig?.chain.id || null,
+      supported: !!chainConfig
     },
     loading: !initialized,
     initialized
