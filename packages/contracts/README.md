@@ -7,4 +7,4 @@
 yarn deploy:rinkeby
 ```
 
-2. If this is the initial deploy, update `packages/web/data/addresses.json` with the proxy address
+2. If this is the initial deploy, update `packages/web/data/networks.js` with the proxy address
