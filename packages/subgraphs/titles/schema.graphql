@@ -1,22 +1,22 @@
-type _Schema_
-  @fulltext(
-    name: "search"
-    language: en
-    algorithm: rank
-    include: [
-      { entity: "Title", fields: [{ name: "name" }, { name: "description" }] }
-      {
-        entity: "TitleAttributes"
-        fields: [
-          { name: "landClassification" }
-          { name: "location" }
-          { name: "parcels" }
-          { name: "owner" }
-          { name: "tag" }
-        ]
-      }
-    ]
-  )
+# type _Schema_
+#   @fulltext(
+#     name: "search"
+#     language: en
+#     algorithm: rank
+#     include: [
+#       { entity: "Title", fields: [{ name: "name" }, { name: "description" }] }
+#       {
+#         entity: "TitleAttributes"
+#         fields: [
+#           { name: "landClassification" }
+#           { name: "location" }
+#           { name: "parcels" }
+#           { name: "owner" }
+#           { name: "tag" }
+#         ]
+#       }
+#     ]
+#   )
 
 type Title @entity {
   id: ID!
