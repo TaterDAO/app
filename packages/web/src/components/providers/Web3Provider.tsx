@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { csr } from "@utils/browser";
 
 // Data
-import supportedNetworks from "@data/networks";
+import supportedNetworks from "@configs/networks";
 
 declare global {
   interface Window {
@@ -169,7 +169,6 @@ const Web3Provider: React.FC<{
 
   //$ Render
 
-  //@ts-ignore
   const chainInfo = supportedNetworks[chainId as number];
   const supportedChain = !!chainInfo;
 

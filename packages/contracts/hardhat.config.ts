@@ -41,13 +41,16 @@ const accounts = PRIVATE_KEY ? [PRIVATE_KEY] : [];
 export default {
   defaultNetwork: "hardhat",
   networks: {
-    rinkeby: { url: ALCHEMY_RINKEBY_URI || "", chainId: 4, accounts },
     hardhat: { mining: { auto: false, interval: 1000 } },
     arbitrum_testnet: {
       url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
       //url: "https://rinkeby.arbitrum.io/rpc",
       chainId: 421611,
       accounts,
+    },
+    arbitrum_localhost: {
+      url: "http://localhost:8545",
+      chainId: 421612,
     },
   },
   solidity: {

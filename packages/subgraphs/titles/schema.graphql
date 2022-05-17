@@ -1,0 +1,61 @@
+# type _Schema_
+#   @fulltext(
+#     name: "search"
+#     language: en
+#     algorithm: rank
+#     include: [
+#       { entity: "Title", fields: [{ name: "name" }, { name: "description" }] }
+#       {
+#         entity: "TitleAttributes"
+#         fields: [
+#           { name: "landClassification" }
+#           { name: "location" }
+#           { name: "parcels" }
+#           { name: "owner" }
+#           { name: "tag" }
+#         ]
+#       }
+#     ]
+#   )
+
+type Title @entity {
+  id: ID!
+  name: String!
+  description: String!
+  externalUrl: String
+  imageUrl: String
+  attributes: TitleAttributes!
+  transfers: [Transfer!]!
+  """
+  Creation Stats
+  """
+  creator: Bytes!
+  createdAt: BigInt!
+}
+
+type Transfer @entity {
+  id: ID!
+  to: Account!
+  from: Account!
+  timestamp: BigInt!
+}
+
+type Account @entity {
+  id: Bytes!
+  titles: [Title!]!
+}
+
+type TitleAttributes @entity {
+  """
+  Should always match Title.id
+  """
+  id: ID!
+  landClassification: String!
+  location: String!
+  deedUrl: String
+  parcels: String!
+  owner: String
+  kmlUrl: String
+  tags: String
+  maxSupply: Int
+}
