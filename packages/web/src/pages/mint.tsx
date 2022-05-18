@@ -9,6 +9,7 @@ import Button from "@components/ui/Button";
 import ConnectWalletForm from "@components/ConnectWalletForm";
 import TitledPage from "@components/layouts/TitledPage";
 import UnsupportedNetwork from "@components/UnsupportedNetwork";
+import ImageUploadForm from "@components/ImageUploadForm";
 
 // Hooks
 import { useState, useEffect } from "react";
@@ -77,6 +78,7 @@ const MintPage: NextPage = ({}) => {
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [state, set] = useState<Map>(initialState);
+  const [image, setImage] = useState<File | null>(null);
   const [errorField, setErrorField] = useState<string>("");
 
   // =============
@@ -101,6 +103,10 @@ const MintPage: NextPage = ({}) => {
   // ================
   // === Handlers ===
   // ================
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setImage(event.target?.files ? event.target.files[0] : null);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -179,7 +185,14 @@ const MintPage: NextPage = ({}) => {
             <Form.Container>
               {inputs.map((fieldId) => {
                 const id = `form-row-${fieldId}`;
-                return (
+                return fieldId === "image_" ? (
+                  <ImageUploadForm
+                    id={id}
+                    onChange={handleImageUpload}
+                    isClearable={!!image}
+                    onClear={() => setImage(null)}
+                  />
+                ) : (
                   <Form.Row key={id} id={id}>
                     <Form.FieldMeta>
                       <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>

@@ -69,4 +69,29 @@ Input.defaultProps = {
   invalid: false
 };
 
-export { Container, Row, FieldMeta, FieldLabel, FieldSecondaryLabel, Input };
+const FileInput = styled(Input).attrs({ type: "file" })`
+  text-align: center;
+  &::file-selector-button {
+    border-radius: var(--global-border-radius);
+    background-color: var(--color-bright-indigo);
+    border: 1px solid var(--color-bright-indigo);
+    color: var(--global-color-font);
+    padding: 0.75rem 1.25rem;
+
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: inherit;
+
+    cursor: pointer;
+  }
+`;
+
+export {
+  Container,
+  Row,
+  FieldMeta,
+  FieldLabel,
+  FieldSecondaryLabel,
+  Input,
+  FileInput
+};
