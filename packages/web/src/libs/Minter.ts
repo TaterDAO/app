@@ -47,7 +47,13 @@ class Minter {
       this._contract.methods
         .burn(tokenId)
         .send({ from: fromAddress })
-        .on("transactionHash", resolve);
+        .on("transactionHash", resolve)
+        .on("receipt", async (receipt: TransactionReceipt) => {
+          navigator.sendBeacon(
+            `/api/burn?chainId=${this._chainId}&tokenId=${tokenId}`
+          );
+        })
+        .on("error", this.handleError);
     });
   }
 
