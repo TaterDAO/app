@@ -49,10 +49,6 @@ export default {
       chainId: 421611,
       accounts,
     },
-    local_docker: {
-      url: "http://localhost:8545",
-      chainId: 421612,
-    },
   },
   solidity: {
     version: "0.8.10",
