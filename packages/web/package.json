@@ -11,7 +11,7 @@
     "prettier": "prettier --write ./**/*.{json,js,ts,tsx}",
     "test:e2e": "cypress run",
     "test:unit": "ts-mocha -p tests/unit/tsconfig.json tests/unit/*.spec.ts",
-    "algolia:index:localhost": "yarn build:addresses && node scripts/indexContract.js localhost http://127.0.0.1:8545/",
+    "algolia:index:localhost": "node scripts/indexContract.js localhost http://127.0.0.1:8545/",
     "algolia:setup": "node scripts/setupAlgolia.js",
     "algolia:seed": "node scripts/seedTitles.js",
     "img:compress": "imageoptim public/images/*"
