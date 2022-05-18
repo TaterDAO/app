@@ -4,15 +4,14 @@ on:
   push:
   schedule:
     - cron: "*/2 * * * *" # every 2 minutes
-env:
-  FOO: "foo"
 jobs:
   index-rinkeby:
     name: "Rinkeby"
     runs-on: ubuntu-latest
+    if: false # Once re-deployed to Arbitrum
     defaults:
       run:
-        working-directory: ./packages/web
+        working-directory: ./packages/indexing
     steps:
       - name: "Checkout Repo"
         uses: actions/checkout@master
@@ -31,19 +30,22 @@ jobs:
       - name: "Install JS Dependencies"
         run: "yarn install --frozen-lockfile --dev"
 
-      - name: "Index"
-        run: yarn build:addresses && node scripts/indexContract.js rinkeby https://eth-rinkeby.alchemyapi.io/v2/LB4UIgVJob-7MZeVcgMCLJ2GJn-2QZSe
-        env:
-          ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
-          ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+      - name: "Build"
+        run: "yarn build"
+
+      # - name: "Index"
+      #   run: yarn build:addresses && node scripts/indexContract.js rinkeby https://eth-rinkeby.alchemyapi.io/v2/LB4UIgVJob-7MZeVcgMCLJ2GJn-2QZSe
+      #   env:
+      #     ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
+      #     ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
 
   index-mainnet:
     name: "Mainnet"
     runs-on: ubuntu-latest
+    if: false # disable until deployed to mainnet
     defaults:
       run:
-        working-directory: ./packages/web
-    if: false # disable until deployed to mainnet
+        working-directory: ./packages/indexing
     steps:
       - name: "Checkout Repo"
         uses: actions/checkout@master
@@ -62,8 +64,11 @@ jobs:
       - name: "Install JS Dependencies"
         run: "yarn install --frozen-lockfile --dev"
 
-      - name: "Index"
-        run: yarn build:addresses && node scripts/indexContract.js mainnet 
-        env:
-          ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
-          ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+      - name: "Build"
+        run: "yarn build"
+
+      # - name: "Index"
+      #   run: yarn build:addresses && node scripts/indexContract.js mainnet 
+      #   env:
+      #     ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
+      #     ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
