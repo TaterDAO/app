@@ -4,7 +4,10 @@
  */
 import { task } from "hardhat/config";
 import fs from "fs";
-import { PROXY_INSTANCE_ADDRESS_FILEPATH } from "../../constants";
+import {
+  PROXY_INSTANCE_ADDRESS_FILEPATH,
+  ROOT_DATA_DIR_PATH,
+} from "../../constants";
 
 export default task("migration:00", "Initial deployment").setAction(
   async (args, hre, runSuper) => {
@@ -14,6 +17,7 @@ export default task("migration:00", "Initial deployment").setAction(
     const network = hre.network.name;
     let proxyRegistryAddress: string;
 
+    // TODO: Update before deploying: OpenSea isn't on Arbitrum yet
     if (network === "mainnet") {
       proxyRegistryAddress = "0xa5409ec958c83c3f309868babaca7c86dcb077c1";
     } else {
@@ -30,10 +34,16 @@ export default task("migration:00", "Initial deployment").setAction(
 
     console.log(`Deployed with proxy to ${instance.address}`);
 
-    if (args.ci) {
-      // Write the proxy address to a config file
-      fs.writeFileSync(PROXY_INSTANCE_ADDRESS_FILEPATH, instance.address);
-    }
+    // Write the proxy address to a config file
+    // This is maintained for backwards-compatibility
+    // TODO: Only use below write strategy.
+    fs.writeFileSync(PROXY_INSTANCE_ADDRESS_FILEPATH, instance.address);
+
+    // Write
+    fs.writeFileSync(
+      `${ROOT_DATA_DIR_PATH}/${network}.chain`,
+      instance.address
+    );
 
     console.log("Migration complete");
   }

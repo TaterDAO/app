@@ -1,29 +1,24 @@
-// Data
-const chainConfigs = require("../src/data/networks.js");
-const abi = require("../src/data/contracts/TitleV1_0.sol/TitleV1_0.json");
+import {
+  decodeMetadata,
+  makeContract,
+  lookupContractAddress
+} from "../src/contract";
+import algolia from "../src/algolia";
+import type { RawMetadata } from "../src/types";
+import { HARDHAT_NETWORK_ACCOUNTS } from "../src/constants";
 
-// Libs
-const Web3 = require("web3");
-const algolia = require("algoliasearch");
-const dotenv = require("dotenv");
-
-dotenv.config({ path: ".env.development.local" });
-
-const client = algolia(
-  process.env.ALGOLIA_APPLICATION_ID,
-  process.env.ALGOLIA_SEARCH_KEY
-);
-
-function validateNetworkArg(value) {
+function validateNetworkArg(value: string) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
   }
-  if (!Object.keys(chainConfigs).includes(value)) {
-    throw new Error(`Network [${value}] does not have a contract address`);
+  if (!["localhost"].includes(value)) {
+    throw new Error(`Network [${value}] is unsupported`);
   }
+
+  return value;
 }
 
-function validateNetworkEndpointArg(value) {
+function validateNetworkEndpointArg(value: string) {
   if (!value) {
     throw new Error("Position 1 arg `networkEndpoint` is required");
   }
@@ -33,35 +28,20 @@ function validateNetworkEndpointArg(value) {
   } catch (error) {
     throw new Error(`Network Endpoint [${value}] is not a valid url`);
   }
+
+  return value;
 }
 
-function decodeMetadata(raw) {
-  let text;
-  try {
-    const buff = Buffer.from(
-      raw.replace("data:application/json;base64,", ""),
-      "base64"
-    );
-    text = buff.toString("utf8");
-    return JSON.parse(text);
-  } catch (error) {
-    console.log("\nError Decoding Metadata:");
-    console.log(text);
-    console.log(error);
-    return null;
-  }
-}
+async function* Fetcher(network: string, networkEndpoint: string) {
+  const contract = makeContract(
+    networkEndpoint,
+    lookupContractAddress(network)
+  );
 
-async function* Fetcher(network, networkEndpoint) {
-  const web3 = new Web3(networkEndpoint);
-  const contract = new web3.eth.Contract(abi, chainConfigs.contract.address);
-
-  async function fetch(tokenId) {
-    const res = await contract.methods.tokenURI(tokenId).call({
-      // Hardcoded for now...
-      // TODO:
-      from: "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
-    });
+  async function fetch(tokenId: number) {
+    const res = await contract.methods
+      .tokenURI(tokenId)
+      .call({ from: HARDHAT_NETWORK_ACCOUNTS[0] });
     return decodeMetadata(res);
   }
 
@@ -80,11 +60,8 @@ async function* Fetcher(network, networkEndpoint) {
 (async () => {
   const args = process.argv.slice(2);
 
-  const network = args[0];
-  validateNetworkArg(network);
-
-  const networkEndpoint = args[1];
-  validateNetworkEndpointArg(networkEndpoint);
+  const network = validateNetworkArg(args[0]);
+  const networkEndpoint = validateNetworkEndpointArg(args[1]);
 
   const fetcher = Fetcher(network, networkEndpoint);
   const titles = [];
@@ -94,18 +71,20 @@ async function* Fetcher(network, networkEndpoint) {
       titles.push(value);
     }
   } catch (error) {
+    //@ts-expect-error
     const msg = error.message;
     if (msg.includes("ERC721Metadata: URI query for nonexistent token")) {
       // noop
     } else {
+      //@ts-expect-error
       throw new Error(error);
     }
   }
 
   const serializedTitles = titles
     .filter((title) => title)
-    .map(
-      ({
+    .map((data) => {
+      const {
         tokenId,
         owner,
         name,
@@ -113,7 +92,9 @@ async function* Fetcher(network, networkEndpoint) {
         external_url,
         image,
         attributes
-      }) => ({
+      } = data as RawMetadata;
+
+      return {
         objectID: tokenId,
         tokenId: parseInt(tokenId),
         owner: owner.toLowerCase(),
@@ -130,10 +111,10 @@ async function* Fetcher(network, networkEndpoint) {
         "attr.Tag": attributes[6].value,
         "attr.CreatedDate": parseInt(attributes[7].value),
         "attr.MaxSupply": parseInt(attributes[8].value)
-      })
-    );
+      };
+    });
 
-  const algoliaIndex = client.initIndex(`titles-${network}`);
+  const algoliaIndex = algolia.initIndex(`titles-${network}`);
 
   try {
     await algoliaIndex.saveObjects(serializedTitles);

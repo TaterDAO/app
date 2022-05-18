@@ -39,7 +39,7 @@ class Minter {
   }
 
   async handleError(error: any, receipt: object) {
-    toast.error(error);
+    throw error;
   }
 
   async burn(tokenId: number, fromAddress: string): Promise<void> {

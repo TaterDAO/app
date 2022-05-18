@@ -50,6 +50,20 @@ const TEST_TOKEN = {
   ],
 };
 
+const tokenData = [
+  TEST_TOKEN.name,
+  TEST_TOKEN.description,
+  TEST_TOKEN.external_url,
+  TEST_TOKEN.image,
+  TEST_TOKEN.attributes[0].value,
+  TEST_TOKEN.attributes[1].value,
+  TEST_TOKEN.attributes[2].value,
+  TEST_TOKEN.attributes[3].value,
+  TEST_TOKEN.attributes[4].value,
+  TEST_TOKEN.attributes[5].value,
+  TEST_TOKEN.attributes[6].value,
+];
+
 // =================
 // ===== State =====
 // =================
@@ -120,20 +134,20 @@ describe("TitleV1_0.sol", async () => {
 
   context("Minting", async () => {
     it("Mints", async () => {
-      const { value } = await contract.mint(
-        TEST_TOKEN.name,
-        TEST_TOKEN.description,
-        TEST_TOKEN.external_url,
-        TEST_TOKEN.image,
-        TEST_TOKEN.attributes[0].value,
-        TEST_TOKEN.attributes[1].value,
-        TEST_TOKEN.attributes[2].value,
-        TEST_TOKEN.attributes[3].value,
-        TEST_TOKEN.attributes[4].value,
-        TEST_TOKEN.attributes[5].value,
-        TEST_TOKEN.attributes[6].value
+      await owner.mint(...tokenData);
+      await alice.mint(...tokenData);
+      expect(await contract.ownerOf(0)).to.equal(ownerAddress);
+      expect(await contract.ownerOf(1)).to.equal(aliceAddress);
+    });
+  });
+
+  context("Burning", async () => {
+    it("Burns", async () => {
+      await alice.mint(...tokenData);
+      await alice.burn(0);
+      await expect(contract.ownerOf(0)).to.be.revertedWith(
+        "ERC721: owner query for nonexistent token"
       );
-      expect(value).to.equal(0);
     });
   });
 

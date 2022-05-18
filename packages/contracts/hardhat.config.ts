@@ -30,7 +30,7 @@ import m01 from "./tasks/migrations/01";
 // Add global flags to migrations
 const migrations = [m00, m01];
 migrations.forEach((migration) => {
-  migration.addFlag("ci", "Is migration being run in CI?");
+  migration.addFlag("write", "Write outputs to filesystem?");
 });
 
 const accounts = PRIVATE_KEY ? [PRIVATE_KEY] : [];
@@ -42,7 +42,6 @@ export default {
   defaultNetwork: "hardhat",
   networks: {
     rinkeby: { url: ALCHEMY_RINKEBY_URI || "", chainId: 4, accounts },
-    hardhat: { mining: { auto: false, interval: 1000 } },
     arbitrum_testnet: {
       url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
       //url: "https://rinkeby.arbitrum.io/rpc",

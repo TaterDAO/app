@@ -1,14 +1,7 @@
 // Libs
-const algolia = require("algoliasearch");
-const dotenv = require("dotenv");
+import algolia from "../../src/algolia";
 
-dotenv.config({ path: ".env.development.local" });
-
-const client = algolia(
-  process.env.ALGOLIA_APPLICATION_ID,
-  process.env.ALGOLIA_SEARCH_KEY
-);
-
+// TODO: Update for Arbitrum
 const chains = ["localhost", "rinkeby", "mainnet"];
 
 const defaultRankings = [
@@ -30,14 +23,14 @@ const sortableFields = ["landClassification", "location", "parcels", "owner"];
       const indexId = `titles-${id}`;
 
       // Create replica index ids
-      const replicaIndexIds = [];
+      const replicaIndexIds: Array<string> = [];
       sortableFields.forEach((field) => {
         replicaIndexIds.push(`${indexId}-${field}_asc`);
         replicaIndexIds.push(`${indexId}-${field}_desc`);
       });
 
       console.log(`Creating index: ${indexId}`);
-      const index = client.initIndex(indexId);
+      const index = algolia.initIndex(indexId);
       await index.setSettings({
         searchableAttributes: [
           //"tokenId",
@@ -63,7 +56,7 @@ const sortableFields = ["landClassification", "location", "parcels", "owner"];
           .replace(`${indexId}-`, "")
           .replace(`_${order}`, "");
 
-        await client.initIndex(replicaIndexId).setSettings({
+        await algolia.initIndex(replicaIndexId).setSettings({
           ranking: [`${order}(${field})`, ...defaultRankings]
         });
       }

@@ -62,13 +62,13 @@ jobs:
         id: migration-00
         uses: 721labs/hardhat-session-action@main
         with:
-          cmd: "migration:00 --ci"
+          cmd: "migration:00"
           hardhat-directory: ./packages/contracts
       
       # - name: "Run Migration:01"
       #   uses: 721labs/hardhat-session-action@main
       #   with:
-      #     cmd: "migration:01 --ci --address ''"
+      #     cmd: "migration:01 --write --address ''"
       #     session-id: ${{ steps.migration-00.outputs.session-id }}
       #     hardhat-directory: ./packages/contracts
 
