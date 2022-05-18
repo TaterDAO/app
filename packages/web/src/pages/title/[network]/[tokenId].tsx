@@ -12,12 +12,14 @@ import TitleContract from "@libs/TitleContract";
 // Components
 import ProfileLink from "@components/ProfileLink";
 import Button from "@components/ui/Button";
+import BurnForm from "@components/BurnForm";
 
 // Utils
 import { getChainConfig } from "@utils/chain";
 
 // Hooks
 import { useRouter } from "next/router";
+import useWeb3 from "@hooks/useWeb3";
 
 const Name = styled.h1``;
 
@@ -94,6 +96,7 @@ const TitlePage: NextPage<{
   ownerAddress: string;
 }> = ({ title, explorer, contractAddress, ownerAddress }) => {
   const router = useRouter();
+  const web3 = useWeb3();
 
   const hasImage = Boolean(title.image);
   const ipfsImage = hasImage && title.image?.startsWith("ipfs");
@@ -138,6 +141,9 @@ const TitlePage: NextPage<{
         <NamedProperty>
           <span>Owned by</span> <ProfileLink address={ownerAddress} />
         </NamedProperty>
+        {ownerAddress === web3.wallet.address && (
+          <BurnForm tokenId={title.tokenId} />
+        )}
       </Row>
       {(hasExternalUrl || explorerUrl) && (
         <ExternalButtons>
@@ -245,9 +251,9 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const chainConfig = getChainConfig(chainId);
 
   const contract = new TitleContract(chainId);
-  const ownerAddress = await contract.getOwner(parseInt(tokenId));
 
   try {
+    const ownerAddress = await contract.getOwner(parseInt(tokenId));
     const hit = await index.getObject(tokenId);
     return {
       props: {

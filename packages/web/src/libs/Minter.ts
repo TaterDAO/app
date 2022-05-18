@@ -42,6 +42,15 @@ class Minter {
     toast.error(error);
   }
 
+  async burn(tokenId: number, fromAddress: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._contract.methods
+        .burn(tokenId)
+        .send({ from: fromAddress })
+        .on("transactionHash", resolve);
+    });
+  }
+
   /**
    * Calls Mint.
    * @returns Transaction Hash once its been submitted to the chain

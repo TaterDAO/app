@@ -29,6 +29,12 @@ contract TitleV1_0 is
   mapping(uint256 => Title) private _titles;
 
   //////////////////////////////
+  /// Errors
+  //////////////////////////////
+
+  error OwnerOnly();
+
+  //////////////////////////////
   /// Constructor
   //////////////////////////////
 
@@ -43,6 +49,12 @@ contract TitleV1_0 is
   //////////////////////////////
   /// Minting
   //////////////////////////////
+
+  /// @notice Burns a title
+  function burn(uint256 id_) public {
+    if(msg.sender != ownerOf(id_)) revert OwnerOnly();
+    _burn(id_);
+  }
 
   /// @notice Mints a title
   function mint(
