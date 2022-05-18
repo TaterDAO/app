@@ -30,7 +30,7 @@ import m01 from "./tasks/migrations/01";
 // Add global flags to migrations
 const migrations = [m00, m01];
 migrations.forEach((migration) => {
-  migration.addFlag("ci", "Is migration being run in CI?");
+  migration.addFlag("write", "Write outputs to filesystem?");
 });
 
 const accounts = PRIVATE_KEY ? [PRIVATE_KEY] : [];

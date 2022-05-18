@@ -16,7 +16,7 @@ To successfully run unit tests on your local machine, you must first prepare you
    This writes the Proxy Instance Address configuration file, `.ci/proxyInstanceAddress`, which will be read subsequently by the tests.
 
    ```shell
-   yarn hardhat migration:00 --network localhost --ci
+   yarn hardhat migration:00 --network localhost --write
    ```
 
 3. Run tests
