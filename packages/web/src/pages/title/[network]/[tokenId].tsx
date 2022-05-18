@@ -7,6 +7,7 @@ import algolia from "@services/Algolia";
 
 // Libs
 import styled from "styled-components";
+import TitleContract from "@libs/TitleContract";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -90,7 +91,8 @@ const TitlePage: NextPage<{
   title: Hit;
   explorer: string | null;
   contractAddress: string | undefined;
-}> = ({ title, explorer, contractAddress }) => {
+  ownerAddress: string;
+}> = ({ title, explorer, contractAddress, ownerAddress }) => {
   const router = useRouter();
 
   const hasImage = Boolean(title.image);
@@ -130,6 +132,11 @@ const TitlePage: NextPage<{
       <Row>
         <NamedProperty>
           <span>Created by</span> <ProfileLink address={title.owner} />
+        </NamedProperty>
+      </Row>
+      <Row>
+        <NamedProperty>
+          <span>Owned by</span> <ProfileLink address={ownerAddress} />
         </NamedProperty>
       </Row>
       {(hasExternalUrl || explorerUrl) && (
@@ -229,6 +236,7 @@ const TitlePage: NextPage<{
 };
 
 const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const tokenId = query.tokenId as string;
   const network = query.network as string;
   const index = algolia.initIndex(`titles-${network}`);
 
@@ -236,13 +244,17 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const chainId = network === "localhost" ? 31337 : 421611;
   const chainConfig = getChainConfig(chainId);
 
+  const contract = new TitleContract(chainId);
+  const ownerAddress = await contract.getOwner(parseInt(tokenId));
+
   try {
-    const hit = await index.getObject(query.tokenId as string);
+    const hit = await index.getObject(tokenId);
     return {
       props: {
         title: hit,
         explorer: chainConfig?.explorer,
-        contractAddress: chainConfig?.contract.address
+        contractAddress: chainConfig?.contract.address,
+        ownerAddress: ownerAddress
       }
     };
   } catch (error) {
