@@ -28,6 +28,9 @@ echo "\033[1;32m Success \n \033[0m"
 # Index contract to Algolia
 echo "\033[1;33m 4. Indexing local contract \033[0m"
 node dist/scripts/indexTitles.js localhost http://127.0.0.1:8545/
+cd ../..
 echo "\033[1;32m Success \n \033[0m"
 
-echo "\033[1;32m Ready for app development \n \033[0m"
+echo "\033[1;33m 5. Starting web app \033[0m"
+cd packages/web
+yarn dev:start
