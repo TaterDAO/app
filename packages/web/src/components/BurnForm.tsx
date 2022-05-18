@@ -24,7 +24,7 @@ const BurnForm: React.FC<{ tokenId: number }> = ({ tokenId }) => {
 
   return (
     <Container>
-      <Button disabled={submitting} onClick={handleClick}>
+      <Button disabled={submitting} onClick={handleClick} primary>
         Burn
       </Button>
     </Container>

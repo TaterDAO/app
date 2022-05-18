@@ -83,9 +83,10 @@ const Image = styled.img`
   font-weight: 700;
 `;
 
-const ExternalButtons = styled(Row)`
+const ActionButtons = styled(Row)`
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: var(--global-space-nav-margin);
 `;
 
@@ -141,32 +142,30 @@ const TitlePage: NextPage<{
         <NamedProperty>
           <span>Owned by</span> <ProfileLink address={ownerAddress} />
         </NamedProperty>
-        {ownerAddress === web3.wallet.address && (
-          <BurnForm tokenId={title.tokenId} />
-        )}
       </Row>
-      {(hasExternalUrl || explorerUrl) && (
-        <ExternalButtons>
-          {hasExternalUrl && (
-            <Row>
-              <Button
-                onClick={() =>
-                  window.open(title.externalUrl as string, "_blank")
-                }
-              >
-                External URL
-              </Button>
-            </Row>
-          )}
-          {explorerUrl && (
-            <Row>
-              <Button onClick={() => window.open(explorerUrl, "_blank")}>
-                Etherscan
-              </Button>
-            </Row>
-          )}
-        </ExternalButtons>
-      )}
+      <ActionButtons>
+        {ownerAddress === web3.wallet.address && (
+          <Row>
+            <BurnForm tokenId={title.tokenId} />
+          </Row>
+        )}
+        {hasExternalUrl && (
+          <Row>
+            <Button
+              onClick={() => window.open(title.externalUrl as string, "_blank")}
+            >
+              External URL
+            </Button>
+          </Row>
+        )}
+        {explorerUrl && (
+          <Row>
+            <Button onClick={() => window.open(explorerUrl, "_blank")}>
+              Etherscan
+            </Button>
+          </Row>
+        )}
+      </ActionButtons>
       {ipfsImage && (
         <Row>
           <NamedProperty>

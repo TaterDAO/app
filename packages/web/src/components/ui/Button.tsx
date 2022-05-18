@@ -9,7 +9,7 @@ const Button = styled.button<{ primary?: boolean }>`
     primary ? "var(--color-bright-indigo)" : "var(--global-color-border)"};
   color: var(--global-color-font);
 
-  padding: ${({ primary }) => (primary ? "1" : "0.75")}rem 1.25rem;
+  padding: 0.75rem 1.25rem;
 
   width: ${({ primary }) => (primary ? "100%" : "auto")};
 
