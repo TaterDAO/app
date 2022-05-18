@@ -15,7 +15,6 @@ export default task("migration:00", "Initial deployment").setAction(
     console.log("Deploying contract");
 
     const network = hre.network.name;
-    const chainId = hre.network.config.chainId;
     let proxyRegistryAddress: string;
 
     // TODO: Update before deploying: OpenSea isn't on Arbitrum yet
@@ -35,18 +34,16 @@ export default task("migration:00", "Initial deployment").setAction(
 
     console.log(`Deployed with proxy to ${instance.address}`);
 
-    if (args.write) {
-      // Write the proxy address to a config file
-      // This is maintained for backwards-compatibility
-      // TODO: Only use below write strategy.
-      fs.writeFileSync(PROXY_INSTANCE_ADDRESS_FILEPATH, instance.address);
+    // Write the proxy address to a config file
+    // This is maintained for backwards-compatibility
+    // TODO: Only use below write strategy.
+    fs.writeFileSync(PROXY_INSTANCE_ADDRESS_FILEPATH, instance.address);
 
-      // Write
-      fs.writeFileSync(
-        `${ROOT_DATA_DIR_PATH}/${chainId}.chain`,
-        instance.address
-      );
-    }
+    // Write
+    fs.writeFileSync(
+      `${ROOT_DATA_DIR_PATH}/${network}.chain`,
+      instance.address
+    );
 
     console.log("Migration complete");
   }

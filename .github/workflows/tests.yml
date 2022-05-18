@@ -62,7 +62,7 @@ jobs:
         id: migration-00
         uses: 721labs/hardhat-session-action@main
         with:
-          cmd: "migration:00 --write"
+          cmd: "migration:00"
           hardhat-directory: ./packages/contracts
       
       # - name: "Run Migration:01"
