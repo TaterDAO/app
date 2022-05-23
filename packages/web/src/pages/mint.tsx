@@ -2,6 +2,7 @@
 import type Web3 from "web3";
 import type { NextPage } from "next";
 type Map = { [key: string]: string };
+import type { Image } from "@T/Image";
 
 // Components
 import * as Form from "@components/ui/Form";
@@ -22,9 +23,13 @@ import { toast } from "react-toastify";
 
 // Utils
 import { csr } from "@utils/browser";
+import { getImageDimensionsFromFile } from "@utils/image";
 
 // Data
 import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
+
+// Constants
+import { MAX_IMAGE_FILE_SIZE } from "@constants/image";
 
 const mintMethod = ABI.find(({ name }) => name === "mint");
 const inputs = mintMethod?.inputs.map(({ name }) => name) as Array<string>;
@@ -78,7 +83,7 @@ const MintPage: NextPage = ({}) => {
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [state, set] = useState<Map>(initialState);
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<Image | null>(null);
   const [errorField, setErrorField] = useState<string>("");
 
   // =============
@@ -104,8 +109,28 @@ const MintPage: NextPage = ({}) => {
   // === Handlers ===
   // ================
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImage(event.target?.files ? event.target.files[0] : null);
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target?.files ? event.target.files[0] : null;
+
+    if (!file) return;
+
+    // Validate file size
+    if (file.size / 1e6 > MAX_IMAGE_FILE_SIZE) {
+      toast.error(
+        `Image exceeds maximum file size of ${MAX_IMAGE_FILE_SIZE}mb`
+      );
+      return;
+    }
+
+    const { height, width } = await getImageDimensionsFromFile(file);
+    setImage({
+      src: file,
+      name: file.name,
+      height,
+      width
+    } as Image);
   };
 
   const handleSubmit = async () => {
@@ -191,6 +216,7 @@ const MintPage: NextPage = ({}) => {
                     onChange={handleImageUpload}
                     isClearable={!!image}
                     onClear={() => setImage(null)}
+                    preview={image}
                   />
                 ) : (
                   <Form.Row key={id} id={id}>
