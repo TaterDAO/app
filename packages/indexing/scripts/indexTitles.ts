@@ -5,13 +5,13 @@ import {
 } from "../src/contract";
 import algolia from "../src/algolia";
 import type { RawMetadata } from "../src/types";
-import { HARDHAT_NETWORK_ACCOUNTS } from "../src/constants";
+import { HARDHAT_NETWORK_ACCOUNTS, NETWORKS } from "../src/constants";
 
 function validateNetworkArg(value: string) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
   }
-  if (!["localhost", "arbitrum_testnet"].includes(value)) {
+  if (!NETWORKS.includes(value)) {
     throw new Error(`Network [${value}] is unsupported`);
   }
 

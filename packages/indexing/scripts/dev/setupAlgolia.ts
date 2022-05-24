@@ -1,8 +1,6 @@
 // Libs
-import algolia from "../../src/algolia";
-
-// TODO: Update for Arbitrum
-const chains = ["localhost", "rinkeby", "mainnet"];
+import algolia, { deleteIndices } from "../../src/algolia";
+import { NETWORKS } from "../../src/constants";
 
 const defaultRankings = [
   "typo",
@@ -19,7 +17,11 @@ const sortableFields = ["landClassification", "location", "parcels", "owner"];
 
 (async () => {
   try {
-    for await (const id of chains) {
+    // Delete existent indices
+    await deleteIndices();
+
+    // Create new indices
+    for await (const id of NETWORKS) {
       const indexId = `titles-${id}`;
 
       // Create replica index ids
@@ -51,10 +53,12 @@ const sortableFields = ["landClassification", "location", "parcels", "owner"];
       for await (const replicaIndexId of replicaIndexIds) {
         console.log(`Configuring replica: ${replicaIndexId}`);
 
-        const order = replicaIndexId.split("_")[1];
+        const order = replicaIndexId.includes("asc") ? "asc" : "desc";
         const field = replicaIndexId
           .replace(`${indexId}-`, "")
           .replace(`_${order}`, "");
+
+        console.log(field);
 
         await algolia.initIndex(replicaIndexId).setSettings({
           ranking: [`${order}(${field})`, ...defaultRankings]
