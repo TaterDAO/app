@@ -5,7 +5,7 @@ module.exports = {
       name: "Arbitrum Testnet"
     },
     contract: {
-      address: "0x2fE2A12ee04d070ab2c8c258EB5547323923f5F8"
+      address: "0x9724E0A0d2437d519Cea68738180c15d9514f41A"
     },
     rpc: {
       endpoint: ""
