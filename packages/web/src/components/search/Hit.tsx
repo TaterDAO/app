@@ -60,7 +60,7 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
     ? ipfsImage.data
     : data.image || "/images/placeholder.jpeg";
 
-  const endpoint = `/title/${web3.network.id}/${data.objectID}`;
+  const endpoint = `/title/${web3.network.internalId}/${data.objectID}`;
   return (
     <Container>
       <NextLink href={endpoint}>
