@@ -11,7 +11,7 @@ function validateNetworkArg(value: string) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
   }
-  if (!["localhost"].includes(value)) {
+  if (!["localhost", "arbitrum_testnet"].includes(value)) {
     throw new Error(`Network [${value}] is unsupported`);
   }
 
