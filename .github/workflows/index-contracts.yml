@@ -1,7 +1,6 @@
 name: Index Contract
 on:
   workflow_dispatch:
-  push:
   schedule:
     - cron: "*/2 * * * *" # every 2 minutes
 jobs:
