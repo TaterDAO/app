@@ -6,7 +6,7 @@ on:
     - cron: "*/2 * * * *" # every 2 minutes
 jobs:
   testnet:
-    uses: ./index.yml
+    uses: ./.github/workflows/index.yml
     with:
       network_id: arbitrum_testnet
       network_endpoint: https://arb-rinkeby.g.alchemy.com/v2/znoYLBRcZ0b7eQd__jZQ6XIP5HuRK3Ge
