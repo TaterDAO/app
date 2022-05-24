@@ -12,6 +12,7 @@ import styled from "styled-components";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
+import useIPFSImage from "@hooks/useIPFSImage";
 
 const Container = styled.div`
   margin-top: var(--global-space-y-margin);
@@ -37,6 +38,9 @@ const Image = styled.img`
   border: 1px solid transparent;
   border-radius: 100%;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Meta = styled.div``;
@@ -49,11 +53,18 @@ const Name = styled.h3`
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
+  const ipfsImage = useIPFSImage(data.image as string);
+
+  //# Render
+  const imageSrc = ipfsImage.valid
+    ? ipfsImage.data
+    : data.image || "/images/placeholder.jpeg";
+
   const endpoint = `/title/${web3.network.id}/${data.objectID}`;
   return (
     <Container>
       <NextLink href={endpoint}>
-        <Image src={data.image || "/images/placeholder.jpeg"} alt={""} />
+        <Image src={imageSrc} alt={ipfsImage.loading ? "Loading..." : ""} />
       </NextLink>
       <Meta>
         <NextLink href={endpoint}>

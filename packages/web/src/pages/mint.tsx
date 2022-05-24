@@ -2,6 +2,8 @@
 import type Web3 from "web3";
 import type { NextPage } from "next";
 type Map = { [key: string]: string };
+import type { Image } from "@T/Image";
+import { ImageSrcType } from "@T/Image";
 
 // Components
 import * as Form from "@components/ui/Form";
@@ -9,6 +11,7 @@ import Button from "@components/ui/Button";
 import ConnectWalletForm from "@components/ConnectWalletForm";
 import TitledPage from "@components/layouts/TitledPage";
 import UnsupportedNetwork from "@components/UnsupportedNetwork";
+import ImageUploadForm from "@components/ImageUploadForm";
 
 // Hooks
 import { useState, useEffect } from "react";
@@ -21,9 +24,16 @@ import { toast } from "react-toastify";
 
 // Utils
 import { csr } from "@utils/browser";
+import { getImageDimensionsFromFile } from "@utils/image";
 
 // Data
 import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
+
+// Constants
+import { MAX_IMAGE_FILE_SIZE } from "@constants/image";
+
+// Services
+import * as ipfs from "@services/IPFS";
 
 const mintMethod = ABI.find(({ name }) => name === "mint");
 const inputs = mintMethod?.inputs.map(({ name }) => name) as Array<string>;
@@ -32,11 +42,13 @@ const initialState = inputs.reduce(
   {}
 ) as Map;
 
+// Handled separately
+delete initialState["image_"];
+
 const labelMap: Map = {
   name_: "Name",
   description_: "Description",
   externalUrl_: "External Url",
-  image_: "Image Url",
   attrLandClassification_: "Land Classification",
   attrLocation_: "Location",
   attrDeed_: "Legal / Deed Url",
@@ -54,13 +66,12 @@ const requiredFields = [
   "attrParcels_"
 ];
 
-const domainFields = ["externalUrl_", "image_", "attrDeed_", "attrKml_"];
+const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
 
 const validationSchema = Joi.object({
   name_: Joi.string(),
   description_: Joi.string(),
   externalUrl_: Joi.string().allow("").uri(),
-  image_: Joi.string().allow("").uri(),
   attrLandClassification_: Joi.string(),
   attrLocation_: Joi.string(),
   attrDeed_: Joi.string().allow("").uri(),
@@ -77,6 +88,7 @@ const MintPage: NextPage = ({}) => {
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [state, set] = useState<Map>(initialState);
+  const [image, setImage] = useState<Image | null>(null);
   const [errorField, setErrorField] = useState<string>("");
 
   // =============
@@ -101,6 +113,32 @@ const MintPage: NextPage = ({}) => {
   // ================
   // === Handlers ===
   // ================
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target?.files ? event.target.files[0] : null;
+
+    if (!file) return;
+
+    // Validate file size
+    if (file.size / 1e6 > MAX_IMAGE_FILE_SIZE) {
+      toast.error(
+        `Image exceeds maximum file size of ${MAX_IMAGE_FILE_SIZE}mb`
+      );
+      return;
+    }
+
+    const { height, width } = await getImageDimensionsFromFile(file);
+    const image = {
+      src: file,
+      type: ImageSrcType.Blob,
+      id: file.name,
+      height,
+      width
+    } as Image;
+    setImage(image);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -154,6 +192,12 @@ const MintPage: NextPage = ({}) => {
         cleanState[fieldId] = value;
       }
 
+      // Upload image to IPFs
+      if (!!image) {
+        const res = await ipfs.uploadImage(image);
+        cleanState["image_"] = res.uri;
+      }
+
       // Submit the transaction on-chain
       await window.td.minter?.mint(cleanState, web3.wallet.address as string);
 
@@ -179,7 +223,16 @@ const MintPage: NextPage = ({}) => {
             <Form.Container>
               {inputs.map((fieldId) => {
                 const id = `form-row-${fieldId}`;
-                return (
+                return fieldId === "image_" ? (
+                  <ImageUploadForm
+                    key={id}
+                    id={id}
+                    onChange={handleImageUpload}
+                    isClearable={!!image}
+                    onClear={() => setImage(null)}
+                    preview={image}
+                  />
+                ) : (
                   <Form.Row key={id} id={id}>
                     <Form.FieldMeta>
                       <Form.FieldLabel>{labelMap[fieldId]}</Form.FieldLabel>

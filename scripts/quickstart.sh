@@ -1,13 +1,9 @@
 echo "\033[1;35m \n Local Development Quick Start \n \033[0m"
 
-# Install dependencies necessary to run
-echo "\033[1;33m 0. Install dependencies \033[0m"
-yarn global add pm2
-echo "\033[1;32m Success \n \033[0m"
-
 # Start local ganache
 echo "\033[1;33m 1. Starting local Hardhat chain in background \033[0m"
 cd packages/contracts
+pm2 update
 pm2 delete hh
 pm2 start --name hh 'yarn dev:chain'
 echo "\033[1;32m Success \n \033[0m"

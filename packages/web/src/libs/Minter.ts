@@ -38,22 +38,18 @@ class Minter {
     );
   }
 
-  async handleError(error: any, receipt: object) {
-    throw error;
-  }
-
   async burn(tokenId: number, fromAddress: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this._contract.methods
         .burn(tokenId)
         .send({ from: fromAddress })
+        .on("error", reject)
         .on("transactionHash", resolve)
         .on("receipt", async (receipt: TransactionReceipt) => {
           navigator.sendBeacon(
             `/api/burn?chainId=${this._chainId}&tokenId=${tokenId}`
           );
-        })
-        .on("error", this.handleError);
+        });
     });
   }
 
@@ -78,6 +74,7 @@ class Minter {
           values.attrTag_
         )
         .send({ from: fromAddress })
+        .on("error", reject)
         .on("transactionHash", resolve)
         .on("receipt", async (receipt: TransactionReceipt) => {
           const tokenId = (receipt.events as EventsLog).Transfer.returnValues
@@ -85,8 +82,7 @@ class Minter {
           navigator.sendBeacon(
             `/api/indexContract?chainId=${this._chainId}&tokenId=${tokenId}`
           );
-        })
-        .on("error", this.handleError);
+        });
     });
   }
 }

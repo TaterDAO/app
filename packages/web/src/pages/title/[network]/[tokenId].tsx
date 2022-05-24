@@ -18,8 +18,8 @@ import BurnForm from "@components/BurnForm";
 import { getChainConfig } from "@utils/chain";
 
 // Hooks
-import { useRouter } from "next/router";
 import useWeb3 from "@hooks/useWeb3";
+import useIPFSImage from "@hooks/useIPFSImage";
 
 const Name = styled.h1``;
 
@@ -90,17 +90,29 @@ const ActionButtons = styled(Row)`
   gap: var(--global-space-nav-margin);
 `;
 
+function makeURL(attr: string | undefined): URL | null {
+  try {
+    return new URL(attr as string);
+  } catch (error) {
+    // Throws if not a valid URL
+    return null;
+  }
+}
+
 const TitlePage: NextPage<{
   title: Hit;
   explorer: string | null;
   contractAddress: string | undefined;
   ownerAddress: string;
 }> = ({ title, explorer, contractAddress, ownerAddress }) => {
-  const router = useRouter();
   const web3 = useWeb3();
+  const ipfsImage = useIPFSImage(title.image as string);
 
-  const hasImage = Boolean(title.image);
-  const ipfsImage = hasImage && title.image?.startsWith("ipfs");
+  //# Render
+
+  const imageSrc = ipfsImage.valid
+    ? ipfsImage.data
+    : title.image || "/images/placeholder.jpeg";
 
   const explorerUrl =
     !!explorer && !!contractAddress
@@ -109,26 +121,19 @@ const TitlePage: NextPage<{
 
   const hasExternalUrl = !!title.externalUrl;
 
-  let deedURL: any = null;
-  try {
-    deedURL = new URL(title["attr.Deed"] as string);
-  } catch (error) {}
-
-  let kmlURL: any = null;
-  try {
-    kmlURL = new URL(title["attr.Kml"] as string);
-  } catch (error) {}
+  const deedURL = makeURL(title["attr.Deed"]);
+  const kmlURL = makeURL(title["attr.Kml"]);
 
   return (
     <div>
       <ImageContainer>
         <Image
-          src={
-            !!title.image && !ipfsImage
-              ? title.image
-              : "/images/placeholder.jpeg"
+          src={imageSrc}
+          alt={
+            ipfsImage.loading
+              ? "Loading image from IPFS..."
+              : "Could not load image"
           }
-          alt={"Could Not Load Image"}
         />
       </ImageContainer>
       <TokenID>Token ID: {title.tokenId}</TokenID>
@@ -166,13 +171,6 @@ const TitlePage: NextPage<{
           </Row>
         )}
       </ActionButtons>
-      {ipfsImage && (
-        <Row>
-          <NamedProperty>
-            <span>Image</span> {title.image}
-          </NamedProperty>
-        </Row>
-      )}
       <Divider />
       <Row>
         <Description>{title.description}</Description>
@@ -180,60 +178,68 @@ const TitlePage: NextPage<{
       <Row>
         <h2>Attributes</h2>
         <Attributes>
-          <tr>
-            <td>Land Classification</td>
-            <td>{title["attr.LandClassification"]}</td>
-          </tr>
-          <tr>
-            <td>Location</td>
-            <td>{title["attr.Location"]}</td>
-          </tr>
-          <tr>
-            <td>Deed</td>
-            <td>
-              {deedURL ? (
-                <a href={title["attr.Deed"]} target="_blank" rel="noreferrer">
-                  View Deed
-                </a>
-              ) : (
-                "None Provided"
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td>Parcels</td>
-            <td>{title["attr.Parcels"]}</td>
-          </tr>
-          <tr>
-            <td>Owner</td>
-            <td>{title["attr.Owner"]}</td>
-          </tr>
-          <tr>
-            <td>KML</td>
-            <td>
-              {kmlURL ? (
-                <a href={title["attr.Kml"]} target="_blank" rel="noreferrer">
-                  View KML
-                </a>
-              ) : (
-                "None Provided"
-              )}
-            </td>
-          </tr>
-          <tr>
-            <td>Tags</td>
-            <td>{title["attr.Tag"]}</td>
-          </tr>
-          <tr>
-            <td>Created At</td>
-            <td>
-              {new Date(title["attr.CreatedDate"] * 1000).toLocaleString()}
-            </td>
-          </tr>
-          <tr>
-            <td>Max Supply</td>
-            <td>{title["attr.MaxSupply"]}</td>
-          </tr>
+          <tbody>
+            {ipfsImage.valid && (
+              <tr>
+                <td>Pinned Image</td>
+                <td>{title.image}</td>
+              </tr>
+            )}
+            <tr>
+              <td>Land Classification</td>
+              <td>{title["attr.LandClassification"]}</td>
+            </tr>
+            <tr>
+              <td>Location</td>
+              <td>{title["attr.Location"]}</td>
+            </tr>
+            <tr>
+              <td>Deed</td>
+              <td>
+                {deedURL ? (
+                  <a href={title["attr.Deed"]} target="_blank" rel="noreferrer">
+                    View Deed
+                  </a>
+                ) : (
+                  "None Provided"
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>Parcels</td>
+              <td>{title["attr.Parcels"]}</td>
+            </tr>
+            <tr>
+              <td>Owner</td>
+              <td>{title["attr.Owner"]}</td>
+            </tr>
+            <tr>
+              <td>KML</td>
+              <td>
+                {kmlURL ? (
+                  <a href={title["attr.Kml"]} target="_blank" rel="noreferrer">
+                    View KML
+                  </a>
+                ) : (
+                  "None Provided"
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>Tags</td>
+              <td>{title["attr.Tag"]}</td>
+            </tr>
+            <tr>
+              <td>Created At</td>
+              <td>
+                {new Date(title["attr.CreatedDate"] * 1000).toLocaleString()}
+              </td>
+            </tr>
+            <tr>
+              <td>Max Supply</td>
+              <td>{title["attr.MaxSupply"]}</td>
+            </tr>
+          </tbody>
         </Attributes>
       </Row>
     </div>
