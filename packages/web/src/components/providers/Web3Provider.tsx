@@ -183,6 +183,7 @@ const Web3Provider: React.FC<{
       chainId,
       name: chainConfig?.chain.name || "Unsupported Chain",
       id: chainConfig?.chain.id || null,
+      internalId: chainConfig?.chain.internalId || null,
       supported: !!chainConfig
     },
     loading: !initialized,

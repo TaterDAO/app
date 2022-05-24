@@ -23,7 +23,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
   // If data was bad.
   if (data) {
     const chainConfig = getChainConfig(chainId);
-    const algoliaIndex = client.initIndex(`titles-${chainConfig?.chain.id}`);
+    const algoliaIndex = client.initIndex(
+      `titles-${chainConfig?.chain.internalId}`
+    );
 
     try {
       await algoliaIndex.saveObject({

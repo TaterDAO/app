@@ -15,7 +15,7 @@ import Button from "@components/ui/Button";
 import BurnForm from "@components/BurnForm";
 
 // Utils
-import { getChainConfig } from "@utils/chain";
+import { getChainConfigByInternalId } from "@utils/chain";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
@@ -251,11 +251,9 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const network = query.network as string;
   const index = algolia.initIndex(`titles-${network}`);
 
-  // TODO: Hardcoded for now – added Arb mainnet
-  const chainId = network === "localhost" ? 31337 : 421611;
-  const chainConfig = getChainConfig(chainId);
-
-  const contract = new TitleContract(chainId);
+  const chainConfig = getChainConfigByInternalId(network);
+  if (!chainConfig) return { notFound: true };
+  const contract = new TitleContract(chainConfig?.chain.id as number);
 
   try {
     const ownerAddress = await contract.getOwner(parseInt(tokenId));
