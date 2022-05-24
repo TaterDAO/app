@@ -3,6 +3,7 @@ import type Web3 from "web3";
 import type { NextPage } from "next";
 type Map = { [key: string]: string };
 import type { Image } from "@T/Image";
+import { ImageSrcType } from "@T/Image";
 
 // Components
 import * as Form from "@components/ui/Form";
@@ -31,6 +32,9 @@ import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
 // Constants
 import { MAX_IMAGE_FILE_SIZE } from "@constants/image";
 
+// Services
+import * as ipfs from "@services/IPFS";
+
 const mintMethod = ABI.find(({ name }) => name === "mint");
 const inputs = mintMethod?.inputs.map(({ name }) => name) as Array<string>;
 const initialState = inputs.reduce(
@@ -38,11 +42,13 @@ const initialState = inputs.reduce(
   {}
 ) as Map;
 
+// Handled separately
+delete initialState["image_"];
+
 const labelMap: Map = {
   name_: "Name",
   description_: "Description",
   externalUrl_: "External Url",
-  image_: "Image Url",
   attrLandClassification_: "Land Classification",
   attrLocation_: "Location",
   attrDeed_: "Legal / Deed Url",
@@ -60,13 +66,12 @@ const requiredFields = [
   "attrParcels_"
 ];
 
-const domainFields = ["externalUrl_", "image_", "attrDeed_", "attrKml_"];
+const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
 
 const validationSchema = Joi.object({
   name_: Joi.string(),
   description_: Joi.string(),
   externalUrl_: Joi.string().allow("").uri(),
-  image_: Joi.string().allow("").uri(),
   attrLandClassification_: Joi.string(),
   attrLocation_: Joi.string(),
   attrDeed_: Joi.string().allow("").uri(),
@@ -125,12 +130,14 @@ const MintPage: NextPage = ({}) => {
     }
 
     const { height, width } = await getImageDimensionsFromFile(file);
-    setImage({
+    const image = {
       src: file,
-      name: file.name,
+      type: ImageSrcType.Blob,
+      id: file.name,
       height,
       width
-    } as Image);
+    } as Image;
+    setImage(image);
   };
 
   const handleSubmit = async () => {
@@ -185,6 +192,12 @@ const MintPage: NextPage = ({}) => {
         cleanState[fieldId] = value;
       }
 
+      // Upload image to IPFs
+      if (!!image) {
+        const res = await ipfs.uploadImage(image);
+        cleanState["image_"] = res.uri;
+      }
+
       // Submit the transaction on-chain
       await window.td.minter?.mint(cleanState, web3.wallet.address as string);
 
@@ -212,6 +225,7 @@ const MintPage: NextPage = ({}) => {
                 const id = `form-row-${fieldId}`;
                 return fieldId === "image_" ? (
                   <ImageUploadForm
+                    key={id}
                     id={id}
                     onChange={handleImageUpload}
                     isClearable={!!image}

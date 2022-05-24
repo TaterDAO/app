@@ -1,11 +1,15 @@
+enum ImageSrcType {
+  Blob = "blob",
+  Remote = "remote"
+}
+
 interface Image {
-  src: string | File;
-  name?: string;
+  src: File | string;
+  type: ImageSrcType;
+  id: string;
   height: number;
   width: number;
-  createdAt?: number;
-  id?: string;
-  blurDataURL: string;
 }
 
 export type { Image };
+export { ImageSrcType };
