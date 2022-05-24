@@ -1,20 +1,23 @@
 module.exports = {
   421611: {
     chain: {
-      id: "abitrum-testnet",
+      id: 421611,
+      internalId: "arbitrum_testnet",
       name: "Arbitrum Testnet"
     },
     contract: {
       address: "0x9724E0A0d2437d519Cea68738180c15d9514f41A"
     },
     rpc: {
-      endpoint: ""
+      endpoint:
+        "https://arb-rinkeby.g.alchemy.com/v2/znoYLBRcZ0b7eQd__jZQ6XIP5HuRK3Ge"
     },
     explorer: "https://testnet.arbiscan.io/"
   },
   31337: {
     chain: {
-      id: "localhost",
+      id: 31337,
+      internalId: "localhost",
       name: "Localhost"
     },
     contract: {

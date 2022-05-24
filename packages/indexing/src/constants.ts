@@ -21,4 +21,6 @@ const HARDHAT_NETWORK_ACCOUNTS = [
   "0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199"
 ];
 
-export { HARDHAT_NETWORK_ACCOUNTS };
+const NETWORKS = ["localhost", "arbitrum_testnet", "arbitrum_mainnet"];
+
+export { HARDHAT_NETWORK_ACCOUNTS, NETWORKS };

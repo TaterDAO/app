@@ -5,13 +5,13 @@ import {
 } from "../src/contract";
 import algolia from "../src/algolia";
 import type { RawMetadata } from "../src/types";
-import { HARDHAT_NETWORK_ACCOUNTS } from "../src/constants";
+import { HARDHAT_NETWORK_ACCOUNTS, NETWORKS } from "../src/constants";
 
 function validateNetworkArg(value: string) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
   }
-  if (!["localhost"].includes(value)) {
+  if (!NETWORKS.includes(value)) {
     throw new Error(`Network [${value}] is unsupported`);
   }
 
@@ -32,11 +32,8 @@ function validateNetworkEndpointArg(value: string) {
   return value;
 }
 
-async function* Fetcher(network: string, networkEndpoint: string) {
-  const contract = makeContract(
-    networkEndpoint,
-    lookupContractAddress(network)
-  );
+async function* Fetcher(contractAddress: string, networkEndpoint: string) {
+  const contract = makeContract(networkEndpoint, contractAddress);
 
   async function fetch(tokenId: number) {
     const res = await contract.methods
@@ -55,33 +52,12 @@ async function* Fetcher(network: string, networkEndpoint: string) {
 }
 
 /**
- * Main Routine.
+ * Serializes titles for Algolia.
+ * @param titles
+ * @returns
  */
-(async () => {
-  const args = process.argv.slice(2);
-
-  const network = validateNetworkArg(args[0]);
-  const networkEndpoint = validateNetworkEndpointArg(args[1]);
-
-  const fetcher = Fetcher(network, networkEndpoint);
-  const titles = [];
-
-  try {
-    for await (const value of fetcher) {
-      titles.push(value);
-    }
-  } catch (error) {
-    //@ts-expect-error
-    const msg = error.message;
-    if (msg.includes("ERC721Metadata: URI query for nonexistent token")) {
-      // noop
-    } else {
-      //@ts-expect-error
-      throw new Error(error);
-    }
-  }
-
-  const serializedTitles = titles
+function serializeTitles(titles: Array<RawMetadata | null>): Array<any> {
+  return titles
     .filter((title) => title)
     .map((data) => {
       const {
@@ -113,12 +89,50 @@ async function* Fetcher(network: string, networkEndpoint: string) {
         "attr.MaxSupply": parseInt(attributes[8].value)
       };
     });
+}
 
-  const algoliaIndex = algolia.initIndex(`titles-${network}`);
+/**
+ * Main Routine.
+ */
+(async () => {
+  const args = process.argv.slice(2);
+
+  const network = validateNetworkArg(args[0]);
+  const networkEndpoint = validateNetworkEndpointArg(args[1]);
+
+  const contractAddress = lookupContractAddress(network);
+
+  console.log(`Indexing ${network} at ${contractAddress}`);
+
+  const fetcher = Fetcher(contractAddress, networkEndpoint);
+  const titles = [];
 
   try {
-    await algoliaIndex.saveObjects(serializedTitles);
-    console.log("Successfully indexed");
+    for await (const value of fetcher) {
+      titles.push(value);
+    }
+  } catch (error) {
+    //@ts-expect-error
+    const msg = error.message;
+    if (msg.includes("ERC721Metadata: URI query for nonexistent token")) {
+      // noop
+    } else {
+      //@ts-expect-error
+      throw new Error(error);
+    }
+  }
+
+  console.log(`${titles.length} titles queried`);
+  if (titles.length === 0) {
+    console.log("No titles to index");
+    return;
+  }
+
+  try {
+    await algolia
+      .initIndex(`titles-${network}`)
+      .saveObjects(serializeTitles(titles));
+    console.log("Indexing successful");
   } catch (error) {
     console.error(error);
   }

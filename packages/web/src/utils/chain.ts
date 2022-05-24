@@ -2,7 +2,8 @@ import networks from "@data/networks";
 
 type ChainConfig = {
   chain: {
-    id: string;
+    id: number;
+    internalId: string;
     name: string;
   };
   contract: {
@@ -23,4 +24,11 @@ function getChainConfig(chainId: number): ChainConfig | null {
   return !!chainInfo ? chainInfo : null;
 }
 
-export { getChainConfig };
+function getChainConfigByInternalId(internalId: string): ChainConfig | null {
+  const config = Object.entries(networks).find(
+    ([id, config]) => config.chain.internalId === internalId
+  );
+  return !!config ? config[1] : null;
+}
+
+export { getChainConfig, getChainConfigByInternalId };

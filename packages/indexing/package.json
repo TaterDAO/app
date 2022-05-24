@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "index": "node dist/scripts/indexTitles.js"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
