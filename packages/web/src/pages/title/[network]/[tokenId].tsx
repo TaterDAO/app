@@ -19,10 +19,7 @@ import { getChainConfig } from "@utils/chain";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
-import { useEffect, useState } from "react";
-
-// Services
-import * as ipfs from "@services/IPFS";
+import useIPFSImage from "@hooks/useIPFSImage";
 
 const Name = styled.h1``;
 
@@ -109,33 +106,13 @@ const TitlePage: NextPage<{
   ownerAddress: string;
 }> = ({ title, explorer, contractAddress, ownerAddress }) => {
   const web3 = useWeb3();
-
-  //# State
-
-  const isIPFSImage = title?.image?.startsWith("ipfs");
-
-  const [loadingImage, setLoadingImage] = useState<boolean>(true);
-  const [image, setImage] = useState<string>(
-    !!title.image
-      ? isIPFSImage
-        ? ""
-        : title.image
-      : "/images/placeholder.jpeg"
-  );
-
-  //# Effects
-
-  useEffect(() => {
-    async function loadImage() {
-      const res = await ipfs.fetchImage(title.image as string);
-      setImage(res);
-      setLoadingImage(false);
-    }
-    if (isIPFSImage) loadImage();
-    else setLoadingImage(false);
-  }, [isIPFSImage, title.image]);
+  const ipfsImage = useIPFSImage(title.image as string);
 
   //# Render
+
+  const imageSrc = ipfsImage.valid
+    ? ipfsImage.data
+    : title.image || "/images/placeholder.jpeg";
 
   const explorerUrl =
     !!explorer && !!contractAddress
@@ -151,9 +128,11 @@ const TitlePage: NextPage<{
     <div>
       <ImageContainer>
         <Image
-          src={image}
+          src={imageSrc}
           alt={
-            loadingImage ? "Loading image from IPFS..." : "Could not load image"
+            ipfsImage.loading
+              ? "Loading image from IPFS..."
+              : "Could not load image"
           }
         />
       </ImageContainer>
@@ -200,7 +179,7 @@ const TitlePage: NextPage<{
         <h2>Attributes</h2>
         <Attributes>
           <tbody>
-            {isIPFSImage && (
+            {ipfsImage.valid && (
               <tr>
                 <td>Pinned Image</td>
                 <td>{title.image}</td>
