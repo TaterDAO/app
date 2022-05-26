@@ -7,6 +7,14 @@ import algolia from "../src/algolia";
 import type { RawMetadata } from "../src/types";
 import { HARDHAT_NETWORK_ACCOUNTS, NETWORKS } from "../src/constants";
 
+type IdIndex = { [id: string]: boolean };
+
+// If the querying results in `MISS_THRESHOLD` consecutive misses, we assume that these were not consecutive burns
+// and that there are no tokens with a higher Id.
+const MISS_THRESHOLD = 25;
+
+let shouldRemoveFromIndex: Array<string> = [];
+
 function validateNetworkArg(value: string) {
   if (!value) {
     throw new Error("Position 0 arg `network` is required");
@@ -32,19 +40,48 @@ function validateNetworkEndpointArg(value: string) {
   return value;
 }
 
-async function* Fetcher(contractAddress: string, networkEndpoint: string) {
+async function* Fetcher(
+  contractAddress: string,
+  networkEndpoint: string,
+  indexedIds: IdIndex
+) {
   const contract = makeContract(networkEndpoint, contractAddress);
 
+  let shouldQuery = true;
+  let consecutiveMissCounter = 0;
+
   async function fetch(tokenId: number) {
-    const res = await contract.methods
-      .tokenURI(tokenId)
-      .call({ from: HARDHAT_NETWORK_ACCOUNTS[0] });
-    return decodeMetadata(res);
+    try {
+      const res = await contract.methods
+        .tokenURI(tokenId)
+        .call({ from: HARDHAT_NETWORK_ACCOUNTS[0] });
+
+      // Reset consecutive miss counter
+      consecutiveMissCounter = 0;
+
+      return decodeMetadata(res);
+    } catch (error) {
+      //@ts-expect-error
+      const errorMessage = error.message as string;
+      if (errorMessage.includes("URI query for nonexistent token")) {
+        if (indexedIds.hasOwnProperty(tokenId)) {
+          // This ID has been burned and needs to be de-indexed
+          shouldRemoveFromIndex.push(tokenId.toString());
+        } else {
+          // This ID has never been indexed or was previously de-indexed after burning;
+          // There could be tokens higher than this.
+          consecutiveMissCounter++;
+          // Break
+          if (consecutiveMissCounter === MISS_THRESHOLD) shouldQuery = false;
+        }
+      }
+      return;
+    }
   }
 
   let tokenId = 0;
 
-  while (true) {
+  while (shouldQuery) {
     const data = await fetch(tokenId);
     tokenId++;
     yield data;
@@ -104,12 +141,27 @@ function serializeTitles(titles: Array<RawMetadata | null>): Array<any> {
 
   console.log(`Indexing ${network} at ${contractAddress}`);
 
-  const fetcher = Fetcher(contractAddress, networkEndpoint);
+  const index = algolia.initIndex(`titles-${network}`);
+
+  // Query Algolia to determine which Titles have been burned;
+  // they will exist in the system but not in the contract.
+  let indexedIds: IdIndex = {};
+  await index.browseObjects({
+    query: "",
+    batch: (hits) => {
+      hits.forEach((hit) => {
+        indexedIds[hit.objectID] = true;
+      });
+    }
+  });
+
+  const fetcher = Fetcher(contractAddress, networkEndpoint, indexedIds);
   const titles = [];
 
   try {
     for await (const value of fetcher) {
-      titles.push(value);
+      // Filter misses
+      if (!!value) titles.push(value);
     }
   } catch (error) {
     //@ts-expect-error
@@ -128,10 +180,18 @@ function serializeTitles(titles: Array<RawMetadata | null>): Array<any> {
     return;
   }
 
+  if (shouldRemoveFromIndex.length > 0) {
+    console.log(`${shouldRemoveFromIndex.length} burned titles to de-index`);
+    try {
+      await index.deleteObjects(shouldRemoveFromIndex);
+      console.log("De-Indexing successful");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   try {
-    await algolia
-      .initIndex(`titles-${network}`)
-      .saveObjects(serializeTitles(titles));
+    await index.saveObjects(serializeTitles(titles));
     console.log("Indexing successful");
   } catch (error) {
     console.error(error);
