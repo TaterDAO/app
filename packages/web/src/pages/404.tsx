@@ -1,6 +1,7 @@
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
-const page: React.FC = () => {
+const Page: NextPage = () => {
   const router = useRouter();
 
   const lookingForTitle = router.asPath.startsWith("/title/");
@@ -20,4 +21,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default Page;
