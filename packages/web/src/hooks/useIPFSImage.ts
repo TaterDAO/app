@@ -17,17 +17,10 @@ function useIPFSImage(uri: string): {
     async function loadImage() {
       setLoading(true);
       const res = await ipfs.fetchImage(uri);
-      localStorage.setItem(uri, res); // cache
       set(res); // update state
       setLoading(false);
     }
-    if (valid && isClient) {
-      // First: check cache to see if this image has already been loaded
-      const cachedData = localStorage.getItem(uri);
-      if (cachedData) set(cachedData);
-      // Otherwise, load and cache
-      else loadImage();
-    }
+    if (valid && isClient) loadImage();
   }, [valid, uri, isClient]);
 
   return { loading, data, valid };
