@@ -2,7 +2,8 @@ name: Index Contract
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/2 * * * *" # every 2 minutes
+    #- cron: "*/2 * * * *" # every 2 minutes
+    - cron: "*/5 * * * *" # shortest interval provided by GHA is 5m
 jobs:
   testnet:
     uses: ./.github/workflows/index.yml
