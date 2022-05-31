@@ -1,6 +1,6 @@
 {
   "name": "contracts",
-  "license": "UNLICENSED",
+  "license": "GPLV3",
   "scripts": {
     "console": "yarn hardhat console",
     "compile": "yarn hardhat compile",

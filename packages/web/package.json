@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "license": "GPLV3",
   "private": true,
   "scripts": {
     "dev:env": "vercel env pull .env.development.local",

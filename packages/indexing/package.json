@@ -1,4 +1,6 @@
 {
+  "name": "indexing",
+  "license": "GPLV3",
   "scripts": {
     "build": "tsc",
     "index": "node dist/scripts/indexTitles.js"
