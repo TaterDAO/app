@@ -16,7 +16,7 @@ jobs:
   mainnet:
     uses: ./.github/workflows/index.yml
     with:
-      network_id: arbitrum-mainnet
+      network_id: arbitrum_mainnet
       network_endpoint: https://arb-mainnet.g.alchemy.com/v2/9M3hKpAbh5NStcX39OiZHIzYSr8iOgwW
     secrets:
       ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
