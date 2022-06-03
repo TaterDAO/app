@@ -1,4 +1,19 @@
 module.exports = {
+  42161: {
+    chain: {
+      id: 42161,
+      internalId: "arbitrum_mainnet",
+      name: "Arbitrum One"
+    },
+    contract: {
+      address: "0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF"
+    },
+    rpc: {
+      endpoint:
+        "https://arb-mainnet.g.alchemy.com/v2/9M3hKpAbh5NStcX39OiZHIzYSr8iOgwW"
+    },
+    explorer: "https://arbiscan.io/"
+  },
   421611: {
     chain: {
       id: 421611,

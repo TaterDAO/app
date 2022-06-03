@@ -15,9 +15,10 @@ dotenv.config({
 });
 
 const {
-  PRIVATE_KEY,
+  TATERDAO_ADMIN_PRIVATE_KEY,
   ALCHEMY_RINKEBY_URI,
   ALCHEMY_ARBITRUM_TESTNET_URI,
+  ALCHEMY_ARBITRUM_MAINNET_URI,
   REPORT_GAS,
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
@@ -33,7 +34,7 @@ migrations.forEach((migration) => {
   migration.addFlag("write", "Write outputs to filesystem?");
 });
 
-const accounts = PRIVATE_KEY ? [PRIVATE_KEY] : [];
+const accounts = TATERDAO_ADMIN_PRIVATE_KEY ? [TATERDAO_ADMIN_PRIVATE_KEY] : [];
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -46,6 +47,11 @@ export default {
       url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
       //url: "https://rinkeby.arbitrum.io/rpc",
       chainId: 421611,
+      accounts,
+    },
+    arbitrum_mainnet: {
+      url: ALCHEMY_ARBITRUM_MAINNET_URI || "https://arb1.arbitrum.io/rpc",
+      chainId: 42161,
       accounts,
     },
   },
