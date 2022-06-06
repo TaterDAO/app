@@ -63,7 +63,6 @@ export default createGlobalStyle`
     --global-color-bg-disabled: var(--color-mostly-black);
 
     --global-color-font: var(--color-ghost);
-    --global-color-brand: var(--color-bright-yellow);
     --global-color-font-secondary: var(--color-fossil);
     --global-color-error: var(--color-bright-red);
 
@@ -103,7 +102,7 @@ export default createGlobalStyle`
     min-height: 100vh;
   }
 
-  h1 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--global-font-brand);
   }
 
@@ -127,5 +126,10 @@ export default createGlobalStyle`
   main {
     padding-top: 3rem;
     padding-bottom: 3rem;
+  }
+
+  p {
+    line-height: 2;
+    color: var(--color-silver);
   }
 `;
