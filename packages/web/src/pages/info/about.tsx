@@ -59,9 +59,9 @@ const AboutPage: NextPage = () => {
         <Section>
           <Bio>
             <Image
-              src="/images/nick.jpg"
-              height={200}
-              width={200}
+              src="/images/james.jpg"
+              height={190}
+              width={190}
               layout="fixed"
             />
             <p>
@@ -85,8 +85,8 @@ const AboutPage: NextPage = () => {
           <Bio>
             <Image
               src="/images/nick.jpg"
-              height={200}
-              width={200}
+              height={190}
+              width={190}
               layout="fixed"
             />
             <p>
