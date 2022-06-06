@@ -21,7 +21,7 @@ const Section = styled.section`
   }
 `;
 
-const Bio = styled.div`
+const Bio = styled(Section)`
   display: grid;
   grid-template-columns: 3fr 10fr;
   column-gap: var(--global-space-x-margin);
@@ -70,39 +70,84 @@ const AboutPage: NextPage = () => {
               collar work to the wide-open spaces of agri-finance. He is
               currently a VP for a land and mortgage company where he originates
               and services a large agricultural commercial loan portfolio. James
-              is also the founder of agritech company Farmapper, a cloud-based
-              mapping application built for farmers, ranchers, landlords and
-              more. An early-adopter, he&apos;s been in the Web3 and crypto
-              space since 2014, with a desire to improve land transfer
-              transactions. He&apos;s been an active member of LexDAO, since
-              2019. He can be found on Twitter{" "}
-              <a href="https://twitter.com/taterdao">@taterdao</a> and{" "}
-              <a href="https://twitter.com/mccallios">@mccallios</a>.
+              is also the founder of agritech company{" "}
+              <a href="https://www.farmapper.com/" target="_blank">
+                Farmapper
+              </a>
+              , a cloud-based mapping application built for farmers, ranchers,
+              landlords and more. An early-adopter, he&apos;s been in the Web3
+              and crypto space since 2014, with a desire to improve land
+              transfer transactions. He&apos;s been an active member of LexDAO,
+              since 2019. He can be found on Twitter{" "}
+              <a href="https://twitter.com/taterdao" target="_blank">
+                @taterdao
+              </a>{" "}
+              and{" "}
+              <a href="https://twitter.com/mccallios" target="_blank">
+                @mccallios
+              </a>
+              .
             </p>
           </Bio>
         </Section>
-        <Section>
-          <Bio>
-            <Image
-              src="/images/nick.jpg"
-              height={190}
-              width={190}
-              layout="fixed"
-            />
-            <p>
-              <h3>Nick Rishwain, JD</h3>, is a VP of business development at a
-              Web2 legal technology and expert witness marketing platform.
-              Formerly a local government employee, Nick was frustrated with the
-              inefficiency that plagues bureaucracies and decided to venture
-              into the private sector. He is a real estate agent and investor
-              with experience in commercial and multifamily residential real
-              estate. He was brought into the Web3 and crypto space by friends
-              in LexDAO in 2020. He can be found on Twitter{" "}
-              <a href="https://twitter.com/taterdao">@taterdao</a> and{" "}
-              <a href="https://twitter.com/NickJRishwain">@NickJRishwain</a>.
-            </p>
-          </Bio>
-        </Section>
+        <Bio>
+          <Image
+            src="/images/nick.jpg"
+            height={190}
+            width={190}
+            layout="fixed"
+          />
+          <p>
+            <h3>Nick Rishwain, JD</h3>, is a VP of business development at a
+            Web2 legal technology and expert witness marketing platform.
+            Formerly a local government employee, Nick was frustrated with the
+            inefficiency that plagues bureaucracies and decided to venture into
+            the private sector. He is a real estate agent and investor with
+            experience in commercial and multifamily residential real estate. He
+            was brought into the Web3 and crypto space by friends in{" "}
+            <a href="https://www.lexdao.coop/" target="_blank">
+              LexDAO
+            </a>{" "}
+            in 2020. He can be found on Twitter{" "}
+            <a href="https://twitter.com/taterdao" target="_blank">
+              @taterdao
+            </a>{" "}
+            and{" "}
+            <a href="https://twitter.com/NickJRishwain" target="_blank">
+              @NickJRishwain
+            </a>
+            .
+          </p>
+        </Bio>
+        <Bio>
+          <Image
+            src="/images/will.jpg"
+            height={190}
+            width={190}
+            layout="fixed"
+          />
+          <p>
+            <h3>Will Holley</h3> is the founder and CTO of{" "}
+            <a href="https://721.dev/" target="_blank">
+              721 Labs
+            </a>{" "}
+            where he pioneered the usage of NFTs as property titles for Real
+            World Assets such as luxury Rolexes, fine art, and cultural
+            collectibles. He currently runs an independent chapter of{" "}
+            <a href="https://www.radicalxchange.org/" target="_blank">
+              RadicalxChange
+            </a>{" "}
+            focused on developing token standards for{" "}
+            <a href="https://partialcommonownership.com" target="_blank">
+              Partial Common Ownership
+            </a>
+            , and is on Twitter{" "}
+            <a href="https://twitter.com/waholleyiv" target="_blank">
+              @waholleyiv
+            </a>
+            .
+          </p>
+        </Bio>
       </Section>
       <Divider />
       <Section>
