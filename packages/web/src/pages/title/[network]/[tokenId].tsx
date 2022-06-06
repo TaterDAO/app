@@ -13,6 +13,7 @@ import TitleContract from "@libs/TitleContract";
 import ProfileLink from "@components/ProfileLink";
 import Button from "@components/ui/Button";
 import BurnForm from "@components/BurnForm";
+import Divider from "@components/ui/Divider";
 
 // Utils
 import { getChainConfigByInternalId } from "@utils/chain";
@@ -37,12 +38,6 @@ const NamedProperty = styled.div`
     font-weight: 700;
     color: var(--global-color-font-secondary);
   }
-`;
-
-const Divider = styled.hr`
-  border: 0;
-  border-bottom: 1px solid var(--global-color-border);
-  margin: var(--global-space-y-margin) 0;
 `;
 
 const Description = styled.p`
