@@ -132,4 +132,8 @@ export default createGlobalStyle`
     line-height: 2;
     color: var(--color-silver);
   }
+
+  ol, ul {
+    padding-left: var(--global-space-y-margin);
+  }
 `;

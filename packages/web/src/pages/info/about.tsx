@@ -7,19 +7,7 @@ import styled from "styled-components";
 // Components
 import Divider from "@components/ui/Divider";
 import Image from "next/image";
-
-const Section = styled.section`
-  margin-bottom: var(--global-space-y-margin);
-
-  h1 {
-    margin-bottom: var(--global-space-y-margin);
-  }
-
-  h3 {
-    display: inline-block;
-    color: var(--global-color-font);
-  }
-`;
+import { Section } from "@components/layouts/Info";
 
 const Bio = styled(Section)`
   display: grid;

@@ -8,7 +8,7 @@ const Container = styled.div`
 
 type Props = {
   title: string;
-  children: JSX.Element;
+  children: React.ReactNode | Array<React.ReactNode>;
 };
 
 const TitledPage = ({ title, children }: Props) => {

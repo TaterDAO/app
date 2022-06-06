@@ -13,6 +13,7 @@ import AboutButton from "@components/global/AboutButton";
 import TwitterButton from "@components/global/TwitterButton";
 import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
+import TOSButton from "@components/global/TOSButton";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -74,6 +75,8 @@ const Layout = ({ children }: { children: JSX.Element }) => {
         <SnapshotButton />
         <DiscordButton />
         <TwitterButton />
+        <Divider />
+        <TOSButton />
       </VerticalNav>
       <Main>
         <HeadNav>
