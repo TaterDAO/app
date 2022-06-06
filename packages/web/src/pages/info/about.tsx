@@ -63,6 +63,7 @@ const AboutPage: NextPage = () => {
               height={190}
               width={190}
               layout="fixed"
+              alt="Portrait of James McCall"
             />
             <p>
               <h3>James McCall</h3> is a former practicing attorney and
@@ -71,7 +72,11 @@ const AboutPage: NextPage = () => {
               currently a VP for a land and mortgage company where he originates
               and services a large agricultural commercial loan portfolio. James
               is also the founder of agritech company{" "}
-              <a href="https://www.farmapper.com/" target="_blank">
+              <a
+                href="https://www.farmapper.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Farmapper
               </a>
               , a cloud-based mapping application built for farmers, ranchers,
@@ -79,11 +84,19 @@ const AboutPage: NextPage = () => {
               and crypto space since 2014, with a desire to improve land
               transfer transactions. He&apos;s been an active member of LexDAO,
               since 2019. He can be found on Twitter{" "}
-              <a href="https://twitter.com/taterdao" target="_blank">
+              <a
+                href="https://twitter.com/taterdao"
+                target="_blank"
+                rel="noreferrer"
+              >
                 @taterdao
               </a>{" "}
               and{" "}
-              <a href="https://twitter.com/mccallios" target="_blank">
+              <a
+                href="https://twitter.com/mccallios"
+                target="_blank"
+                rel="noreferrer"
+              >
                 @mccallios
               </a>
               .
@@ -96,6 +109,7 @@ const AboutPage: NextPage = () => {
             height={190}
             width={190}
             layout="fixed"
+            alt="Portrait of Nick Rishwain, JD"
           />
           <p>
             <h3>Nick Rishwain, JD</h3>, is a VP of business development at a
@@ -105,15 +119,23 @@ const AboutPage: NextPage = () => {
             the private sector. He is a real estate agent and investor with
             experience in commercial and multifamily residential real estate. He
             was brought into the Web3 and crypto space by friends in{" "}
-            <a href="https://www.lexdao.coop/" target="_blank">
+            <a href="https://www.lexdao.coop/" target="_blank" rel="noreferrer">
               LexDAO
             </a>{" "}
             in 2020. He can be found on Twitter{" "}
-            <a href="https://twitter.com/taterdao" target="_blank">
+            <a
+              href="https://twitter.com/taterdao"
+              target="_blank"
+              rel="noreferrer"
+            >
               @taterdao
             </a>{" "}
             and{" "}
-            <a href="https://twitter.com/NickJRishwain" target="_blank">
+            <a
+              href="https://twitter.com/NickJRishwain"
+              target="_blank"
+              rel="noreferrer"
+            >
               @NickJRishwain
             </a>
             .
@@ -125,24 +147,37 @@ const AboutPage: NextPage = () => {
             height={190}
             width={190}
             layout="fixed"
+            alt="Portrait of Will Holley"
           />
           <p>
             <h3>Will Holley</h3> is the founder and CTO of{" "}
-            <a href="https://721.dev/" target="_blank">
+            <a href="https://721.dev/" target="_blank" rel="noreferrer">
               721 Labs
             </a>{" "}
             where he pioneered the usage of NFTs as property titles for Real
             World Assets such as luxury Rolexes, fine art, and cultural
             collectibles. He currently runs an independent chapter of{" "}
-            <a href="https://www.radicalxchange.org/" target="_blank">
+            <a
+              href="https://www.radicalxchange.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
               RadicalxChange
             </a>{" "}
             focused on developing token standards for{" "}
-            <a href="https://partialcommonownership.com" target="_blank">
+            <a
+              href="https://partialcommonownership.com"
+              target="_blank"
+              rel="noreferrer"
+            >
               Partial Common Ownership
             </a>
             , and is on Twitter{" "}
-            <a href="https://twitter.com/waholleyiv" target="_blank">
+            <a
+              href="https://twitter.com/waholleyiv"
+              target="_blank"
+              rel="noreferrer"
+            >
               @waholleyiv
             </a>
             .
