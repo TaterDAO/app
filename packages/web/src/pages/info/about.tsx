@@ -45,12 +45,18 @@ const AboutPage: NextPage = () => {
       <Section>
         <h1>Mission</h1>
         <p>
-          You&apos;re probably wondering why we chose TaterDAO as the name of
-          this business. Well, TaterDAO, LLC is (legal jargon). More
-          importantly, we wanted to have web3 fun and we have combined
-          backgrounds in agriculture and real estate. Potato farms kept seeming
-          to come up in our trash talk. TaterDAO made us laugh. That&apos;s the
-          complexity of the decision.
+          TaterDAO core mission is to develop data standards and processes
+          allowing digital organizations to manage, buy, sell, and lease real
+          property using smart contracts, decentralized financial and legal
+          structures. The core primitives begin with the TaterDAO NFT platform
+          that will quickly enable parties to mint and manage real world asset
+          NFT&apos;s to use in their ventures.
+        </p>
+        <br />
+        <p>
+          If that&apos;s too lofty and confusing for you. We&apos;d like to help
+          you make money and do so more efficiently with the financial rails
+          enabled by web3.
         </p>
       </Section>
       <Divider />
