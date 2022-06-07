@@ -11,7 +11,7 @@ import TitledPage from "@components/layouts/TitledPage";
 const TOSPage: NextPage = () => {
   return (
     <>
-      <TitledPage title="TaterDAO, LLC Terms of Service">
+      <TitledPage title="Tater, LLC Terms of Service">
         <Section>
           <h1>1. Terms</h1>
           <p>
@@ -63,13 +63,13 @@ const TOSPage: NextPage = () => {
                 install and use our software or Application within the confines
                 of this Agreement. When using our Application, Site or Service,
                 you assume full responsibility for your use and agree not to use
-                it in ways not explicitly authorized by TaterDAO, LLC. You are
+                it in ways not explicitly authorized by Tater, LLC. You are
                 responsible for your use of TaterDAO.com and for any use of your
                 TaterDAO account on behalf of anyone using your account. You
                 agree not to access, copy, or otherwise use the application,
                 including our intellectual property and trademarks, except as
                 authorized by these Terms of Service or as otherwise authorized
-                in writing by TaterDAO, LLC. By using our Site and Service you
+                in writing by Tater, LLC. By using our Site and Service you
                 agree not to perform any of the following:
                 <ol style={{ listStyleType: "lower-alpha" }}>
                   <li>
@@ -113,7 +113,7 @@ const TOSPage: NextPage = () => {
             <li>
               <p>
                 This license shall automatically terminate if you violate any of
-                these restrictions and may be terminated by TaterDAO, LLC at any
+                these restrictions and may be terminated by Tater, LLC at any
                 time. Upon terminating your viewing of these Materials or upon
                 the termination of this license, you must destroy any downloaded
                 Materials in your possession whether in electronic or printed
@@ -151,7 +151,7 @@ const TOSPage: NextPage = () => {
           <h1>3. What We Own</h1>
           <p>
             All material and services available on the Site, and all material
-            and services provided by or through TaterDAO, LLC its affiliates,
+            and services provided by or through Tater, LLC its affiliates,
             subsidiaries, employees, agents, licensors or other commercial
             partners including, but not limited to, software, all informational
             text, software documentation, design of and "look and feel," layout,
@@ -162,16 +162,15 @@ const TOSPage: NextPage = () => {
             "Materials"), are owned by us or other parties that have licensed
             their material or provided services to us, and are protected by
             copyright, trademark, trade secret and other intellectual property
-            laws. All TaterDAO, LLC trademarks and service marks, logos, slogans
-            and taglines are the property of TaterDAO, LLC. All other
-            trademarks, service marks, logos, slogans and taglines are the
-            property of their respective owners. Except as otherwise
-            specifically provided herein, nothing should be construed as
-            granting any license or right to use any trademarks, service marks,
-            logos, slogans or taglines displayed on TaterDAO, LLC without our
-            express written permission, or the express written permission of
-            such third-party that may own the trademark, service mark, logo,
-            slogan or tagline.
+            laws. All Tater, LLC trademarks and service marks, logos, slogans
+            and taglines are the property of Tater, LLC. All other trademarks,
+            service marks, logos, slogans and taglines are the property of their
+            respective owners. Except as otherwise specifically provided herein,
+            nothing should be construed as granting any license or right to use
+            any trademarks, service marks, logos, slogans or taglines displayed
+            on Tater, LLC without our express written permission, or the express
+            written permission of such third-party that may own the trademark,
+            service mark, logo, slogan or tagline.
           </p>
         </Section>
         <Section>
@@ -202,61 +201,60 @@ const TOSPage: NextPage = () => {
         <Section>
           <h1>5. Disclaimer</h1>
           <p>
-            THE MATERIALS ON TATERDAO, LLC'S WEB SITE DOMAINS INCLUDING
-            TaterDAO.com ARE PROVIDED "AS IS". TaterDAO, LLC MAKES NO
-            WARRANTIES, EXPRESSED OR IMPLIED, AND HEREBY DISCLAIMS AND NEGATES
-            ALL OTHER WARRANTIES, INCLUDING WITHOUT LIMITATION, IMPLIED
-            WARRANTIES OR CONDITIONS OF MERCHANTABILITY, FITNESS FOR A
-            PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF INTELLECTUAL PROPERTY OR
-            OTHER VIOLATION OF RIGHTS. FURTHER, TATERDAO, LLC DOES NOT WARRANT
-            OR MAKE ANY REPRESENTATIONS CONCERNING THE ACCURACY, LIKELY RESULTS,
-            OR RELIABILITY OF THE USE OF THE MATERIALS ON ITS INTERNET WEBSITE
-            OR OTHERWISE RELATING TO SUCH MATERIALS OR ON ANY SITES LINKED TO
-            THIS SITE.
+            THE MATERIALS ON TATER, LLC'S WEB SITE DOMAINS INCLUDING
+            TaterDAO.com ARE PROVIDED "AS IS". Tater, LLC MAKES NO WARRANTIES,
+            EXPRESSED OR IMPLIED, AND HEREBY DISCLAIMS AND NEGATES ALL OTHER
+            WARRANTIES, INCLUDING WITHOUT LIMITATION, IMPLIED WARRANTIES OR
+            CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
+            NON-INFRINGEMENT OF INTELLECTUAL PROPERTY OR OTHER VIOLATION OF
+            RIGHTS. FURTHER, TATER, LLC DOES NOT WARRANT OR MAKE ANY
+            REPRESENTATIONS CONCERNING THE ACCURACY, LIKELY RESULTS, OR
+            RELIABILITY OF THE USE OF THE MATERIALS ON ITS INTERNET WEBSITE OR
+            OTHERWISE RELATING TO SUCH MATERIALS OR ON ANY SITES LINKED TO THIS
+            SITE.
           </p>
         </Section>
         <Section>
           <h1>6. Limitations</h1>
           <p>
-            IN NO EVENT SHALL TATERDAO, LLC OR ITS SUPPLIERS BE LIABLE FOR ANY
+            IN NO EVENT SHALL TATER, LLC OR ITS SUPPLIERS BE LIABLE FOR ANY
             DAMAGES (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF DATA OR
             PROFIT, OR DUE TO BUSINESS INTERRUPTION,) ARISING OUT OF THE USE OR
-            INABILITY TO USE THE MATERIALS ON TaterDAO, LLC'S INTERNET SITE,
-            EVEN IF TATERDAO, LLC OR A TATERDAO, LLC AUTHORIZED REPRESENTATIVE
-            HAS BEEN NOTIFIED ORALLY OR IN WRITING OF THE POSSIBILITY OF SUCH
-            DAMAGE. BECAUSE SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON
-            IMPLIED WARRANTIES, OR LIMITATIONS OF LIABILITY FOR CONSEQUENTIAL OR
+            INABILITY TO USE THE MATERIALS ON Tater, LLC'S INTERNET SITE, EVEN
+            IF TATER, LLC OR A TATER, LLC AUTHORIZED REPRESENTATIVE HAS BEEN
+            NOTIFIED ORALLY OR IN WRITING OF THE POSSIBILITY OF SUCH DAMAGE.
+            BECAUSE SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON IMPLIED
+            WARRANTIES, OR LIMITATIONS OF LIABILITY FOR CONSEQUENTIAL OR
             INCIDENTAL DAMAGES, THESE LIMITATIONS MAY NOT APPLY TO YOU.
           </p>
         </Section>
         <Section>
           <h1>7. Revisions and Errata</h1>
           <p>
-            The materials appearing on TaterDAO, LLC's website could include
-            technical, typographical, or photographic errors. TaterDAO, LLC does
+            The materials appearing on Tater, LLC's website could include
+            technical, typographical, or photographic errors. Tater, LLC does
             not warrant that any of the materials on its web site are accurate,
-            complete, or current. TaterDAO, LLC may make changes to the
-            materials contained on its website at any time without notice.
-            TaterDAO, LLC does not, however, make any commitment to update the
-            materials. All data is just an approximation of location over a
-            projection and does not speak to any legal consequences or ground
-            truth.
+            complete, or current. Tater, LLC may make changes to the materials
+            contained on its website at any time without notice. Tater, LLC does
+            not, however, make any commitment to update the materials. All data
+            is just an approximation of location over a projection and does not
+            speak to any legal consequences or ground truth.
           </p>
         </Section>
         <Section>
           <h1>8. Links</h1>
           <p>
-            TaterDAO, LLC has not reviewed all of the sites linked to its
-            Internet website and is not responsible for the contents of any such
-            linked site. The inclusion of any link does not imply endorsement by
-            TaterDAO, LLC of the site. Use of any such linked web site is at the
-            user's own risk.
+            Tater, LLC has not reviewed all of the sites linked to its Internet
+            website and is not responsible for the contents of any such linked
+            site. The inclusion of any link does not imply endorsement by Tater,
+            LLC of the site. Use of any such linked web site is at the user's
+            own risk.
           </p>
         </Section>
         <Section>
           <h1>9. Site Terms of Use Modifications</h1>
           <p>
-            TaterDAO, LLC may revise these terms of use for its web site at any
+            Tater, LLC may revise these terms of use for its web site at any
             time without notice. By using this website you are agreeing to be
             bound by the then current version of these Terms and Conditions of
             Use.
@@ -265,9 +263,9 @@ const TOSPage: NextPage = () => {
         <Section>
           <h1>10. Governing Law</h1>
           <p>
-            You agree to defend, indemnify and hold harmless TaterDAO, LLC and
-            its officers, directors, employees and agents, from and against any
-            and all claims, damages, obligations, losses, liabilities, costs or
+            You agree to defend, indemnify and hold harmless Tater, LLC and its
+            officers, directors, employees and agents, from and against any and
+            all claims, damages, obligations, losses, liabilities, costs or
             debt, and expenses (including but not limited to attorney's fees)
             arising from: (i) your use of and access to the Materials and
             TaterDAO websites and services; (ii) your violation of any term of
@@ -289,8 +287,8 @@ const TOSPage: NextPage = () => {
         <Section>
           <h1>11. Indemnity</h1>
           <p>
-            Any claim relating to TaterDAO, LLC's website shall be governed by
-            the laws of the State of Idaho without regard to its conflict of law
+            Any claim relating to Tater, LLC's website shall be governed by the
+            laws of the State of Idaho without regard to its conflict of law
             provisions.
           </p>
         </Section>

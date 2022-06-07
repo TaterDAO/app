@@ -22,7 +22,7 @@ const AboutPage: NextPage = () => {
         <h1>Why TaterDAO?</h1>
         <p>
           You&apos;re probably wondering why we chose TaterDAO as the name of
-          this business. Well, TaterDAO, LLC is (legal jargon). More
+          this business. Well, Tater, LLC is our Wyoming Series LLC. More
           importantly, we wanted to have web3 fun and we have combined
           backgrounds in agriculture and real estate. Potato farms kept seeming
           to come up in our trash talk. TaterDAO made us laugh. That&apos;s the
