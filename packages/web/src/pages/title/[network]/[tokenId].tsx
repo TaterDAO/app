@@ -14,6 +14,7 @@ import ProfileLink from "@components/ProfileLink";
 import Button from "@components/ui/Button";
 import BurnForm from "@components/BurnForm";
 import Divider from "@components/ui/Divider";
+import Image from "@components/title/Image";
 
 // Utils
 import { getChainConfigByInternalId } from "@utils/chain";
@@ -60,24 +61,6 @@ const Attributes = styled.table`
   }
 `;
 
-const ImageContainer = styled.div`
-  background: var(--global-color-bg-disabled);
-  padding: 3rem 0;
-  margin-bottom: calc(var(--global-space-y-margin) * 2);
-`;
-
-const Image = styled.img`
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  color: var(--global-color-font-secondary);
-  font-style: italic;
-  text-align: center;
-  font-weight: 700;
-`;
-
 const ActionButtons = styled(Row)`
   display: flex;
   flex-direction: row;
@@ -121,16 +104,7 @@ const TitlePage: NextPage<{
 
   return (
     <div>
-      <ImageContainer>
-        <Image
-          src={imageSrc}
-          alt={
-            ipfsImage.loading
-              ? "Loading image from IPFS..."
-              : "Could not load image"
-          }
-        />
-      </ImageContainer>
+      <Image src={imageSrc} loading={ipfsImage.loading} />
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
       <Row>
