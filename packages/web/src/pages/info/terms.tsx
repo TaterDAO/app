@@ -95,8 +95,8 @@ const TOSPage: NextPage = () => {
                   </li>
                   <li>
                     <p>
-                      transfer the Materials to another person or "mirror" the
-                      Materials on any other server;
+                      transfer the Materials to another person or
+                      &quot;mirror&quot; the Materials on any other server;
                     </p>
                   </li>
                   <li>
@@ -154,23 +154,24 @@ const TOSPage: NextPage = () => {
             and services provided by or through Tater, LLC its affiliates,
             subsidiaries, employees, agents, licensors or other commercial
             partners including, but not limited to, software, all informational
-            text, software documentation, design of and "look and feel," layout,
-            photographs, graphics, audio, video, messages, interactive and
-            instant messaging, design and functions, files, documents, images,
-            or other materials, whether publicly posted or privately transmitted
-            as well as all derivative works thereof (collectively, the
-            "Materials"), are owned by us or other parties that have licensed
-            their material or provided services to us, and are protected by
-            copyright, trademark, trade secret and other intellectual property
-            laws. All Tater, LLC trademarks and service marks, logos, slogans
-            and taglines are the property of Tater, LLC. All other trademarks,
-            service marks, logos, slogans and taglines are the property of their
-            respective owners. Except as otherwise specifically provided herein,
-            nothing should be construed as granting any license or right to use
-            any trademarks, service marks, logos, slogans or taglines displayed
-            on Tater, LLC without our express written permission, or the express
-            written permission of such third-party that may own the trademark,
-            service mark, logo, slogan or tagline.
+            text, software documentation, design of and &quot;look and
+            feel,&quot; layout, photographs, graphics, audio, video, messages,
+            interactive and instant messaging, design and functions, files,
+            documents, images, or other materials, whether publicly posted or
+            privately transmitted as well as all derivative works thereof
+            (collectively, the &quot;Materials&quot;), are owned by us or other
+            parties that have licensed their material or provided services to
+            us, and are protected by copyright, trademark, trade secret and
+            other intellectual property laws. All Tater, LLC trademarks and
+            service marks, logos, slogans and taglines are the property of
+            Tater, LLC. All other trademarks, service marks, logos, slogans and
+            taglines are the property of their respective owners. Except as
+            otherwise specifically provided herein, nothing should be construed
+            as granting any license or right to use any trademarks, service
+            marks, logos, slogans or taglines displayed on Tater, LLC without
+            our express written permission, or the express written permission of
+            such third-party that may own the trademark, service mark, logo,
+            slogan or tagline.
           </p>
         </Section>
         <Section>
@@ -192,7 +193,7 @@ const TOSPage: NextPage = () => {
           <p>
             You retain all ownership and rights to the Content that you create
             and post to the Service. You can share it, delete it, or keep it to
-            yourself so long as it doesn't violate our terms of service and
+            yourself so long as it doesn&apos;t violate our terms of service and
             basic decency. As an additional manner for retrieving your data, we
             have provided the KML storage, so that you are able to retrieve the
             polygons that you create and use on other compatible services.
@@ -201,14 +202,14 @@ const TOSPage: NextPage = () => {
         <Section>
           <h1>5. Disclaimer</h1>
           <p>
-            THE MATERIALS ON TATER, LLC'S WEB SITE DOMAINS INCLUDING
-            TaterDAO.com ARE PROVIDED "AS IS". Tater, LLC MAKES NO WARRANTIES,
-            EXPRESSED OR IMPLIED, AND HEREBY DISCLAIMS AND NEGATES ALL OTHER
-            WARRANTIES, INCLUDING WITHOUT LIMITATION, IMPLIED WARRANTIES OR
-            CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
-            NON-INFRINGEMENT OF INTELLECTUAL PROPERTY OR OTHER VIOLATION OF
-            RIGHTS. FURTHER, TATER, LLC DOES NOT WARRANT OR MAKE ANY
-            REPRESENTATIONS CONCERNING THE ACCURACY, LIKELY RESULTS, OR
+            THE MATERIALS ON TATER, LLC&apos;S WEB SITE DOMAINS INCLUDING
+            TaterDAO.com ARE PROVIDED &quot;AS IS&quot;. Tater, LLC MAKES NO
+            WARRANTIES, EXPRESSED OR IMPLIED, AND HEREBY DISCLAIMS AND NEGATES
+            ALL OTHER WARRANTIES, INCLUDING WITHOUT LIMITATION, IMPLIED
+            WARRANTIES OR CONDITIONS OF MERCHANTABILITY, FITNESS FOR A
+            PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF INTELLECTUAL PROPERTY OR
+            OTHER VIOLATION OF RIGHTS. FURTHER, TATER, LLC DOES NOT WARRANT OR
+            MAKE ANY REPRESENTATIONS CONCERNING THE ACCURACY, LIKELY RESULTS, OR
             RELIABILITY OF THE USE OF THE MATERIALS ON ITS INTERNET WEBSITE OR
             OTHERWISE RELATING TO SUCH MATERIALS OR ON ANY SITES LINKED TO THIS
             SITE.
@@ -220,18 +221,18 @@ const TOSPage: NextPage = () => {
             IN NO EVENT SHALL TATER, LLC OR ITS SUPPLIERS BE LIABLE FOR ANY
             DAMAGES (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF DATA OR
             PROFIT, OR DUE TO BUSINESS INTERRUPTION,) ARISING OUT OF THE USE OR
-            INABILITY TO USE THE MATERIALS ON Tater, LLC'S INTERNET SITE, EVEN
-            IF TATER, LLC OR A TATER, LLC AUTHORIZED REPRESENTATIVE HAS BEEN
-            NOTIFIED ORALLY OR IN WRITING OF THE POSSIBILITY OF SUCH DAMAGE.
-            BECAUSE SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON IMPLIED
-            WARRANTIES, OR LIMITATIONS OF LIABILITY FOR CONSEQUENTIAL OR
+            INABILITY TO USE THE MATERIALS ON Tater, LLC&apos;S INTERNET SITE,
+            EVEN IF TATER, LLC OR A TATER, LLC AUTHORIZED REPRESENTATIVE HAS
+            BEEN NOTIFIED ORALLY OR IN WRITING OF THE POSSIBILITY OF SUCH
+            DAMAGE. BECAUSE SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON
+            IMPLIED WARRANTIES, OR LIMITATIONS OF LIABILITY FOR CONSEQUENTIAL OR
             INCIDENTAL DAMAGES, THESE LIMITATIONS MAY NOT APPLY TO YOU.
           </p>
         </Section>
         <Section>
           <h1>7. Revisions and Errata</h1>
           <p>
-            The materials appearing on Tater, LLC's website could include
+            The materials appearing on Tater, LLC&apos;s website could include
             technical, typographical, or photographic errors. Tater, LLC does
             not warrant that any of the materials on its web site are accurate,
             complete, or current. Tater, LLC may make changes to the materials
@@ -247,8 +248,8 @@ const TOSPage: NextPage = () => {
             Tater, LLC has not reviewed all of the sites linked to its Internet
             website and is not responsible for the contents of any such linked
             site. The inclusion of any link does not imply endorsement by Tater,
-            LLC of the site. Use of any such linked web site is at the user's
-            own risk.
+            LLC of the site. Use of any such linked web site is at the
+            user&apos;s own risk.
           </p>
         </Section>
         <Section>
@@ -266,8 +267,8 @@ const TOSPage: NextPage = () => {
             You agree to defend, indemnify and hold harmless Tater, LLC and its
             officers, directors, employees and agents, from and against any and
             all claims, damages, obligations, losses, liabilities, costs or
-            debt, and expenses (including but not limited to attorney's fees)
-            arising from: (i) your use of and access to the Materials and
+            debt, and expenses (including but not limited to attorney&apos;s
+            fees) arising from: (i) your use of and access to the Materials and
             TaterDAO websites and services; (ii) your violation of any term of
             these Terms of Service; (iii) your violation of any third party
             right, including without limitation any copyright, property, or
@@ -278,8 +279,8 @@ const TOSPage: NextPage = () => {
             defend us against such claims and we may require you to pay for an
             attorney(s) of our choice in such cases. You agree that this
             indemnity extends to requiring you to pay for our reasonable
-            attorneys' fees, court costs, and disbursements. In the event of a
-            claim such as one described in this paragraph, we may elect to
+            attorneys&apos; fees, court costs, and disbursements. In the event
+            of a claim such as one described in this paragraph, we may elect to
             settle with the party/parties making the claim and you shall be
             liable for the damages as though we had proceeded with a trial.
           </p>
@@ -287,8 +288,8 @@ const TOSPage: NextPage = () => {
         <Section>
           <h1>11. Indemnity</h1>
           <p>
-            Any claim relating to Tater, LLC's website shall be governed by the
-            laws of the State of Idaho without regard to its conflict of law
+            Any claim relating to Tater, LLC&apos;s website shall be governed by
+            the laws of the State of Idaho without regard to its conflict of law
             provisions.
           </p>
         </Section>
