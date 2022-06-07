@@ -12,7 +12,7 @@ jobs:
       network_endpoint: https://arb-rinkeby.g.alchemy.com/v2/znoYLBRcZ0b7eQd__jZQ6XIP5HuRK3Ge
     secrets:
       ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
-      ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+      ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
   mainnet:
     uses: ./.github/workflows/index.yml
     with:
@@ -20,5 +20,5 @@ jobs:
       network_endpoint: https://arb-mainnet.g.alchemy.com/v2/9M3hKpAbh5NStcX39OiZHIzYSr8iOgwW
     secrets:
       ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
-      ALGOLIA_SEARCH_KEY: ${{ secrets.ALGOLIA_SEARCH_KEY }}
+      ALGOLIA_ADMIN_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
  

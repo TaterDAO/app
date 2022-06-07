@@ -5,7 +5,7 @@ config({ path: ".env" });
 
 const client = algolia(
   process.env.ALGOLIA_APPLICATION_ID as string,
-  process.env.ALGOLIA_SEARCH_KEY as string
+  process.env.ALGOLIA_ADMIN_KEY as string
 );
 
 async function deleteIndices() {
