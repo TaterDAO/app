@@ -16,6 +16,7 @@
     "algoliasearch": "^4.14.2",
     "defender-autotask-utils": "^1.25.0",
     "defender-relay-client": "^1.26.1",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "web3": "^1.7.5"
   }
 }
