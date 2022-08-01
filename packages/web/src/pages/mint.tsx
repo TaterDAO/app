@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 // Utils
 import { csr } from "@utils/browser";
 import { getImageDimensionsFromFile } from "@utils/image";
+import { escapeQuotes } from "@utils/form";
 
 // Data
 import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
@@ -178,7 +179,7 @@ const MintPage: NextPage = ({}) => {
       for (const fieldId in state) {
         let value = state[fieldId];
         // Escape double quotes
-        value = value.replaceAll(/\\"/g, "&quot;");
+        value = escapeQuotes(value);
 
         // Is this a domain field w/o {http|https}?
         if (
