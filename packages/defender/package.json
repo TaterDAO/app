@@ -1,0 +1,18 @@
+{
+  "name": "taterdao-openzeppelin-defender",
+  "license": "GPLv3",
+  "private": true,
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "deploy": "node dist/autotasks/upload.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.6.3",
+    "defender-autotask-client": "^1.25.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
