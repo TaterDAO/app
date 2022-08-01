@@ -23,4 +23,16 @@ function escapeQuotes(value: string): string {
   return value;
 }
 
-export { escapeQuotes };
+/**
+ * Replaces colons with their HTML entity representation.
+ * @see https://www.htmlsymbols.xyz/unicode/U+003A
+ * @param value String value to escape.
+ * @returns Escaped string.
+ */
+function escapeColons(value: string): string {
+  value = value.replaceAll(":", "&#58;");
+
+  return value;
+}
+
+export { escapeQuotes, escapeColons };
