@@ -118,9 +118,8 @@ function decodeMetadata(raw: string): RawMetadata | null {
 
     // Patch: ensure that any metadata created prior to 9e08781c3feea61d31d99469c1bdc634a36ec571
     // does not break due to the presence of double quotes when being parsed into JSON.
-    text = escapeQuotes(text);
-
-    return JSON.parse(text);
+    // @ts-ignore
+    return JSON.parse(String.raw(text));
   } catch (error) {
     console.log("\nError Decoding Metadata:");
     console.log(text);
