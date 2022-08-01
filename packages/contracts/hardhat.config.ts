@@ -36,6 +36,13 @@ migrations.forEach((migration) => {
 
 const accounts = TATERDAO_ADMIN_PRIVATE_KEY ? [TATERDAO_ADMIN_PRIVATE_KEY] : [];
 
+const abiExporterConfig = {
+  runOnCompile: false,
+  clear: true,
+  flat: false,
+  pretty: false,
+};
+
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -82,11 +89,8 @@ export default {
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
-  abiExporter: {
-    path: "../web/src/data",
-    runOnCompile: false,
-    clear: true,
-    flat: false,
-    pretty: false,
-  },
+  abiExporter: [
+    { path: "../web/src/data", ...abiExporterConfig },
+    { path: "../defender/src/data/abi", ...abiExporterConfig },
+  ],
 };
