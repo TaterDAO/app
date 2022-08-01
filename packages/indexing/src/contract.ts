@@ -1,7 +1,7 @@
 import type { RawMetadata } from "./types";
 import Web3 from "web3";
 import { readFileSync } from "node:fs";
-import { escapeQuotes } from "./utils";
+//import { escapeQuotes } from "./utils";
 
 // TODO: ABI should be available within its own package
 const abi = [
