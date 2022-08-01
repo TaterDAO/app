@@ -1,7 +1,7 @@
 import type { RawMetadata } from "./types";
 import Web3 from "web3";
 import { readFileSync } from "node:fs";
-//import { escapeQuotes } from "./utils";
+import { escapeQuotes } from "./utils";
 
 // TODO: ABI should be available within its own package
 const abi = [
@@ -118,8 +118,7 @@ function decodeMetadata(raw: string): RawMetadata | null {
 
     // Patch: ensure that any metadata created prior to 9e08781c3feea61d31d99469c1bdc634a36ec571
     // does not break due to the presence of double quotes when being parsed into JSON.
-    // @ts-ignore
-    return JSON.parse(String.raw(text));
+    return JSON.parse(escapeQuotes(text));
   } catch (error) {
     console.log("\nError Decoding Metadata:");
     console.log(text);
