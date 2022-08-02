@@ -1,0 +1,55 @@
+name: Deploy Autotasks
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "packages/defender/package.json"
+      - "packages/defender/src/**"
+      - ".github/workflows/deploy-autotasks.yml"
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/defender
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: use Node stable to install dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: current
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: "Install Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      - name: Use Node v12 for production build
+        uses: actions/setup-node@v3
+        with:
+          # Autotask lambdas are run in Node v12 runtime.
+          node-version: lts/erbium
+
+      # Builds entire package (specifically so that upload script can be
+      # invoked in the subsequent step) and then builds autotasks
+      - name: Build
+        run: |
+          yarn build
+          yarn autotask:build:index-contract-arbitrum-scheduled
+          yarn autotask:build:index-contract-arbitrum-testnet-scheduled
+
+      - name: Deploy (on push to Main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          yarn autotask:deploy index-contract-arbitrum-scheduled
+          yarn autotask:deploy index-contract-arbitrum-testnet-scheduled
+        env:
+          API_KEY: ${{ secrets.AUTOTASK_API_KEY }}
+          API_SECRET: ${{ secrets.AUTOTASK_API_SECRET }}
