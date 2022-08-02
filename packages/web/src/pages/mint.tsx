@@ -12,6 +12,7 @@ import ConnectWalletForm from "@components/ConnectWalletForm";
 import TitledPage from "@components/layouts/TitledPage";
 import UnsupportedNetwork from "@components/UnsupportedNetwork";
 import ImageUploadForm from "@components/ImageUploadForm";
+import Map from "@components/Map";
 
 // Hooks
 import { useState, useEffect } from "react";
@@ -227,6 +228,7 @@ const MintPage: NextPage = ({}) => {
             <Form.Container>
               {inputs.map((fieldId) => {
                 const id = `form-row-${fieldId}`;
+                console.log(id);
                 return fieldId === "image_" ? (
                   <ImageUploadForm
                     key={id}
@@ -246,18 +248,22 @@ const MintPage: NextPage = ({}) => {
                         </Form.FieldSecondaryLabel>
                       )}
                     </Form.FieldMeta>
-                    <Form.Input
-                      disabled={submitting}
-                      value={state[fieldId]}
-                      onChange={(e) =>
-                        set((prevState) => ({
-                          ...prevState,
-                          [fieldId]: e.target.value
-                        }))
-                      }
-                      invalid={errorField === fieldId}
-                      placeholder={`Enter ${labelMap[fieldId]}...`}
-                    />
+                    {id === "form-row-attrLocation_" ? (
+                      <Map />
+                    ) : (
+                      <Form.Input
+                        disabled={submitting}
+                        value={state[fieldId]}
+                        onChange={(e) =>
+                          set((prevState) => ({
+                            ...prevState,
+                            [fieldId]: e.target.value
+                          }))
+                        }
+                        invalid={errorField === fieldId}
+                        placeholder={`Enter ${labelMap[fieldId]}...`}
+                      />
+                    )}
                   </Form.Row>
                 );
               })}
