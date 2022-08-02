@@ -34,8 +34,8 @@ const Map: React.FC<{
       zoom: zoom
     });
 
-    // Add geocoder
-    map.current.addControl(geocoder);
+    map.current.addControl(geocoder());
+    map.current.addControl(new mapbox.NavigationControl());
   });
 
   useEffect(() => {
