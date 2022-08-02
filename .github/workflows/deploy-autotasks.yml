@@ -1,0 +1,31 @@
+name: Deploy Autotasks
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/defender
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          # Autotask lambdas are run in Node v12 runtime.
+          node-version: 12
+
+      - name: Build
+        run: |
+          yarn autotask:build:index-contract-arbitrum-scheduled
+          yarn autotask:build:index-contract-arbitrum-testnet-scheduled
+
+      - name: Deploy
+        run: |
+          echo "To do"
