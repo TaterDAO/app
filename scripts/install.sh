@@ -24,4 +24,10 @@ rm -rf node_modules
 yarn --silent
 cp .env.sample .env
 
+echo "\033[1;33m Defender \033[0m"
+cd ../Defender
+rm -rf node_modules
+yarn --silent
+cp .env.sample .env
+
 echo "\033[1;35m Installation Complete \033[0m"
