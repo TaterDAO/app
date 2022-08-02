@@ -18,6 +18,7 @@ import { decodeMetadata } from "../../utils/contract";
 // Shared modules
 import ABI from "../../data/abi/contracts/TitleV1_0.sol/TitleV1_0.json";
 
+// Types
 type AlgoliaRecordsById = { [id: string]: ObjectWithObjectID };
 
 class Indexer {
@@ -99,10 +100,27 @@ class Indexer {
   }
 
   /**
+   * Which block should queries for event data start from?
+   * When querying events, we start from a block some reasonable number
+   * behind the current block; otherwise the query will timeout. Moreover,
+   * because the Indexer is intended to be run periodically, all blocks prior to
+   * our starting block should already have been indexed.
+   * `N` is currently set at 1000.
+   * @returns Block number
+   */
+  private async _eventsQueryStartBlock(): Promise<number> {
+    const blockNum = await this._web3.eth.getBlockNumber();
+    return blockNum - 1000;
+  }
+
+  /**
    * Index the contract into Algolia.
    */
   public async index() {
     console.log("Indexing");
+
+    // Determine which block to query from
+    const queryBlock = await this._eventsQueryStartBlock();
 
     // BURNING: Query records already indexed by Algolia; these will be used to determine
     // which Titles have been burned - they'll exist in Algolia but not in the contract.
@@ -115,7 +133,7 @@ class Indexer {
     (
       await this._contract.getPastEvents("Transfer", {
         filter: { to: "0x0000000000000000000000000000000000000000" },
-        fromBlock: 0
+        fromBlock: queryBlock
       })
     ).forEach((event) => {
       const tokenId = event.returnValues.tokenId;
@@ -148,7 +166,7 @@ class Indexer {
     (
       await this._contract.getPastEvents("Transfer", {
         filter: { from: "0x0000000000000000000000000000000000000000" },
-        fromBlock: 0
+        fromBlock: queryBlock
       })
     ).forEach((event) => {
       const tokenId = event.returnValues.tokenId;
