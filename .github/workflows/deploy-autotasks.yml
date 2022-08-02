@@ -1,9 +1,11 @@
 name: Deploy Autotasks
 on:
   workflow_dispatch:
-  # Triggered on push to any branch in order to test that no autotask
-  # builds have been broken.
   push:
+    paths:
+      - "packages/defender/package.json"
+      - "packages/defender/src/**"
+      - ".github/workflows/deploy-autotasks.yml"
 jobs:
   build-and-deploy:
     name: Build and Deploy
@@ -37,4 +39,8 @@ jobs:
       - name: Deploy (on push to Main)
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          echo "To do"
+          yarn autotask:deploy index-contract-arbitrum-scheduled
+          yarn autotask:deploy index-contract-arbitrum-testnet-scheduled
+        env:
+          API_KEY: ${{ secrets.AUTOTASK_API_KEY }}
+          API_SECRET: ${{ secrets.AUTOTASK_API_SECRET }}
