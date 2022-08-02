@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { SunLight } from "iconoir-react";
 
-const El = styled.button<{ primary?: boolean; $loading?: boolean }>`
+const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
   border-radius: var(--global-border-radius);
   background-color: ${({ primary }) =>
     primary ? "var(--color-bright-indigo)" : "transparent"};
@@ -85,7 +85,7 @@ const Button: React.FC<{
   onClick
 }) => {
   return (
-    <El
+    <ButtonSC
       primary={primary}
       $loading={loading}
       onClick={onClick}
@@ -97,8 +97,9 @@ const Button: React.FC<{
           <SunLight fontSize={12} color="var(--global-color-font)" />
         </Loading>
       )}
-    </El>
+    </ButtonSC>
   );
 };
 
 export default Button;
+export { ButtonSC };
