@@ -109,6 +109,7 @@ class Indexer {
     const indexedRecords = await this._loadRecords();
 
     // BURNING: Query burn events and update map
+    // TODO: This is breaking on Arb One.
     const requiresDeIndexing: { [id: string]: boolean } = {};
     const burned: { [id: string]: boolean } = {};
     (
