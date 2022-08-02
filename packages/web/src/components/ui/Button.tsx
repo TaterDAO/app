@@ -71,23 +71,26 @@ const Text = styled.span<{ $loading: boolean }>`
   ${({ $loading }) => $loading && `opacity: 0;`}
 `;
 
-type Props = {
+const Button: React.FC<{
   primary?: boolean;
   disabled?: boolean;
   loading?: boolean;
   children: string;
   onClick: () => any;
-} & typeof defaultProps;
-
-const defaultProps = {
-  primary: false,
-  loading: false,
-  disabled: false
-};
-
-const Button: React.FC<Props> = ({ children, primary, loading, onClick }) => {
+}> = ({
+  children,
+  primary = false,
+  loading = false,
+  disabled = false,
+  onClick
+}) => {
   return (
-    <El primary={primary} $loading={loading} onClick={onClick}>
+    <El
+      primary={primary}
+      $loading={loading}
+      onClick={onClick}
+      disabled={disabled}
+    >
       <Text $loading={loading}>{children}</Text>
       {loading && (
         <Loading>
@@ -97,7 +100,5 @@ const Button: React.FC<Props> = ({ children, primary, loading, onClick }) => {
     </El>
   );
 };
-
-Button.defaultProps = defaultProps;
 
 export default Button;
