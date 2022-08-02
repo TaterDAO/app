@@ -31,8 +31,11 @@ jobs:
           # Autotask lambdas are run in Node v12 runtime.
           node-version: lts/erbium
 
+      # Builds entire package (specifically so that upload script can be
+      # invoked in the subsequent step) and then builds autotasks
       - name: Build
         run: |
+          yarn build
           yarn autotask:build:index-contract-arbitrum-scheduled
           yarn autotask:build:index-contract-arbitrum-testnet-scheduled
 
