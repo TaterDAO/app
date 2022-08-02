@@ -15,14 +15,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Node
+      - name: use Node stable to install dependencies
         uses: actions/setup-node@v3
         with:
-          # Autotask lambdas are run in Node v12 runtime.
-          node-version: 12
+          node-version: current
 
       - name: "Install Dependencies"
         run: "yarn install --frozen-lockfile --dev"
+
+      - name: Use Node v12 for production build
+        uses: actions/setup-node@v3
+        with:
+          # Autotask lambdas are run in Node v12 runtime.
+          node-version: lts/erbium
 
       - name: Build
         run: |
