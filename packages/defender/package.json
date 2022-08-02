@@ -1,0 +1,25 @@
+{
+  "name": "taterdao-openzeppelin-defender",
+  "license": "GPLv3",
+  "private": true,
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "autotask:build:index-contract-arbitrum-scheduled": "yarn ncc build src/autotasks/index-contract-arbitrum-scheduled/index.ts -o dist/autotasks/index-contract-arbitrum-scheduled -m",
+    "autotask:build:index-contract-arbitrum-testnet-scheduled": "yarn ncc build src/autotasks/index-contract-arbitrum-testnet-scheduled/index.ts -o dist/autotasks/index-contract-arbitrum-testnet-scheduled -m",
+    "autotask:deploy": "node dist/scripts/upload-autotask.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.6.3",
+    "@vercel/ncc": "^0.34.0",
+    "defender-autotask-client": "^1.25.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "algoliasearch": "^4.14.2",
+    "defender-autotask-utils": "^1.25.0",
+    "defender-relay-client": "^1.26.1",
+    "dotenv": "^16.0.1",
+    "web3": "^1.7.5"
+  }
+}
