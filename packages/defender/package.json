@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rimraf dist && tsc",
+    "autotask:build:index-contract-arbitrum-scheduled": "yarn ncc build src/autotasks/index-contract-arbitrum-scheduled/index.ts -o dist/autotasks/index-contract-arbitrum-scheduled -m",
     "autotask:build:index-contract-arbitrum-testnet-scheduled": "yarn ncc build src/autotasks/index-contract-arbitrum-testnet-scheduled/index.ts -o dist/autotasks/index-contract-arbitrum-testnet-scheduled -m",
     "autotask:deploy": "node dist/scripts/upload-autotask.js"
   },

@@ -66,7 +66,6 @@ class Indexer {
   /**
    * Loads records from Algolia.
    */
-  //@ts-ignore
   private async _loadRecords(): Promise<AlgoliaRecordsById> {
     const records: Array<ObjectWithObjectID> = await new Promise(
       async (resolve) => {
@@ -88,7 +87,6 @@ class Indexer {
     );
   }
 
-  //@ts-ignore
   private async _getTokenMetadata(
     tokenId: string
   ): Promise<RawMetadata | null> {
