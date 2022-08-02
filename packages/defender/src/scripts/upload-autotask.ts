@@ -1,5 +1,5 @@
 import path from "path";
-import client from "./client";
+import client from "../services/autotask";
 
 (async () => {
   const args = process.argv.slice(2);
@@ -18,10 +18,15 @@ import client from "./client";
   if (!Boolean(taskId)) throw new Error(`Task "${taskName}" not found`);
 
   console.log("Uploading");
-  await client.updateCodeFromFolder(
-    taskId,
-    path.resolve("dist/autotasks", taskName)
-  );
+  const dirPath = path.resolve("dist/autotasks", taskName);
 
-  console.log(`${taskName} src updated`);
+  console.log(dirPath);
+
+  try {
+    await client.updateCodeFromFolder(taskId, dirPath);
+
+    console.log(`${taskName} src updated`);
+  } catch (error) {
+    console.error(error);
+  }
 })();

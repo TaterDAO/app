@@ -9,12 +9,19 @@ Each autotask must define an identically named subdirectory within `src/autotask
 ### Local Development
 
 ```shell
+nvm install # In production, autotasks are executed in a Node 12 runtime.
 yarn build
 node dist/autotasks/<task name>
+```
+
+### Production Build
+
+```shell
+yarn ncc build src/autotasks/<task name>/index.ts -o dist/autotasks/<task name> -m
 ```
 
 ### Deploying
 
 ```shell
-yarn deploy <task name>
+yarn autotask:deploy <task name>
 ```
