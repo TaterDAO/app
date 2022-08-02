@@ -159,7 +159,7 @@ class Indexer {
         `${requiresDeIndexingArray.length} burned titles to de-index`
       );
       try {
-        //await this._algoliaIndex.deleteObjects(requiresDeIndexingArray);
+        await this._algoliaIndex.deleteObjects(requiresDeIndexingArray);
         console.log("De-Indexing successful");
       } catch (error) {
         console.error(error);
