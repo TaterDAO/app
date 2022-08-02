@@ -21,6 +21,9 @@ jobs:
           # Autotask lambdas are run in Node v12 runtime.
           node-version: 12
 
+      - name: "Install Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
       - name: Build
         run: |
           yarn autotask:build:index-contract-arbitrum-scheduled
