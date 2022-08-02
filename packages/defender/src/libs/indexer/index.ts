@@ -100,17 +100,23 @@ class Indexer {
   }
 
   /**
-   * Which block should queries for event data start from?
+   * Which blocks should be indexed?
    * When querying events, we start from a block some reasonable number
    * behind the current block; otherwise the query will timeout. Moreover,
    * because the Indexer is intended to be run periodically, all blocks prior to
    * our starting block should already have been indexed.
-   * `N` is currently set at 1000.
    * @returns Block number
    */
-  private async _eventsQueryStartBlock(): Promise<number> {
-    const blockNum = await this._web3.eth.getBlockNumber();
-    return blockNum - 1000;
+  private async _blockRange(): Promise<{
+    fromBlock: number;
+    toBlock: number;
+  }> {
+    const range = 1000;
+    const currentBlockNumber = await this._web3.eth.getBlockNumber();
+    return {
+      fromBlock: currentBlockNumber - range,
+      toBlock: currentBlockNumber
+    };
   }
 
   /**
@@ -120,20 +126,19 @@ class Indexer {
     console.log("Indexing");
 
     // Determine which block to query from
-    const queryBlock = await this._eventsQueryStartBlock();
+    const blockRange = await this._blockRange();
 
     // BURNING: Query records already indexed by Algolia; these will be used to determine
     // which Titles have been burned - they'll exist in Algolia but not in the contract.
     const indexedRecords = await this._loadRecords();
 
     // BURNING: Query burn events and update map
-    // TODO: This is breaking on Arb One.
     const requiresDeIndexing: { [id: string]: boolean } = {};
     const burned: { [id: string]: boolean } = {};
     (
       await this._contract.getPastEvents("Transfer", {
         filter: { to: "0x0000000000000000000000000000000000000000" },
-        fromBlock: queryBlock
+        ...blockRange
       })
     ).forEach((event) => {
       const tokenId = event.returnValues.tokenId;
@@ -166,7 +171,7 @@ class Indexer {
     (
       await this._contract.getPastEvents("Transfer", {
         filter: { from: "0x0000000000000000000000000000000000000000" },
-        fromBlock: queryBlock
+        ...blockRange
       })
     ).forEach((event) => {
       const tokenId = event.returnValues.tokenId;
