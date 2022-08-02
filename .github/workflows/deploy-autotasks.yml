@@ -1,9 +1,9 @@
 name: Deploy Autotasks
 on:
   workflow_dispatch:
+  # Triggered on push to any branch in order to test that no autotask
+  # builds have been broken.
   push:
-    branches:
-      - main
 jobs:
   build-and-deploy:
     name: Build and Deploy
@@ -26,6 +26,7 @@ jobs:
           yarn autotask:build:index-contract-arbitrum-scheduled
           yarn autotask:build:index-contract-arbitrum-testnet-scheduled
 
-      - name: Deploy
+      - name: Deploy (on push to Main)
+        if: contains(github.ref, "main")
         run: |
           echo "To do"
