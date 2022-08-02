@@ -17,10 +17,6 @@ enum Events {
   Error = "error"
 }
 
-type EventsLog = {
-  [eventName: string]: EventLog;
-};
-
 class Minter {
   private _web3: Web3;
   private _chainId: number;
@@ -44,12 +40,7 @@ class Minter {
         .burn(tokenId)
         .send({ from: fromAddress })
         .on("error", reject)
-        .on("transactionHash", resolve)
-        .on("receipt", async (receipt: TransactionReceipt) => {
-          navigator.sendBeacon(
-            `/api/burn?chainId=${this._chainId}&tokenId=${tokenId}`
-          );
-        });
+        .on("transactionHash", resolve);
     });
   }
 
@@ -75,14 +66,7 @@ class Minter {
         )
         .send({ from: fromAddress })
         .on("error", reject)
-        .on("transactionHash", resolve)
-        .on("receipt", async (receipt: TransactionReceipt) => {
-          const tokenId = (receipt.events as EventsLog).Transfer.returnValues
-            .tokenId as string;
-          navigator.sendBeacon(
-            `/api/indexContract?chainId=${this._chainId}&tokenId=${tokenId}`
-          );
-        });
+        .on("transactionHash", resolve);
     });
   }
 }

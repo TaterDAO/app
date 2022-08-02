@@ -42,14 +42,14 @@ jobs:
       - name: Build
         run: |
           yarn build
-          yarn autotask:build:index-contract-arbitrum-scheduled
-          yarn autotask:build:index-contract-arbitrum-testnet-scheduled
+          yarn autotask:build:index-contract-arbitrum
+          yarn autotask:build:index-contract-arbitrum-testnet
 
       - name: Deploy (on push to Main)
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          yarn autotask:deploy index-contract-arbitrum-scheduled
-          yarn autotask:deploy index-contract-arbitrum-testnet-scheduled
+          yarn autotask:deploy index-contract-arbitrum
+          yarn autotask:deploy index-contract-arbitrum-testnet
         env:
           API_KEY: ${{ secrets.AUTOTASK_API_KEY }}
           API_SECRET: ${{ secrets.AUTOTASK_API_SECRET }}

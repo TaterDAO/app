@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Button from "./Button";
+import { ButtonSC } from "./Button";
 
 const Container = styled.div``;
 
@@ -9,7 +9,7 @@ const Row = styled.div`
   padding: 1rem 0;
   margin-bottom: 1rem;
 
-  ${Button} {
+  ${ButtonSC} {
     margin-left: auto;
   }
 `;

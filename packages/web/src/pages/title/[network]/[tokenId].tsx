@@ -120,7 +120,7 @@ const TitlePage: NextPage<{
       <ActionButtons>
         {ownerAddress === web3.wallet.address && (
           <Row>
-            <BurnForm tokenId={title.tokenId} />
+            <BurnForm tokenId={title.tokenId} titleName={title.name} />
           </Row>
         )}
         {hasExternalUrl && (

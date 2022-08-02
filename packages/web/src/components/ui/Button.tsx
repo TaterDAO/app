@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { SunLight } from "iconoir-react";
 
-const Button = styled.button<{ primary?: boolean }>`
+const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
   border-radius: var(--global-border-radius);
   background-color: ${({ primary }) =>
     primary ? "var(--color-bright-indigo)" : "transparent"};
@@ -18,15 +19,27 @@ const Button = styled.button<{ primary?: boolean }>`
   font-family: inherit;
 
   transition: var(--global-transition);
-  cursor: pointer;
 
 
-  &:hover {
-    border-color ${({ primary }) =>
-      primary ? "transparent" : "var(--global-color-border-hover)"};
-    background-color: ${({ primary }) =>
-      primary ? "var(--color-indigo)" : "transparent"};
-  }
+  ${({ $loading, primary }) =>
+    $loading
+      ? `
+    filter: grayscale(0.5);
+    position: relative;
+    cursor: default;
+  `
+      : `
+
+    cursor: pointer;
+
+    &:hover {
+      border-color ${
+        primary ? "transparent" : "var(--global-color-border-hover)"
+      };
+      background-color: ${primary ? "var(--color-indigo)" : "transparent"};
+    }
+  `}
+
 
   &:disabled {
     background-color: var(--global-color-bg-disabled);
@@ -36,8 +49,57 @@ const Button = styled.button<{ primary?: boolean }>`
   }
 `;
 
-Button.defaultProps = {
-  primary: false
+const Loading = styled.div`
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  svg {
+    animation: rotate 4s linear infinite;
+  }
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Text = styled.span<{ $loading: boolean }>`
+  ${({ $loading }) => $loading && `opacity: 0;`}
+`;
+
+const Button: React.FC<{
+  primary?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  children: string;
+  onClick: () => any;
+}> = ({
+  children,
+  primary = false,
+  loading = false,
+  disabled = false,
+  onClick
+}) => {
+  return (
+    <ButtonSC
+      primary={primary}
+      $loading={loading}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <Text $loading={loading}>{children}</Text>
+      {loading && (
+        <Loading>
+          <SunLight fontSize={12} color="var(--global-color-font)" />
+        </Loading>
+      )}
+    </ButtonSC>
+  );
 };
 
 export default Button;
+export { ButtonSC };
