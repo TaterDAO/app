@@ -37,7 +37,7 @@ jobs:
           yarn autotask:build:index-contract-arbitrum-testnet-scheduled
 
       - name: Deploy (on push to Main)
-        if: ${{ github.ref == 'refs/heads/main' }}
+        #if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           yarn autotask:deploy index-contract-arbitrum-scheduled
           yarn autotask:deploy index-contract-arbitrum-testnet-scheduled
