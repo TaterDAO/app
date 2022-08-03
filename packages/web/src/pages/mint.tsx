@@ -178,19 +178,22 @@ const MintPage: NextPage = ({}) => {
       // Sanitize inputs
       for (const fieldId in state) {
         let value = state[fieldId];
-        // Escape double quotes
-        value = escapeQuotes(value);
 
-        // Escape colons
-        value = escapeColons(value);
+        if (!!value) {
+          // Escape double quotes
+          value = escapeQuotes(value);
 
-        // Is this a domain field w/o {http|https}?
-        if (
-          domainFields.includes(fieldId) &&
-          value !== "" &&
-          !new RegExp(/https?:\/\//).test(value)
-        ) {
-          value = `http://${value}`;
+          // Escape colons
+          value = escapeColons(value);
+
+          // Is this a domain field w/o {http|https}?
+          if (
+            domainFields.includes(fieldId) &&
+            value !== "" &&
+            !new RegExp(/https?:\/\//).test(value)
+          ) {
+            value = `http://${value}`;
+          }
         }
 
         cleanState[fieldId] = value;
@@ -200,6 +203,8 @@ const MintPage: NextPage = ({}) => {
       if (!!image) {
         const res = await ipfs.uploadImage(image);
         cleanState["image_"] = res.uri;
+      } else {
+        cleanState["image_"] = "";
       }
 
       // Submit the transaction on-chain
