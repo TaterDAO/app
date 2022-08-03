@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ButtonSC } from "./Button";
+import { ArrowDownCircled } from "iconoir-react";
 
 const Container = styled.div``;
 
@@ -30,7 +31,12 @@ const FieldSecondaryLabel = styled.div`
   font-weight: 600;
 `;
 
-const Input = styled.input<{ invalid?: boolean }>`
+const placeholderCSS = css`
+  color: rgba(var(--global-color-font-rgb), 0.5);
+  opacity: 1;
+`;
+
+const inputCSS = css<{ invalid?: boolean }>`
   border: 1px solid
     ${({ invalid }) =>
       invalid ? "var(--global-color-error)" : "var(--global-color-border)"};
@@ -46,8 +52,8 @@ const Input = styled.input<{ invalid?: boolean }>`
   height: fit-content;
   max-width: 700px;
 
-  ::placeholder {
-    color: var(--global-color-font);
+  &::placeholder {
+    ${placeholderCSS}
   }
 
   transition: var(--global-transition);
@@ -68,8 +74,52 @@ const Input = styled.input<{ invalid?: boolean }>`
   }
 `;
 
+const Input = styled.input<{ invalid?: boolean }>`
+  ${inputCSS}
+`;
+
 Input.defaultProps = {
   invalid: false
+};
+
+const SelectWrapper = styled.span`
+  position: relative;
+  flex-grow: 1;
+  height: fit-content;
+  max-width: 700px;
+
+  &:hover {
+    svg {
+      color: var(--global-color-border-hover);
+    }
+  }
+
+  svg {
+    transition: var(--global-transition);
+    position: absolute;
+    right: var(--global-space-x-margin);
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    color: var(--global-color-border);
+  }
+`;
+
+const SelectSC = styled.select<{ placeholderSelected: boolean }>`
+  ${inputCSS};
+  appearance: none;
+  width: 100%;
+
+  ${({ placeholderSelected }) => placeholderSelected && placeholderCSS}
+`;
+
+const Select: React.FC<any> = (props) => {
+  return (
+    <SelectWrapper>
+      <SelectSC {...props} />
+      <ArrowDownCircled />
+    </SelectWrapper>
+  );
 };
 
 const FileInput = styled(Input).attrs({ type: "file" })`
@@ -120,5 +170,6 @@ export {
   Input,
   FileInput,
   ErrorMessage,
-  FieldDescription
+  FieldDescription,
+  Select
 };
