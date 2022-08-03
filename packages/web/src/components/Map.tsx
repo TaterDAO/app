@@ -22,12 +22,27 @@ const MapContainer = styled.div`
   position: relative;
 `;
 
+/**
+ * Renders a Mapbox map.
+ * @param props.defaultLng Initial longitude on render.
+ * @param props.defaultLat Initial latitude on render.
+ * @param props.defaultZoom Initial zoom on render.
+ * @param props.onDraw Handler for draw events.  If not passed, drawing will not be enabled.
+ * @param props.displaySearch Should search input be displayed?
+ */
 const Map: React.FC<{
   defaultLng?: number;
   defaultLat?: number;
   defaultZoom?: number;
-  onDraw: (e: DrawEvent) => void;
-}> = ({ defaultLng = -70.9, defaultLat = 42.35, defaultZoom = 9, onDraw }) => {
+  onDraw?: (e: DrawEvent) => void | null;
+  displaySearch?: boolean;
+}> = ({
+  defaultLng = -70.9,
+  defaultLat = 42.35,
+  defaultZoom = 9,
+  onDraw = null,
+  displaySearch = true
+}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
   const [lng, setLng] = useState(defaultLng);
@@ -44,13 +59,19 @@ const Map: React.FC<{
       zoom: zoom
     });
 
-    map.current.addControl(geocoder());
-    map.current.addControl(new mapbox.NavigationControl());
-    map.current.addControl(draw(), "top-right");
+    // Geocoder should be displayed first in the top-most right corner.
+    if (displaySearch) {
+      map.current.addControl(geocoder());
+    }
 
-    map.current.on("draw.create", onDraw);
-    map.current.on("draw.delete", onDraw);
-    map.current.on("draw.update", onDraw);
+    map.current.addControl(new mapbox.NavigationControl());
+
+    if (!!onDraw) {
+      map.current.addControl(draw(), "top-right");
+      map.current.on("draw.create", onDraw);
+      map.current.on("draw.delete", onDraw);
+      map.current.on("draw.update", onDraw);
+    }
   });
 
   useEffect(() => {

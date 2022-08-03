@@ -15,6 +15,7 @@ import Button from "@components/ui/Button";
 import BurnForm from "@components/BurnForm";
 import Divider from "@components/ui/Divider";
 import Image from "@components/title/Image";
+import Map from "@components/Map";
 
 // Utils
 import { getChainConfigByInternalId } from "@utils/chain";
@@ -68,6 +69,11 @@ const ActionButtons = styled(Row)`
   gap: var(--global-space-nav-margin);
 `;
 
+const Banner = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+`;
+
 function makeURL(attr: string | undefined): URL | null {
   try {
     return new URL(attr as string);
@@ -103,8 +109,11 @@ const TitlePage: NextPage<{
   const kmlURL = makeURL(title["attr.Kml"]);
 
   return (
-    <div>
-      <Image src={imageSrc} loading={ipfsImage.loading} />
+    <>
+      <Banner>
+        <Image src={imageSrc} loading={ipfsImage.loading} />
+        <Map displaySearch={false} defaultZoom={18} />
+      </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
       <Row>
@@ -211,7 +220,7 @@ const TitlePage: NextPage<{
           </tbody>
         </Attributes>
       </Row>
-    </div>
+    </>
   );
 };
 
