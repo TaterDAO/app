@@ -4,9 +4,10 @@ import { ButtonSC } from "./Button";
 const Container = styled.div``;
 
 const Row = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
-  padding: 1rem 0;
+  padding: 1rem 0 2rem 0;
   margin-bottom: 1rem;
 
   ${ButtonSC} {
@@ -42,6 +43,8 @@ const Input = styled.input<{ invalid?: boolean }>`
   font-size: 1rem;
 
   flex-grow: 1;
+  height: fit-content;
+  max-width: 700px;
 
   ::placeholder {
     color: var(--global-color-font);
@@ -70,13 +73,13 @@ Input.defaultProps = {
 };
 
 const FileInput = styled(Input).attrs({ type: "file" })`
-  text-align: center;
   &::file-selector-button {
     border-radius: var(--global-border-radius);
     background-color: var(--color-bright-indigo);
     border: 1px solid var(--color-bright-indigo);
     color: var(--global-color-font);
     padding: 0.75rem 1.25rem;
+    margin-right: 1rem;
 
     font-weight: 600;
     font-size: 0.9rem;
@@ -84,6 +87,28 @@ const FileInput = styled(Input).attrs({ type: "file" })`
 
     cursor: pointer;
   }
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  right: 0;
+  top: calc(var(--global-space-y-margin) / -4);
+
+  text-align: center;
+
+  color: var(--global-color-error);
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+const FieldDescription = styled.small`
+  margin-top: calc(var(--global-space-y-margin) / 3);
+  line-height: 2;
+  color: var(--color-silver);
 `;
 
 export {
@@ -93,5 +118,7 @@ export {
   FieldLabel,
   FieldSecondaryLabel,
   Input,
-  FileInput
+  FileInput,
+  ErrorMessage,
+  FieldDescription
 };
