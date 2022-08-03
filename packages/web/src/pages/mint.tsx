@@ -1,9 +1,9 @@
 // Types
-import type Web3 from "web3";
 import type { NextPage } from "next";
 type Map = { [key: string]: string };
 import type { Image } from "@T/Image";
 import { ImageSrcType } from "@T/Image";
+import type { DrawEvent } from "@components/Map";
 
 // Components
 import * as Form from "@components/ui/Form";
@@ -67,6 +67,11 @@ const requiredFields = [
   "attrLocation_",
   "attrParcels_"
 ];
+
+const fieldDescriptions = {
+  attrLocation_:
+    "Search for an address or coordinates then select the location's boundaries using the Polygon Tool."
+} as { [key: string]: string };
 
 const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
 
@@ -216,6 +221,10 @@ const MintPage: NextPage = ({}) => {
     }
   };
 
+  const handleMapDraw = (e: DrawEvent) => {
+    console.log(e);
+  };
+
   // ==============
   // === Render ===
   // ==============
@@ -228,7 +237,6 @@ const MintPage: NextPage = ({}) => {
             <Form.Container>
               {inputs.map((fieldId) => {
                 const id = `form-row-${fieldId}`;
-                console.log(id);
                 return fieldId === "image_" ? (
                   <ImageUploadForm
                     key={id}
@@ -247,9 +255,14 @@ const MintPage: NextPage = ({}) => {
                           Required
                         </Form.FieldSecondaryLabel>
                       )}
+                      {Boolean(fieldDescriptions[fieldId]) && (
+                        <Form.FieldDescription>
+                          {fieldDescriptions[fieldId]}
+                        </Form.FieldDescription>
+                      )}
                     </Form.FieldMeta>
                     {id === "form-row-attrLocation_" ? (
-                      <Map />
+                      <Map onDraw={handleMapDraw} />
                     ) : (
                       <Form.Input
                         disabled={submitting}

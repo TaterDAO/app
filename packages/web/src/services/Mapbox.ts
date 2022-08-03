@@ -1,9 +1,11 @@
 //@ts-ignore
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_API_KEY as string;
 
@@ -62,7 +64,7 @@ function geocoder(acceptsCoordinates: boolean = true): MapboxGeocoder {
   const coordinatesConfig = acceptsCoordinates
     ? {
         localGeocoder: coordinatesGeocoder,
-        zoom: 4,
+        zoom: 18,
         placeholder: "Search (e.g. -40, 170)",
         reverseGeocode: true
       }
@@ -76,5 +78,15 @@ function geocoder(acceptsCoordinates: boolean = true): MapboxGeocoder {
   });
 }
 
+function draw(): MapboxDraw {
+  return new MapboxDraw({
+    displayControlsDefault: false,
+    controls: {
+      polygon: true,
+      trash: true
+    }
+  });
+}
+
 export default mapboxgl;
-export { geocoder };
+export { geocoder, draw };

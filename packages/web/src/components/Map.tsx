@@ -2,10 +2,19 @@
 import { useRef, useEffect, useState } from "react";
 
 // Services
-import mapbox, { geocoder } from "@services/Mapbox";
+import mapbox, { geocoder, draw } from "@services/Mapbox";
 
 // Libs
 import styled from "styled-components";
+
+// Types
+import type {
+  DrawCreateEvent,
+  DrawDeleteEvent,
+  DrawUpdateEvent
+} from "@mapbox/mapbox-gl-draw";
+
+type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
 const MapContainer = styled.div`
   height: 400px;
@@ -14,10 +23,11 @@ const MapContainer = styled.div`
 `;
 
 const Map: React.FC<{
-  defaultLng: number;
-  defaultLat: number;
-  defaultZoom: number;
-}> = ({ defaultLng = -70.9, defaultLat = 42.35, defaultZoom = 9 }) => {
+  defaultLng?: number;
+  defaultLat?: number;
+  defaultZoom?: number;
+  onDraw: (e: DrawEvent) => void;
+}> = ({ defaultLng = -70.9, defaultLat = 42.35, defaultZoom = 9, onDraw }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
   const [lng, setLng] = useState(defaultLng);
@@ -29,13 +39,18 @@ const Map: React.FC<{
 
     map.current = new mapbox.Map({
       container: mapContainer.current as HTMLElement,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/mapbox/satellite-streets-v11",
       center: [lng, lat],
       zoom: zoom
     });
 
     map.current.addControl(geocoder());
     map.current.addControl(new mapbox.NavigationControl());
+    map.current.addControl(draw(), "top-right");
+
+    map.current.on("draw.create", onDraw);
+    map.current.on("draw.delete", onDraw);
+    map.current.on("draw.update", onDraw);
   });
 
   useEffect(() => {
@@ -52,3 +67,4 @@ const Map: React.FC<{
 };
 
 export default Map;
+export type { DrawEvent };

@@ -29,6 +29,12 @@ const FieldSecondaryLabel = styled.div`
   font-weight: 600;
 `;
 
+const FieldDescription = styled.small`
+  margin-top: calc(var(--global-space-y-margin) / 3);
+  line-height: 2;
+  color: var(--color-silver);
+`;
+
 const Input = styled.input<{ invalid?: boolean }>`
   border: 1px solid
     ${({ invalid }) =>
@@ -93,5 +99,6 @@ export {
   FieldLabel,
   FieldSecondaryLabel,
   Input,
-  FileInput
+  FileInput,
+  FieldDescription
 };
