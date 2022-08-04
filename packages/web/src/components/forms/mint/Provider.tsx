@@ -47,9 +47,15 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     }));
   };
 
-  const validateField = (fieldId: string) => {
+  /**
+   * Validates that a given field's value is valid.
+   * @param fieldId Field to validate
+   * @param value Optional value to validate.  Useful if value has not yet been set to state.
+   * @returns {boolean}
+   */
+  const validateField = (fieldId: string, value?: string): boolean => {
     const { error } = defaultState.validationSchema.validate({
-      [fieldId]: values[fieldId]
+      [fieldId]: value || values[fieldId]
     });
     if (!error) {
       setError((prevState) => {
@@ -115,6 +121,9 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
 
       cleanState[fieldId] = value;
     }
+
+    console.log(cleanState);
+    return false;
 
     // Upload image to IPFs
     if (!!images.image_) {

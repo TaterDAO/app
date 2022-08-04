@@ -50,7 +50,7 @@ const inputCSS = css<{ invalid?: boolean }>`
 
   flex-grow: 1;
   height: fit-content;
-  max-width: 700px;
+  max-width: 650;
 
   &::placeholder {
     ${placeholderCSS}

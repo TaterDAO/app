@@ -13,7 +13,7 @@ interface GenericFormState {
   setImage: (fieldId: string, value: Image | null) => void;
   submit: () => Promise<void>;
   errors: FieldStrMap;
-  validateField: (fieldId: string) => boolean;
+  validateField: (fieldId: string, value?: string) => boolean;
 }
 
 export type { GenericFormState };
