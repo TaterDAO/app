@@ -10,7 +10,7 @@ const KMLInput: React.FC<{}> = ({}) => {
   return (
     <TextInput
       form={form}
-      fieldId="attrKML_"
+      fieldId="attrKml_"
       placeholder=""
       label="KML"
       description=""
