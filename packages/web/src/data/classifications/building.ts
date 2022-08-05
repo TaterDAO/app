@@ -1,5 +1,10 @@
 export default [
   {
+    value: "no_building",
+    label: "No Building",
+    description: "No building."
+  },
+  {
     value: "agriculture",
     label: "Agriculture",
     description:

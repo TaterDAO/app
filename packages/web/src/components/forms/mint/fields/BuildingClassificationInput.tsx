@@ -17,14 +17,7 @@ const BuildingClassificationInput: React.FC<{}> = ({}) => {
       label="Building Classification"
       description=""
       placeholder=""
-      options={[
-        {
-          value: "no_building",
-          label: "No Building",
-          description: "No building."
-        },
-        ...buildingClassifications
-      ]}
+      options={buildingClassifications}
     />
   );
 };
