@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: "Checkout Repo"
         uses: actions/checkout@master
-      
+
       - name: "Install Node"
         uses: actions/setup-node@v2
         with:
@@ -51,26 +51,26 @@ jobs:
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      
+
       - name: "Install JS Dependencies"
         run: "yarn install --frozen-lockfile --dev"
-      
+
       - name: "Compile contracts"
         run: "yarn compile"
-      
+
       - name: "Run Migration:00"
         id: migration-00
         uses: 721labs/hardhat-session-action@main
         with:
           cmd: "migration:00"
           hardhat-directory: ./packages/contracts
-      
-      # - name: "Run Migration:01"
-      #   uses: 721labs/hardhat-session-action@main
-      #   with:
-      #     cmd: "migration:01 --write --address ''"
-      #     session-id: ${{ steps.migration-00.outputs.session-id }}
-      #     hardhat-directory: ./packages/contracts
+
+      - name: "Run Migration:01"
+        uses: 721labs/hardhat-session-action@main
+        with:
+          cmd: "migration:01 --ci"
+          session-id: ${{ steps.migration-00.outputs.session-id }}
+          hardhat-directory: ./packages/contracts
 
       - name: "Cache CI data"
         uses: actions/cache@v2
@@ -105,18 +105,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: "Install Node"
         uses: actions/setup-node@v2
         with:
           node-version: "16.x"
-      
+
       - name: "Cache Dependencies"
         uses: actions/cache@v2
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      
+
       - name: "Install Web Dependencies"
         run: "yarn install --frozen-lockfile --dev"
 
@@ -128,7 +128,6 @@ jobs:
           key: "ci-cache"
 
       - name: "Run tests"
-        run: 'yarn test:unit'
+        run: "yarn test:unit"
         env:
           CHAIN_ENDPOINT: ${{ needs.contract-migrations.outputs.session-endpoint }}
-

@@ -49,6 +49,7 @@ export default createGlobalStyle`
     --color-athens: #f7f9fc;
     --color-sand: #fbf9f9;
     --color-ghost: #fafcfe;
+    --color-ghost-rgb: 250, 252, 254;
     --color-facebook: #3b5998;
     --color-google: #4285f4;
     --color-twitter: #56acee;
@@ -63,6 +64,7 @@ export default createGlobalStyle`
     --global-color-bg-disabled: var(--color-mostly-black);
 
     --global-color-font: var(--color-ghost);
+    --global-color-font-rgb: var(--color-ghost-rgb);
     --global-color-font-secondary: var(--color-fossil);
     --global-color-error: var(--color-bright-red);
 
