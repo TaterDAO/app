@@ -13,6 +13,7 @@
     "deploy:arbitrum-testnet": "yarn compile && yarn hardhat migration:00 --network arbitrum_testnet",
     "upgrade01:arbitrum-testnet": "yarn compile && yarn hardhat migration:01 --network arbitrum_testnet --address 0x9724E0A0d2437d519Cea68738180c15d9514f41A",
     "deploy:arbitrum-mainnet": "yarn compile && yarn hardhat migration:00 --network arbitrum_mainnet",
+    "upgrade01:arbitrum-mainnet": "yarn compile && yarn hardhat migration:01 --network arbitrum_mainnet --address 0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF",
     "deploy:rinkeby": "yarn compile && yarn hardhat migration:00 --network rinkeby",
     "deploy:mainnet": "yarn compile && yarn hardhat migration:00 --network mainnet"
   },
