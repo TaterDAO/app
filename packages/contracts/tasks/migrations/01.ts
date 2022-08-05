@@ -8,7 +8,7 @@ import { PROXY_INSTANCE_ADDRESS_FILEPATH } from "../../constants";
 
 export default task("migration:01", "Upgrade")
   .addOptionalParam("address", "Proxy Instance address")
-  .addOptionalParam(
+  .addFlag(
     "ci",
     "Is this migration running as part of Continuous Integration smoke testing?"
   )
