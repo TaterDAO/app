@@ -8,7 +8,24 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "./libs/Base64.sol";
 import "./OpenSea/ProxyRegistry.sol";
-import "./structs/Title.sol";
+
+struct Title {
+  string name;
+  string description;
+  string externalUrl;
+  string image;
+  // Attributes
+  string attrLandClassification;
+  string attrLocation;
+  string attrDeed;
+  string attrParcels;
+  string attrOwner;
+  string attrKml;
+  string attrTag;
+  uint256 attrCreatedDate;
+  uint8 attrMaxSupply;
+  string attrBuildingClassification;
+}
 
 /// @title TitleV1_1
 /// @author 721 Labs (https://721.dev)
@@ -69,6 +86,7 @@ contract TitleV1_1 is
     string memory attrOwner_,
     string memory attrKml_,
     string memory attrTag_,
+    string memory attrBuildingClassification_
   ) public nonReentrant {
     uint256 id = _owners.length;
 
@@ -85,7 +103,8 @@ contract TitleV1_1 is
       attrKml: attrKml_,
       attrTag: attrTag_,
       attrCreatedDate: block.timestamp,
-      attrMaxSupply: 1
+      attrMaxSupply: 1,
+      attrBuildingClassification: attrBuildingClassification_
     });
 
     _safeMint(msg.sender, id);
@@ -144,7 +163,7 @@ contract TitleV1_1 is
       20
     );
 
-    string memory attributes = string(
+    string memory attributesA = string(
       abi.encodePacked(
         _makeStrAttr("Land Classification", title.attrLandClassification),
         ",",
@@ -165,6 +184,15 @@ contract TitleV1_1 is
         _makeAttr("Max Supply", title.attrMaxSupply.toString(), "number")
       )
     );
+
+    string memory attributesB = string(
+      abi.encodePacked(
+        ",",
+        _makeStrAttr("Building Classification", title.attrBuildingClassification)
+      )
+    );
+
+    string memory attributes = string(abi.encodePacked(attributesA, attributesB));
 
     return
       string(
