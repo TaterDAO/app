@@ -5,7 +5,7 @@ import { ArrowRightCircled, ArrowLeftCircled } from "iconoir-react";
 import { useState, useEffect } from "react";
 
 // Types
-import type { Option, ParentLinkedOption } from "@T/Form";
+import type { Option as OptionType, ParentLinkedOption } from "@T/Form";
 
 const Container = styled.div<{ disabled: boolean; invalid: boolean }>`
   width: 100%;
@@ -108,7 +108,7 @@ function categoricalLabelFromValue(value: string): string {
 
 const MultiLevelSelect: React.FC<{
   fieldId: string;
-  options: Array<Option>;
+  options: Array<OptionType>;
   disabled: boolean;
   onChange: (value: string) => void;
   value: string;
@@ -137,7 +137,7 @@ const MultiLevelSelect: React.FC<{
     onChange("");
   }, [selectedOption, previousOptionValue]);
 
-  const handleOptionClick = (option: Option) => {
+  const handleOptionClick = (option: OptionType) => {
     if (disabled) return;
     else if (
       // Does this option have sub-options?
@@ -156,7 +156,7 @@ const MultiLevelSelect: React.FC<{
   };
 
   // Displays the given sub-options for a category.
-  const displaySubOptions = (option: Option) => {
+  const displaySubOptions = (option: OptionType) => {
     if (disabled) return;
     selectOption({ ...option, parent: selectedOption });
     setPreviousOptionValue(selectedOption?.value || "");
