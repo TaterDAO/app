@@ -16,8 +16,6 @@ export default task("migration:01", "Upgrade")
     console.log("[Migration:01] Upgrading TitleV1_0 to TitleV1_1");
     let instanceAddress: string;
     if (ci) {
-      // This implementation is only allowed during testing.
-      if (hre.network.name !== "localhost") throw new Error("Testing only");
       // Read from the config file created in Migration:00
       instanceAddress = fs.readFileSync(
         PROXY_INSTANCE_ADDRESS_FILEPATH,
