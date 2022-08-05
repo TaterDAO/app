@@ -15,12 +15,14 @@ type Hit = {
   "attr.Tag"?: string;
   "attr.CreatedDate": number;
   "attr.MaxSupply": number;
+  "attr.BuildingClassification": string;
 };
 
 enum IndexedFields {
   Name = "name",
   Description = "description",
   Owner = "owner",
+  BuildingClassification = "attr.BuildingClassification",
   LandClassification = "attr.LandClassification",
   Location = "attr.Location",
   Deed = "attr.Deed",

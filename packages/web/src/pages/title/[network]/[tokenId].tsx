@@ -159,6 +159,10 @@ const TitlePage: NextPage<{
               <td>{title["attr.LandClassification"]}</td>
             </tr>
             <tr>
+              <td>Building Classification</td>
+              <td>{title["attr.BuildingClassification"]}</td>
+            </tr>
+            <tr>
               <td>Location</td>
               <td>{title["attr.Location"]}</td>
             </tr>
