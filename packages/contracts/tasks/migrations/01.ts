@@ -6,19 +6,13 @@ import { task } from "hardhat/config";
 import fs from "fs";
 import { PROXY_INSTANCE_ADDRESS_FILEPATH } from "../../constants";
 
-interface Params {
-  address: string | null;
-  ci: boolean;
-}
-
 export default task("migration:01", "Upgrade")
-  .addParam("address", "Proxy Instance address", null, undefined, true)
-  .addParam(
+  .addOptionalParam("address", "Proxy Instance address")
+  .addOptionalParam(
     "ci",
-    "Is this migration running as part of Continuous Integration smoke testing?",
-    false
+    "Is this migration running as part of Continuous Integration smoke testing?"
   )
-  .setAction(async ({ address, ci }: Params, hre, runSuper) => {
+  .setAction(async ({ address, ci }, hre, runSuper) => {
     console.log("[Migration:01] Upgrading TitleV1_0 to TitleV1_1");
     let instanceAddress: string;
     if (ci) {
