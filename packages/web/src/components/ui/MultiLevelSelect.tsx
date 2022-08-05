@@ -11,6 +11,10 @@ interface Option {
   subOptions?: Array<Option>;
 }
 
+interface ParentLinkedOption extends Option {
+  parent: Option | null;
+}
+
 const Container = styled.div<{ disabled: boolean; invalid: boolean }>`
   width: 100%;
   max-width: 650px;
@@ -26,6 +30,7 @@ const Container = styled.div<{ disabled: boolean; invalid: boolean }>`
 const Label = styled.div`
   font-weight: 600;
   transition: var(--global-transition);
+  text-transform: capitalize;
 `;
 
 const Description = styled.p`
@@ -101,6 +106,14 @@ const Option = styled.div<{ selected: boolean; disabled: boolean }>`
 
 const ICON_SIZE = 20;
 
+function categoricalLabelFromValue(value: string): string {
+  value = value.replaceAll("_or_", " / ");
+  value = value.replaceAll("_and_", " & ");
+  value = value.replaceAll(",", ", ");
+  value = value.replaceAll("_", " ");
+  return value;
+}
+
 const MultiLevelSelect: React.FC<{
   fieldId: string;
   options: Array<Option>;
@@ -110,67 +123,75 @@ const MultiLevelSelect: React.FC<{
   invalid: boolean;
 }> = ({ fieldId, options, disabled, onChange, value, invalid }) => {
   // Should an option with sub-options be displayed as a category containing those sub-options?
-  const [asCategory, setAsCategory] = useState<Option | null>(null);
-  const [previousCategory, setPreviousCategory] = useState<Option | null>(null);
+  const [selectedOption, selectOption] = useState<ParentLinkedOption | null>(
+    null
+  );
+  const [previousOptionValue, setPreviousOptionValue] = useState<string>("");
 
   useEffect(() => {
-    if (asCategory && !!asCategory?.subOptions) {
-      // position list to start at first option
+    if (previousOptionValue) {
+      // Going up, scroll to previous value
       document
-        .getElementById(`${fieldId}-${asCategory?.subOptions[0].value}`)
+        .getElementById(`${fieldId}-${previousOptionValue}`)
+        ?.scrollIntoView({ behavior: "auto", block: "center" });
+    } else if (!!selectedOption?.subOptions) {
+      // Going down, scroll to first value
+      document
+        .getElementById(`${fieldId}-${selectedOption?.subOptions[0].value}`)
         ?.scrollIntoView({ behavior: "auto", block: "center" });
     }
-  }, [asCategory]);
 
-  useEffect(() => {
-    if (previousCategory) {
-      // position list to start at first option
-      document
-        .getElementById(`${fieldId}-${previousCategory.value}`)
-        ?.scrollIntoView({ behavior: "auto", block: "center" });
-    }
-  }, [previousCategory]);
+    // When display of sub-options changes, unset value.
+    onChange("");
+  }, [selectedOption, previousOptionValue]);
 
   const handleOptionClick = (option: Option) => {
     if (disabled) return;
-    // Does this option have sub-options?
-    if (!!option?.subOptions) {
-      // YES: Are these sub-options already displayed?
-      if (asCategory?.value === option.value) closeSubOptions(option);
-      else openSubOptions(option);
-    } else {
-      // No: set value
+    else if (
+      // Does this option have sub-options?
+      !option?.subOptions
+    )
+      // - NO: set value
       onChange(option.value);
-    }
+    else if (
+      // - YES: Are these sub-options already displayed?
+      selectedOption?.value === option.value
+    )
+      // -- YES: hide sub-options
+      displaySiblingOptions();
+    // -- NO: Display sub-options
+    else displaySubOptions(option);
   };
 
-  const openSubOptions = (option: Option) => {
+  // Displays the given sub-options for a category.
+  const displaySubOptions = (option: Option) => {
     if (disabled) return;
-    // sanity check
-    if (!option.subOptions) return;
-    // unset any selected value
-    onChange("");
-    setAsCategory(option);
+    selectOption({ ...option, parent: selectedOption });
+    setPreviousOptionValue(selectedOption?.value || "");
   };
 
-  const closeSubOptions = (currentOption: Option) => {
+  /**
+   * Hides a category's sub-options and displays its siblings.
+   */
+  const displaySiblingOptions = () => {
     if (disabled) return;
-    onChange(""); // unset any selected value
-    setAsCategory(null);
-    setPreviousCategory(currentOption);
+    selectOption(
+      (selectedOption as ParentLinkedOption).parent as ParentLinkedOption
+    );
+    setPreviousOptionValue(selectedOption?.value || "");
   };
 
   // Should root options or sub options be displayed?
-  const displayOptions = asCategory?.subOptions || options;
+  const displayOptions = selectedOption?.subOptions || options;
 
   return (
     <Container disabled={disabled} invalid={invalid}>
-      {asCategory && (
+      {selectedOption && (
         <CategoricalHeader
-          onClick={() => closeSubOptions(asCategory)}
+          onClick={() => displaySiblingOptions()}
           disabled={disabled}
         >
-          <Label>{asCategory.label}</Label>
+          <Label>{categoricalLabelFromValue(selectedOption.value)}</Label>
           <ArrowWrapper>
             <ArrowLeftCircled height={ICON_SIZE} width={ICON_SIZE} />
           </ArrowWrapper>

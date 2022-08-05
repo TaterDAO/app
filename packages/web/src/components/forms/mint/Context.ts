@@ -12,6 +12,7 @@ const defaultState = {
     description_: "",
     externalUrl_: "",
     attrLandClassification_: "",
+    attrBuildingClassification_: "",
     attrLocation_: "",
     attrDeed_: "",
     attrParcels_: "",
@@ -23,6 +24,7 @@ const defaultState = {
     "name_",
     "description_",
     "attrLandClassification_",
+    "attrBuildingClassification_",
     "attrLocation_",
     "attrParcels_"
   ],
@@ -31,6 +33,7 @@ const defaultState = {
     description_: Joi.string(),
     externalUrl_: Joi.string().allow("").uri(),
     attrLandClassification_: Joi.string(),
+    attrBuildingClassification_: Joi.string(),
     attrLocation_: Joi.string(),
     attrDeed_: Joi.string().allow("").uri(),
     attrParcels_: Joi.string(),
@@ -41,6 +44,7 @@ const defaultState = {
   errors: {}
 };
 
+//@ts-ignore
 const MintFormContext = createContext(defaultState as GenericFormState);
 MintFormContext.displayName = "MintFormContext";
 

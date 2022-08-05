@@ -11,6 +11,7 @@ import NameInput from "@components/forms/mint/fields/NameInput";
 import DescriptionInput from "@components/forms/mint/fields/DescriptionInput";
 import ExternalUrlInput from "@components/forms/mint/fields/ExternalUrlInput";
 import LandClassificationInput from "@components/forms/mint/fields/LandClassificationInput";
+import BuildingClassificationInput from "@components/forms/mint/fields/BuildingClassificationInput";
 import LocationInput from "@components/forms/mint/fields/LocationInput";
 import DeedInput from "@components/forms/mint/fields/DeedInput";
 import ParcelsInput from "@components/forms/mint/fields/ParcelsInput";
@@ -41,6 +42,7 @@ const MintPage: NextPage = ({}) => {
               <ImageInput />
               <ExternalUrlInput />
               <LandClassificationInput />
+              <BuildingClassificationInput />
               <LocationInput />
               <DeedInput />
               <ParcelsInput />

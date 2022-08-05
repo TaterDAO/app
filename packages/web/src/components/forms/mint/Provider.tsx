@@ -122,9 +122,6 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
       cleanState[fieldId] = value;
     }
 
-    console.log(cleanState);
-    return false;
-
     // Upload image to IPFs
     if (!!images.image_) {
       const res = await ipfs.uploadImage(images.image_);

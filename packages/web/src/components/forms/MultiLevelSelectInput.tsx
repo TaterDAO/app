@@ -32,7 +32,10 @@ const MultiLevelSelectInput: React.FC<{
         disabled={form.submitting}
         onChange={(value: string) => {
           form.setValue(fieldId, value);
-          form.validateField(fieldId, value);
+          // Don't validate value resets
+          if (value !== "") {
+            form.validateField(fieldId, value);
+          }
         }}
         invalid={hasError}
       />

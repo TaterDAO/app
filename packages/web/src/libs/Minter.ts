@@ -62,7 +62,8 @@ class Minter {
           values.attrParcels_,
           values.attrOwner_,
           values.attrKml_,
-          values.attrTag_
+          values.attrTag_,
+          values.attrBuildingClassification_
         )
         .send({ from: fromAddress })
         .on("error", reject)
