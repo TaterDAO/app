@@ -1,0 +1,3 @@
+[submodule "packages/contracts/composer"]
+	path = packages/contracts/composer
+	url = https://github.com/721labs/composer
