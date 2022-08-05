@@ -4,16 +4,8 @@ import { ArrowRightCircled, ArrowLeftCircled } from "iconoir-react";
 // Hooks
 import { useState, useEffect } from "react";
 
-interface Option {
-  value: string;
-  label: string;
-  description: string;
-  subOptions?: Array<Option>;
-}
-
-interface ParentLinkedOption extends Option {
-  parent: Option | null;
-}
+// Types
+import type { Option, ParentLinkedOption } from "@T/Form";
 
 const Container = styled.div<{ disabled: boolean; invalid: boolean }>`
   width: 100%;

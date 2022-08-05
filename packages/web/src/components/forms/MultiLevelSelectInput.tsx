@@ -4,7 +4,7 @@ import InputMeta from "./InputMetadata";
 import MultiLevelSelect from "@components/ui/MultiLevelSelect";
 
 // Types
-import type { Option } from "@components/ui/MultiLevelSelect";
+import type { Option } from "@T/Form";
 import type { GenericFormState } from "./types";
 
 const MultiLevelSelectInput: React.FC<{
