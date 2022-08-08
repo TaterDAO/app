@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { GenericFormState } from "../types";
+import type { GenericFormState } from "@T/Form";
 import Joi from "joi";
 
 const defaultState = {

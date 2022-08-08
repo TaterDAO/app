@@ -12,7 +12,7 @@ import { useRef, useState } from "react";
 
 // Types
 import type { Image } from "@T/Image";
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 import { ImageSrcType } from "@T/Image";
 
 // Constants

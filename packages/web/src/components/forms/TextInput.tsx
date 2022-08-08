@@ -1,17 +1,9 @@
 // Components
-import {
-  Row,
-  Input,
-  FieldMeta,
-  FieldLabel,
-  FieldSecondaryLabel,
-  ErrorMessage,
-  FieldDescription
-} from "@components/ui/Form";
+import { Row, Input, ErrorMessage } from "@components/ui/Form";
 import InputMeta from "./InputMetadata";
 
 // Types
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 
 const TextInput: React.FC<{
   form: GenericFormState;

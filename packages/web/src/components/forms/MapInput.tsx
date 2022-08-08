@@ -4,7 +4,7 @@ import InputMeta from "./InputMetadata";
 import Map from "@components/Map";
 
 // Types
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 import type { DrawEvent } from "@components/Map";
 import type { Polygon, Position } from "geojson";
 

@@ -5,7 +5,7 @@ import { useState } from "react";
 import useWeb3 from "@hooks/useWeb3";
 
 // Types
-import type { GenericFormState } from "../types";
+import type { GenericFormState } from "@T/Form";
 import type { Image } from "@T/Image";
 
 // Utils

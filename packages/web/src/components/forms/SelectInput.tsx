@@ -3,7 +3,7 @@ import { Row, Select, ErrorMessage } from "@components/ui/Form";
 import InputMeta from "./InputMetadata";
 
 // Types
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 
 const SelectInput: React.FC<{
   form: GenericFormState;
