@@ -1,15 +1,11 @@
 // Types
 import Web3 from "web3";
-import type { TransactionReceipt, EventLog } from "web3-core";
 
 // Data
-import ABI from "@data/contracts/TitleV1_0.sol/TitleV1_0.json";
+import ABI from "@data/contracts/TitleV1_1.sol/TitleV1_1.json";
 
 // Utils
 import { getChainConfig } from "@utils/chain";
-
-// Libs
-import { toast } from "react-toastify";
 
 enum Events {
   Receipt = "receipt",
@@ -62,7 +58,8 @@ class Minter {
           values.attrParcels_,
           values.attrOwner_,
           values.attrKml_,
-          values.attrTag_
+          values.attrTag_,
+          values.attrBuildingClassification_
         )
         .send({ from: fromAddress })
         .on("error", reject)

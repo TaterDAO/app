@@ -8,6 +8,11 @@ import algolia from "@services/Algolia";
 // Libs
 import styled from "styled-components";
 import TitleContract from "@libs/TitleContract";
+import {
+  getLandClassificationFromValue,
+  getBuildingClassificationFromValue,
+  classificationLabel
+} from "@libs/TitleClassifications";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -23,6 +28,7 @@ import { getChainConfigByInternalId } from "@utils/chain";
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
 import useIPFSImage from "@hooks/useIPFSImage";
+import { useMemo } from "react";
 
 const Name = styled.h1``;
 
@@ -108,6 +114,26 @@ const TitlePage: NextPage<{
   const deedURL = makeURL(title["attr.Deed"]);
   const kmlURL = makeURL(title["attr.Kml"]);
 
+  // CLASSIFICATIONS
+  const landClassification = useMemo(
+    () => getLandClassificationFromValue(title["attr.LandClassification"]),
+    []
+  );
+
+  const landClassificationLabel = !!landClassification
+    ? classificationLabel(landClassification)
+    : title["attr.LandClassification"];
+
+  const buildingClassification = useMemo(
+    () =>
+      getBuildingClassificationFromValue(title["attr.BuildingClassification"]),
+    []
+  );
+
+  const buildingClassificationLabel = !!buildingClassification
+    ? classificationLabel(buildingClassification)
+    : title["attr.BuildingClassification"];
+
   return (
     <>
       <Banner>
@@ -165,7 +191,11 @@ const TitlePage: NextPage<{
             )}
             <tr>
               <td>Land Classification</td>
-              <td>{title["attr.LandClassification"]}</td>
+              <td>{landClassificationLabel}</td>
+            </tr>
+            <tr>
+              <td>Building Classification</td>
+              <td>{buildingClassificationLabel}</td>
             </tr>
             <tr>
               <td>Location</td>

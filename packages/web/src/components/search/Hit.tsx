@@ -9,6 +9,10 @@ import Tags from "@components/ui/Tags";
 
 // Libs
 import styled from "styled-components";
+import {
+  getLandClassificationFromValue,
+  classificationLabel
+} from "@libs/TitleClassifications";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
@@ -61,6 +65,14 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
     : data.image || "/images/placeholder.jpeg";
 
   const endpoint = `/title/${web3.network.internalId}/${data.objectID}`;
+
+  const landClassification = getLandClassificationFromValue(
+    data["attr.LandClassification"]
+  );
+  const landClassificationLabel = !!landClassification
+    ? classificationLabel(landClassification)
+    : data["attr.LandClassification"];
+
   return (
     <Container>
       <NextLink href={endpoint}>
@@ -74,17 +86,17 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
           Created by <ProfileLink address={data.owner} />
         </h5>
       </Meta>
-      {data["attr.Tag"] && (
+      {
         <Tags
           data={[
-            `Classification: ${data["attr.LandClassification"]}`,
+            `Classification: ${landClassificationLabel}`,
             `Location: ${data["attr.Location"]}`,
             `Parcels: ${data["attr.Parcels"]}`
           ]}
           tokenId={data.objectID}
           id="tags"
         />
-      )}
+      }
     </Container>
   );
 };

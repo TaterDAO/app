@@ -44,7 +44,8 @@ function serializeTitles(titles: Array<RawMetadata | null>): Array<any> {
         "attr.Kml": attributes[5].value,
         "attr.Tag": attributes[6].value,
         "attr.CreatedDate": parseInt(attributes[7].value),
-        "attr.MaxSupply": parseInt(attributes[8].value)
+        "attr.MaxSupply": parseInt(attributes[8].value),
+        "attr.BuildingClassification": attributes[9].value
       };
     });
 }
