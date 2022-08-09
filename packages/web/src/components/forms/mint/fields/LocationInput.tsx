@@ -1,5 +1,5 @@
 // Components
-import TextInput from "../../TextInput";
+import MapInput from "@components/forms/MapInput";
 
 // Hooks
 import useMintForm from "../useMintForm";
@@ -8,12 +8,11 @@ const LocationInput: React.FC<{}> = ({}) => {
   const form = useMintForm();
 
   return (
-    <TextInput
+    <MapInput
       form={form}
       fieldId="attrLocation_"
-      placeholder=""
       label="Location"
-      description=""
+      description="Select the coordinates of your parcel(s) using the Polygon tool."
     />
   );
 };

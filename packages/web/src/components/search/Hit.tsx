@@ -13,6 +13,7 @@ import {
   getLandClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
+import { isCoordinates } from "@libs/TitleLocation";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
@@ -73,6 +74,14 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
     ? classificationLabel(landClassification)
     : data["attr.LandClassification"];
 
+  const location = data["attr.Location"] as string;
+
+  const tags = [
+    `Classification: ${landClassificationLabel}`,
+    isCoordinates(location) ? null : `Location: ${location}`,
+    `Parcels: ${data["attr.Parcels"]}`
+  ].filter((v) => !!v);
+
   return (
     <Container>
       <NextLink href={endpoint}>
@@ -86,17 +95,7 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
           Created by <ProfileLink address={data.owner} />
         </h5>
       </Meta>
-      {
-        <Tags
-          data={[
-            `Classification: ${landClassificationLabel}`,
-            `Location: ${data["attr.Location"]}`,
-            `Parcels: ${data["attr.Parcels"]}`
-          ]}
-          tokenId={data.objectID}
-          id="tags"
-        />
-      }
+      {<Tags data={tags} tokenId={data.objectID} id="tags" />}
     </Container>
   );
 };

@@ -27,10 +27,6 @@ import useWeb3 from "@hooks/useWeb3";
 const MintPage: NextPage = ({}) => {
   const web3 = useWeb3();
 
-  // ==============
-  // === Render ===
-  // ==============
-
   return (
     <TitledPage title="New Property Title">
       {web3.initialized && web3.wallet.connected ? (
