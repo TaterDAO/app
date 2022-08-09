@@ -19,3 +19,21 @@ struct Title {
     uint256 attrCreatedDate;
     uint8 attrMaxSupply;
 }
+
+struct TitleStructV1_1 {
+    string name;
+    string description;
+    string externalUrl;
+    string image;
+    // Attributes
+    string attrLandClassification;
+    string attrLocation;
+    string attrDeed;
+    string attrParcels;
+    string attrOwner;
+    string attrKml;
+    string attrTag;
+    uint256 attrCreatedDate;
+    uint8 attrMaxSupply;
+    string attrBuildingClassification;
+}
