@@ -13,6 +13,7 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
+import { isCoordinates, makePolygons } from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -75,9 +76,10 @@ const ActionButtons = styled(Row)`
   gap: var(--global-space-nav-margin);
 `;
 
-const Banner = styled.div`
+const Banner = styled.div<{ withMap: boolean }>`
   display: grid;
-  grid-template-columns: repeat(2, 50%);
+  grid-template-columns: ${({ withMap }) =>
+    withMap ? "repeat(2, 50%)" : "repeat(1, 100%)"};
 `;
 
 function makeURL(attr: string | undefined): URL | null {
@@ -134,11 +136,20 @@ const TitlePage: NextPage<{
     ? classificationLabel(buildingClassification)
     : title["attr.BuildingClassification"];
 
+  const location = title["attr.Location"];
+  const showMap = isCoordinates(location);
+
   return (
     <>
-      <Banner>
+      <Banner withMap={showMap}>
         <Image src={imageSrc} loading={ipfsImage.loading} />
-        <Map displaySearch={false} defaultZoom={18} />
+        {showMap && (
+          <Map
+            defaultZoom={18}
+            defaultBoundingBoxes={makePolygons(location)}
+            showGeocoder={false}
+          />
+        )}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
@@ -199,7 +210,7 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>Location</td>
-              <td>{title["attr.Location"]}</td>
+              <td>{location.replaceAll(",", ", ")}</td>
             </tr>
             <tr>
               <td>Deed</td>
@@ -266,15 +277,17 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   try {
     const ownerAddress = await contract.getOwner(parseInt(tokenId));
     const hit = await index.getObject(tokenId);
+
     return {
       props: {
         title: hit,
         explorer: chainConfig?.explorer,
         contractAddress: chainConfig?.contract.address,
-        ownerAddress: ownerAddress
+        ownerAddress
       }
     };
   } catch (error) {
+    console.error(error);
     return { notFound: true };
   }
 };
