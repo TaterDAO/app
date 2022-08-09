@@ -1,7 +1,7 @@
 # TaterDAO App
 
 [![Tests](https://github.com/TaterDAO/app/actions/workflows/tests.yml/badge.svg)](https://github.com/TaterDAO/app/actions/workflows/tests.yml)
-[![Index Contract](https://github.com/TaterDAO/app/actions/workflows/index-contracts.yml/badge.svg)](https://github.com/TaterDAO/app/actions/workflows/index-contracts.yml) [![Deploy Autotasks](https://github.com/TaterDAO/app/actions/workflows/deploy-autotasks.yml/badge.svg)](https://github.com/TaterDAO/app/actions/workflows/deploy-autotasks.yml)
+[![Deploy Autotasks](https://github.com/TaterDAO/app/actions/workflows/deploy-autotasks.yml/badge.svg)](https://github.com/TaterDAO/app/actions/workflows/deploy-autotasks.yml)
 
 ## Development
 
