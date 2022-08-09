@@ -20,10 +20,10 @@ function getSortItems(index: string) {
       value: `${index}-landClassification_asc`,
       label: "Ascending: Land Classification"
     },
-    {
-      value: `${index}-location_asc`,
-      label: "Ascending: Location"
-    },
+    // {
+    //   value: `${index}-location_asc`,
+    //   label: "Ascending: Location"
+    // },
     {
       value: `${index}-owner_asc`,
       label: "Ascending: Owner"
@@ -36,10 +36,10 @@ function getSortItems(index: string) {
       value: `${index}-landClassification_desc`,
       label: "Descending: Land Classification"
     },
-    {
-      value: `${index}-location_desc`,
-      label: "Descending: Location"
-    },
+    // {
+    //   value: `${index}-location_desc`,
+    //   label: "Descending: Location"
+    // },
     {
       value: `${index}-owner_desc`,
       label: "Descending: Owner"
