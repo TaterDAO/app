@@ -36,21 +36,4 @@ async function uploadImage(
   };
 }
 
-async function fetchImage(uri: string): Promise<string> {
-  const hash = uri.replace("ipfs://", "");
-  return new Promise(async (resolve, reject) => {
-    const { data } = await api.post(
-      "cat",
-      {},
-      { params: { arg: hash }, responseType: "blob" }
-    );
-
-    const reader = new FileReader();
-    reader.readAsDataURL(data);
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-  });
-}
-
-export { uploadImage, fetchImage };
+export { uploadImage };
