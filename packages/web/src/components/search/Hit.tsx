@@ -13,10 +13,12 @@ import {
   getLandClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
+import { isCoordinates } from "@libs/TitleLocation";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
-import useIPFSImage from "@hooks/useIPFSImage";
+
+import { getImageSrc } from "@utils/image";
 
 const Container = styled.div`
   margin-top: var(--global-space-y-margin);
@@ -57,12 +59,8 @@ const Name = styled.h3`
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
-  const ipfsImage = useIPFSImage(data.image as string);
 
   //# Render
-  const imageSrc = ipfsImage.valid
-    ? ipfsImage.data
-    : data.image || "/images/placeholder.jpeg";
 
   const endpoint = `/title/${web3.network.internalId}/${data.objectID}`;
 
@@ -73,10 +71,18 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
     ? classificationLabel(landClassification)
     : data["attr.LandClassification"];
 
+  const location = data["attr.Location"] as string;
+
+  const tags = [
+    `Classification: ${landClassificationLabel}`,
+    isCoordinates(location) ? null : `Location: ${location}`,
+    `Parcels: ${data["attr.Parcels"]}`
+  ].filter((v) => !!v);
+
   return (
     <Container>
       <NextLink href={endpoint}>
-        <Image src={imageSrc} alt={ipfsImage.loading ? "Loading..." : ""} />
+        <Image src={getImageSrc(data.image)} />
       </NextLink>
       <Meta>
         <NextLink href={endpoint}>
@@ -86,17 +92,7 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
           Created by <ProfileLink address={data.owner} />
         </h5>
       </Meta>
-      {
-        <Tags
-          data={[
-            `Classification: ${landClassificationLabel}`,
-            `Location: ${data["attr.Location"]}`,
-            `Parcels: ${data["attr.Parcels"]}`
-          ]}
-          tokenId={data.objectID}
-          id="tags"
-        />
-      }
+      {<Tags data={tags} tokenId={data.objectID} id="tags" />}
     </Container>
   );
 };

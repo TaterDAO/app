@@ -15,4 +15,21 @@ async function getImageDimensionsFromFile(
   });
 }
 
-export { getImageDimensionsFromFile };
+/**
+ * Gets image src for a Title.
+ * @param src {string | undefined} A given src will either be undefined, if no image was
+ * provided with the Title, or a URI to that image.  The URI may either be IPFS protocol
+ * or HTTP (legacy).
+ * @returns
+ */
+function getImageSrc(src: string | undefined): string {
+  if (!src) return "/images/placeholder.jpeg";
+  if (src.startsWith("ipfs://")) {
+    const hash = src.replace("ipfs://", "");
+    return `${process.env.NEXT_PUBLIC_INFURA_IPFS_API_ENDPOINT}/ipfs/${hash}`;
+  } else {
+    return src;
+  }
+}
+
+export { getImageDimensionsFromFile, getImageSrc };

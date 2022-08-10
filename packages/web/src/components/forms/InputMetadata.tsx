@@ -7,7 +7,7 @@ import {
 } from "@components/ui/Form";
 
 // Types
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 
 const InputMeta: React.FC<{
   form: GenericFormState;

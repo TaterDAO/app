@@ -32,6 +32,8 @@ const SubmitButton: React.FC<{}> = ({}) => {
           ) as HTMLElement
         ).scrollIntoView({ block: "center", behavior: "smooth" });
       }
+
+      form.setSubmitting(false);
     }
   };
 
@@ -41,8 +43,9 @@ const SubmitButton: React.FC<{}> = ({}) => {
     <Row>
       <Button
         primary
-        disabled={form.submitting || hasError}
+        disabled={hasError}
         onClick={handleClick}
+        loading={form.submitting}
       >
         Mint
       </Button>

@@ -13,6 +13,7 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
+import { isCoordinates, makePolygons } from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -20,13 +21,14 @@ import Button from "@components/ui/Button";
 import BurnForm from "@components/BurnForm";
 import Divider from "@components/ui/Divider";
 import Image from "@components/title/Image";
+import Map from "@components/Map";
 
 // Utils
 import { getChainConfigByInternalId } from "@utils/chain";
+import { getImageSrc } from "@utils/image";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
-import useIPFSImage from "@hooks/useIPFSImage";
 import { useMemo } from "react";
 
 const Name = styled.h1``;
@@ -74,6 +76,12 @@ const ActionButtons = styled(Row)`
   gap: var(--global-space-nav-margin);
 `;
 
+const Banner = styled.div<{ withMap: boolean }>`
+  display: grid;
+  grid-template-columns: ${({ withMap }) =>
+    withMap ? "repeat(2, 50%)" : "repeat(1, 100%)"};
+`;
+
 function makeURL(attr: string | undefined): URL | null {
   try {
     return new URL(attr as string);
@@ -90,13 +98,8 @@ const TitlePage: NextPage<{
   ownerAddress: string;
 }> = ({ title, explorer, contractAddress, ownerAddress }) => {
   const web3 = useWeb3();
-  const ipfsImage = useIPFSImage(title.image as string);
 
   //# Render
-
-  const imageSrc = ipfsImage.valid
-    ? ipfsImage.data
-    : title.image || "/images/placeholder.jpeg";
 
   const explorerUrl =
     !!explorer && !!contractAddress
@@ -128,9 +131,21 @@ const TitlePage: NextPage<{
     ? classificationLabel(buildingClassification)
     : title["attr.BuildingClassification"];
 
+  const location = title["attr.Location"];
+  const showMap = isCoordinates(location);
+
   return (
-    <div>
-      <Image src={imageSrc} loading={ipfsImage.loading} />
+    <>
+      <Banner withMap={showMap}>
+        <Image src={getImageSrc(title.image)} />
+        {showMap && (
+          <Map
+            defaultZoom={18}
+            defaultBoundingBoxes={makePolygons(location)}
+            showGeocoder={false}
+          />
+        )}
+      </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
       <Row>
@@ -174,7 +189,7 @@ const TitlePage: NextPage<{
         <h2>Attributes</h2>
         <Attributes>
           <tbody>
-            {ipfsImage.valid && (
+            {!!title.image && title.image.startsWith("ipfs") && (
               <tr>
                 <td>Pinned Image</td>
                 <td>{title.image}</td>
@@ -190,7 +205,7 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>Location</td>
-              <td>{title["attr.Location"]}</td>
+              <td>{location.replaceAll(",", ", ")}</td>
             </tr>
             <tr>
               <td>Deed</td>
@@ -241,7 +256,7 @@ const TitlePage: NextPage<{
           </tbody>
         </Attributes>
       </Row>
-    </div>
+    </>
   );
 };
 
@@ -257,15 +272,17 @@ const getServerSideProps: GetServerSideProps = async ({ query }) => {
   try {
     const ownerAddress = await contract.getOwner(parseInt(tokenId));
     const hit = await index.getObject(tokenId);
+
     return {
       props: {
         title: hit,
         explorer: chainConfig?.explorer,
         contractAddress: chainConfig?.contract.address,
-        ownerAddress: ownerAddress
+        ownerAddress
       }
     };
   } catch (error) {
+    console.error(error);
     return { notFound: true };
   }
 };

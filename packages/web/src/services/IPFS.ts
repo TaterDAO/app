@@ -4,53 +4,34 @@ import type { Image } from "@T/Image";
 // Libs
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_INFURA_IPFS_API_ENDPOINT}/api/v0/`,
-  headers: {
-    Authorization: process.env.INFURA_IPFS_JWT as string
-  }
-});
-
+/**
+ * Uploads an image to IPFS via Infura
+ * @see https://docs.infura.io/infura/networks/ipfs/how-to/manage-files#add-a-file
+ */
 async function uploadImage(
   image: Image
 ): Promise<{ name: string; hash: string; size: number; uri: string } | never> {
-  const file = image.src as File;
-  const data = new FormData();
-  data.append("file", file);
+  // Load form data
+  const formData = new FormData();
+  formData.append("file", image.src as File);
 
-  const res = await api.post("add", data, {
+  const {
+    data: { Hash, Name, Size }
+  } = await axios.post("https://ipfs.infura.io:5001/api/v0/add", formData, {
     headers: {
       Accept: "application/json",
-      "Content-Type": "multipart/form-data"
-    },
-    params: { pin: true }
+      Authorization: process.env.INFURA_IPFS_JWT as string,
+      "Content-Type": "multipart/form-data",
+      "User-Agent": "TATERDAO"
+    }
   });
 
-  const hash = res.data.Hash;
-
   return {
-    name: res.data.Name,
-    hash,
-    size: parseInt(res.data.Size),
-    uri: `ipfs://${hash}`
+    name: Name,
+    hash: Hash,
+    size: parseInt(Size),
+    uri: `ipfs://${Hash}`
   };
 }
 
-async function fetchImage(uri: string): Promise<string> {
-  const hash = uri.replace("ipfs://", "");
-  return new Promise(async (resolve, reject) => {
-    const { data } = await api.post(
-      "cat",
-      {},
-      { params: { arg: hash }, responseType: "blob" }
-    );
-
-    const reader = new FileReader();
-    reader.readAsDataURL(data);
-    reader.onload = () => {
-      resolve(reader.result as string);
-    };
-  });
-}
-
-export { uploadImage, fetchImage };
+export { uploadImage };

@@ -5,7 +5,7 @@ import MultiLevelSelect from "@components/ui/MultiLevelSelect";
 
 // Types
 import type { Option } from "@T/Form";
-import type { GenericFormState } from "./types";
+import type { GenericFormState } from "@T/Form";
 
 const MultiLevelSelectInput: React.FC<{
   form: GenericFormState;
