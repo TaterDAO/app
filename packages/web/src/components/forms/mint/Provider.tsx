@@ -148,6 +148,9 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
         images,
         setValue,
         setImage,
+        setSubmitting: (bool: boolean): void => {
+          setSubmitting(bool);
+        },
         submit,
         errors,
         validateField

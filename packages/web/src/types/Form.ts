@@ -22,6 +22,7 @@ interface GenericFormState {
   validationSchema: Joi.ObjectSchema<any>;
   setValue: (fieldId: string, value: string) => void;
   setImage: (fieldId: string, value: Image | null) => void;
+  setSubmitting: (bool: boolean) => void;
   submit: () => Promise<void>;
   errors: FieldStrMap;
   validateField: (fieldId: string, value?: string) => boolean;

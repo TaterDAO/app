@@ -38,15 +38,14 @@ const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
       };
       background-color: ${primary ? "var(--color-indigo)" : "transparent"};
     }
+
+    &:disabled {
+      background-color: var(--global-color-bg-disabled);
+      border-color: transparent;
+      cursor: default;
+      color: var(--global-color-font-secondary);
+    }
   `}
-
-
-  &:disabled {
-    background-color: var(--global-color-bg-disabled);
-    border-color: transparent;
-    cursor: default;
-    color: var(--global-color-font-secondary);
-  }
 `;
 
 const Loading = styled.div`
@@ -89,7 +88,7 @@ const Button: React.FC<{
       primary={primary}
       $loading={loading}
       onClick={onClick}
-      disabled={disabled}
+      disabled={loading || disabled}
     >
       <Text $loading={loading}>{children}</Text>
       {loading && (
