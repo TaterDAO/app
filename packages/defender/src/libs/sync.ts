@@ -76,7 +76,7 @@ async function sync(
   );
   const method = contract.methods[reason.signature];
   const [from] = await web3.eth.getAccounts();
-  const res = await method(reason.args).send({ from });
+  const res = await method(...reason.args).send({ from });
 
   console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
 }
