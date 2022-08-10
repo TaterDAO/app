@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   42161: {
     chain: {
       id: 42161,
@@ -9,7 +9,7 @@ module.exports = {
       address: "0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF"
     },
     rpc: {
-      endpoint: process.env.ALCHEMY_ARB_ONE_URI
+      endpoint: process.env.ALCHEMY_ARB_ONE_URI as string
     },
     explorer: "https://arbiscan.io/"
   },
@@ -23,7 +23,7 @@ module.exports = {
       address: "0x9724E0A0d2437d519Cea68738180c15d9514f41A"
     },
     rpc: {
-      endpoint: process.env.ALCHEMY_ARB_RINKEBY_URI
+      endpoint: process.env.ALCHEMY_ARB_RINKEBY_URI as string
     },
     explorer: "https://testnet.arbiscan.io/"
   },
