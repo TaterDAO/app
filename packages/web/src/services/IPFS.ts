@@ -21,7 +21,8 @@ async function uploadImage(
     headers: {
       Accept: "application/json",
       Authorization: process.env.INFURA_IPFS_JWT as string,
-      "Content-Type": "multipart/form-data"
+      "Content-Type": "multipart/form-data",
+      "User-Agent": "TATERDAO"
     }
   });
 
