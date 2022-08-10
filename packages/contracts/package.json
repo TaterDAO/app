@@ -9,13 +9,15 @@
     "solhint": "solhint contracts/*.sol",
     "export-abi": "yarn run hardhat export-abi",
     "dev:chain": "yarn hardhat node",
-    "deploy:dev": "yarn compile && yarn hardhat migration:00 --network localhost",
-    "deploy:arbitrum-testnet": "yarn compile && yarn hardhat migration:00 --network arbitrum_testnet",
-    "upgrade01:arbitrum-testnet": "yarn compile && yarn hardhat migration:01 --network arbitrum_testnet --address 0x9724E0A0d2437d519Cea68738180c15d9514f41A",
-    "deploy:arbitrum-mainnet": "yarn compile && yarn hardhat migration:00 --network arbitrum_mainnet",
-    "upgrade01:arbitrum-mainnet": "yarn compile && yarn hardhat migration:01 --network arbitrum_mainnet --address 0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF",
-    "deploy:rinkeby": "yarn compile && yarn hardhat migration:00 --network rinkeby",
-    "deploy:mainnet": "yarn compile && yarn hardhat migration:00 --network mainnet"
+    "migrate:00:dev": "yarn compile && yarn hardhat migration:00 --network localhost",
+    "migrate:00:test": "yarn compile && yarn hardhat migration:00 --network arbitrum_testnet",
+    "migrate:00:prod": "yarn compile && yarn hardhat migration:00 --network arbitrum_mainnet",
+    "migrate:01:dev": "",
+    "migrate:01:test": "yarn compile && yarn hardhat migration:01 --network arbitrum_testnet --address 0x9724E0A0d2437d519Cea68738180c15d9514f41A",
+    "migrate:01:prod": "yarn compile && yarn hardhat migration:01 --network arbitrum_mainnet --address 0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF",
+    "migrate:02:dev": "yarn compile && yarn hardhat migration:02 --network hardhat --writer 0x7351dc227bacc5b33d1e14c778e46439852673b7",
+    "migrate:02:test": "",
+    "migrate:02:prod": ""
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
