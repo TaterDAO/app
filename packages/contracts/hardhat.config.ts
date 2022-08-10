@@ -22,6 +22,7 @@ const {
   REPORT_GAS,
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
+  ALCHEMY_GOERLI_URI,
 } = process.env;
 
 // Import Migrations
@@ -52,6 +53,11 @@ export default {
   defaultNetwork: "hardhat",
   networks: {
     rinkeby: { url: ALCHEMY_RINKEBY_URI || "", chainId: 4, accounts },
+    goerli: {
+      url: ALCHEMY_GOERLI_URI || "",
+      chainId: 5,
+      accounts,
+    },
     arbitrum_testnet: {
       url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
       //url: "https://rinkeby.arbitrum.io/rpc",
