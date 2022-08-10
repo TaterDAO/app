@@ -17,7 +17,8 @@ import { isCoordinates } from "@libs/TitleLocation";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
-import useIPFSImage from "@hooks/useIPFSImage";
+
+import { getImageSrc } from "@utils/image";
 
 const Container = styled.div`
   margin-top: var(--global-space-y-margin);
@@ -58,12 +59,8 @@ const Name = styled.h3`
 
 const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   const web3 = useWeb3();
-  const ipfsImage = useIPFSImage(data.image as string);
 
   //# Render
-  const imageSrc = ipfsImage.valid
-    ? ipfsImage.data
-    : data.image || "/images/placeholder.jpeg";
 
   const endpoint = `/title/${web3.network.internalId}/${data.objectID}`;
 
@@ -85,7 +82,7 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   return (
     <Container>
       <NextLink href={endpoint}>
-        <Image src={imageSrc} alt={ipfsImage.loading ? "Loading..." : ""} />
+        <Image src={getImageSrc(data.image)} />
       </NextLink>
       <Meta>
         <NextLink href={endpoint}>

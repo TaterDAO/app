@@ -38,9 +38,9 @@ const Loading = styled(Container)`
   }
 `;
 
-const Image: React.FC<{ src: string; loading: boolean }> = ({
+const Image: React.FC<{ src: string; loading?: boolean }> = ({
   src,
-  loading
+  loading = false
 }) => {
   return loading ? (
     <Loading>

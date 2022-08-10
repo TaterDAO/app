@@ -25,10 +25,10 @@ import Map from "@components/Map";
 
 // Utils
 import { getChainConfigByInternalId } from "@utils/chain";
+import { getImageSrc } from "@utils/image";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
-import useIPFSImage from "@hooks/useIPFSImage";
 import { useMemo } from "react";
 
 const Name = styled.h1``;
@@ -98,13 +98,8 @@ const TitlePage: NextPage<{
   ownerAddress: string;
 }> = ({ title, explorer, contractAddress, ownerAddress }) => {
   const web3 = useWeb3();
-  const ipfsImage = useIPFSImage(title.image as string);
 
   //# Render
-
-  const imageSrc = ipfsImage.valid
-    ? ipfsImage.data
-    : title.image || "/images/placeholder.jpeg";
 
   const explorerUrl =
     !!explorer && !!contractAddress
@@ -142,7 +137,7 @@ const TitlePage: NextPage<{
   return (
     <>
       <Banner withMap={showMap}>
-        <Image src={imageSrc} loading={ipfsImage.loading} />
+        <Image src={getImageSrc(title.image)} />
         {showMap && (
           <Map
             defaultZoom={18}
@@ -194,7 +189,7 @@ const TitlePage: NextPage<{
         <h2>Attributes</h2>
         <Attributes>
           <tbody>
-            {ipfsImage.valid && (
+            {!!title.image && title.image.startsWith("ipfs") && (
               <tr>
                 <td>Pinned Image</td>
                 <td>{title.image}</td>
