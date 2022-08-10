@@ -16,7 +16,7 @@ import makeAlgoliaClient, { serializeTitles } from "../../services/algolia";
 import { decodeMetadata } from "../../utils/contract";
 
 // Shared modules
-import ABI from "../../data/abi/contracts/TitleV1_0.sol/TitleV1_0.json";
+import ABI from "../../data/abi/contracts/TitleV1_1.sol/TitleV1_1.json";
 
 // Types
 type AlgoliaRecordsById = { [id: string]: ObjectWithObjectID };
