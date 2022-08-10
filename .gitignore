@@ -1,3 +1,4 @@
 .ci/proxyInstanceAddress
 .DS_Store
 .vercel
+data/TitleV1_1_ReadOnlyReplica-hardhat.chain

@@ -27,11 +27,13 @@ const {
 // Import Migrations
 import m00 from "./tasks/migrations/00";
 import m01 from "./tasks/migrations/01";
+import m02 from "./tasks/migrations/02";
 
 // Add global flags to migrations
-const migrations = [m00, m01];
+const migrations = [m00, m01, m02];
 migrations.forEach((migration) => {
-  migration.addFlag("write", "Write outputs to filesystem?");
+  //! Deprecated
+  // migration.addFlag("write", "Write outputs to filesystem?");
 });
 
 const accounts = TATERDAO_ADMIN_PRIVATE_KEY ? [TATERDAO_ADMIN_PRIVATE_KEY] : [];
