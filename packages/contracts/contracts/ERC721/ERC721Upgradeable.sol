@@ -11,8 +11,6 @@ import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-import "hardhat/console.sol";
-
 /// @dev Gas Optimized ERC721
 /// see https://etherscan.io/address/0x0f78c6eee3c89ff37fd9ef96bd685830993636f2#code
 /// see https://archive.ph/jlQfm
