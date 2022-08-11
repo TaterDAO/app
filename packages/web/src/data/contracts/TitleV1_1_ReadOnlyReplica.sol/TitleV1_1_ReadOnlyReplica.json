@@ -432,6 +432,79 @@
         "internalType": "string",
         "name": "attrBuildingClassification_",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "to_",
+        "type": "address"
+      }
+    ],
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "externalUrl_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "image_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrLandClassification_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrLocation_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrDeed_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrParcels_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrOwner_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrKml_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrTag_",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "attrBuildingClassification_",
+        "type": "string"
       }
     ],
     "name": "mint",

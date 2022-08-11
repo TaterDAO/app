@@ -14,16 +14,33 @@ import Web3 from "web3";
 // Package Modules
 import ABI from "../data/abi/contracts/TitleV1_1_ReadOnlyReplica.sol/TitleV1_1_ReadOnlyReplica.json";
 
+// =================
+// ===== Types =====
+// =================
+
 // Originally declared by `defender-autotask-utils` but not publicly exported.
 interface FunctionConditionSummary {
   type: "function";
+  // Method signature
   signature: string;
+  // Arg signature
   args: any[];
+  // Triggering Contract Address
   address: string;
-  params: {
-    [key: string]: any;
-  };
+  // Args by name
+  params: { [key: string]: any };
 }
+
+// =====================
+// ===== Constants =====
+// =====================
+
+const MINT_METHOD_SIG =
+  "mint(string,string,string,string,string,string,string,string,string,string,string,string,address)";
+
+// ===================
+// ===== Helpers =====
+// ===================
 
 /**
  * Determines whether sync should occur. Returns boolean corresponding to
@@ -40,6 +57,16 @@ function shouldEventTriggerSync(event: AutotaskEvent): boolean {
   );
 }
 
+// =====================
+// ===== Main Func =====
+// =====================
+
+/**
+ * Syncs the triggering transaction to target contract.
+ * @param event Signature of the AutoTask that's running the sync.
+ * @param targetContractAddress Address of the ReadOnlyReplica contract.
+ * @returns void.
+ */
 async function sync(
   event: AutotaskEvent,
   targetContractAddress: string
@@ -68,15 +95,33 @@ async function sync(
     )
   );
 
-  console.log(`Relaying ${reason.signature} with args: ${reason.args}`);
+  console.log(`Relaying ${reason.signature}`);
+  console.log("Params", reason.params);
+
+  // Get the address that sent the original transaction
+  const trxFrom = triggerEvent.transaction.from;
+  console.log(`Original Sender: ${trxFrom}`);
 
   const contract = new web3.eth.Contract(
     ABI as Array<AbiItem>,
     targetContractAddress
   );
-  const method = contract.methods[reason.signature];
-  const [from] = await web3.eth.getAccounts();
-  const res = await method(...reason.args).send({ from });
+
+  // If method is mint, it's necessary to use the ReadReplica mint signature
+  // and set the `to_` arg equal to the original trx sender.
+  let method: CallableFunction;
+  const args = reason.args;
+  if (reason.signature.startsWith("mint(")) {
+    method = contract.methods[MINT_METHOD_SIG];
+    args.push(trxFrom);
+  } else {
+    method = contract.methods[reason.signature];
+  }
+
+  const res = await method(...args).send({
+    // `msg.sender` will always be relay address.
+    from: (await web3.eth.getAccounts())[0]
+  });
 
   console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
 }

@@ -21,25 +21,38 @@ contract TitleV1_1_ReadOnlyReplica is TitleBase, AccessControlUpgradeable {
     bytes32 public constant WRITER_ROLE = keccak256("WRITER_ROLE");
 
     //////////////////////////////
+    /// State
+    //////////////////////////////
+
+    address private _writerAddress;
+
+    //////////////////////////////
     /// Errors
     //////////////////////////////
 
     error DisabledMethod();
 
     //////////////////////////////
-    /// Constructor
+    /// Setup
     //////////////////////////////
 
     /// @param writerAddress_ Address that is authorized to write
     function initialize(address writerAddress_) public initializer {
         __TitleBase_init();
         __AccessControl_init();
+        _writerAddress = writerAddress_;
         _setupRole(WRITER_ROLE, writerAddress_);
     }
 
-    //////////////////////////////
-    /// Interface
-    //////////////////////////////
+    /// @dev Only writer is approved
+    function _isApprovedOrOwner(address spender, uint256 tokenId)
+        internal
+        view
+        override
+        returns (bool)
+    {
+        return spender == _writerAddress;
+    }
 
     /// @dev Identify as ERC721 interface.
     function supportsInterface(bytes4 interfaceId_)
@@ -59,6 +72,7 @@ contract TitleV1_1_ReadOnlyReplica is TitleBase, AccessControlUpgradeable {
         _burn(id_);
     }
 
+    /// @dev
     function mint(
         string memory name_,
         string memory description_,
@@ -71,9 +85,10 @@ contract TitleV1_1_ReadOnlyReplica is TitleBase, AccessControlUpgradeable {
         string memory attrOwner_,
         string memory attrKml_,
         string memory attrTag_,
-        string memory attrBuildingClassification_
-    ) public override onlyRole(WRITER_ROLE) {
-        super.mint(
+        string memory attrBuildingClassification_,
+        address to_
+    ) public onlyRole(WRITER_ROLE) {
+        _mintTo(
             name_,
             description_,
             externalUrl_,
@@ -85,7 +100,8 @@ contract TitleV1_1_ReadOnlyReplica is TitleBase, AccessControlUpgradeable {
             attrOwner_,
             attrKml_,
             attrTag_,
-            attrBuildingClassification_
+            attrBuildingClassification_,
+            to_
         );
     }
 

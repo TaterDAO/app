@@ -17,13 +17,8 @@ const WRITER_ROLE_SIGNATURE = keccak256(toUtf8Bytes("WRITER_ROLE"));
 
 const DISABLED_METHOD_ERROR = "reverted with custom error 'DisabledMethod()'";
 
-// ===================
-// ===== Helpers =====
-// ===================
-
-function accessControlError(address: string): string {
-  return `AccessControl: account ${address} is missing role ${WRITER_ROLE_SIGNATURE}`;
-}
+const MINT_METHOD_SIG =
+  "mint(string,string,string,string,string,string,string,string,string,string,string,string,address)";
 
 // =================
 // ===== State =====
@@ -40,8 +35,26 @@ let owner: Contract;
 let ownerAddress: string;
 let alice: Contract;
 let aliceAddress: string;
+let bob: Contract;
+let bobAddress: string;
 let writer: Contract;
 let writerAddress: string;
+
+// ===================
+// ===== Helpers =====
+// ===================
+
+function accessControlError(address: string): string {
+  return `AccessControl: account ${address} is missing role ${WRITER_ROLE_SIGNATURE}`;
+}
+
+/**
+ * Shortcut function to mint.
+ * @param to Address to mint the Title to
+ */
+async function mint(to: string, sender: Contract = writer) {
+  return await sender[MINT_METHOD_SIG](...new Array(12).fill(""), to);
+}
 
 describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
   before(async () => {
@@ -60,6 +73,8 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
     ownerAddress = signers[0].address.toLowerCase();
     alice = contract.connect(signers[1]);
     aliceAddress = signers[1].address.toLowerCase();
+    bob = contract.connect(signers[2]);
+    bobAddress = signers[2].address.toLowerCase();
     writer = contract.connect(signers[3]);
 
     await evm.snapshot();
@@ -95,39 +110,39 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
   context("Read-only Methods", async () => {
     context("Accessible via Writer", async () => {
       it("burn", async () => {
-        await writer.mint(...new Array(12).fill(""));
+        await mint(aliceAddress);
         await writer.burn(0);
       });
 
       it("mint", async () => {
-        await writer.mint(...new Array(12).fill(""));
+        await mint(aliceAddress);
       });
 
       it("transferFrom", async () => {
-        await writer.mint(...new Array(12).fill(""));
-        await writer.transferFrom(writerAddress, aliceAddress, 0);
-        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(aliceAddress);
+        await mint(aliceAddress);
+        await writer.transferFrom(aliceAddress, bobAddress, 0);
+        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(bobAddress);
       });
 
       it("safeTransferFrom(address,address,uint256)", async () => {
-        await writer.mint(...new Array(12).fill(""));
+        await mint(aliceAddress);
         await writer["safeTransferFrom(address,address,uint256)"](
-          writerAddress,
           aliceAddress,
+          bobAddress,
           0
         );
-        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(aliceAddress);
+        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(bobAddress);
       });
 
       it("safeTransferFrom(address,address,uint256,bytes)", async () => {
-        await writer.mint(...new Array(12).fill(""));
+        await mint(aliceAddress);
         await writer["safeTransferFrom(address,address,uint256,bytes)"](
-          writerAddress,
           aliceAddress,
+          bobAddress,
           0,
           toUtf8Bytes("")
         );
-        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(aliceAddress);
+        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(bobAddress);
       });
     });
 
@@ -139,7 +154,7 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
       });
 
       it("mint", async () => {
-        await expect(owner.mint(...new Array(12).fill(""))).to.be.revertedWith(
+        await expect(mint(aliceAddress, owner)).to.be.revertedWith(
           accessControlError(ownerAddress)
         );
       });

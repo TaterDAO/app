@@ -56,8 +56,7 @@ abstract contract TitleBase is
         _burn(id_);
     }
 
-    /// @notice Mints a title
-    function mint(
+    function _mintTo(
         string memory name_,
         string memory description_,
         string memory externalUrl_,
@@ -69,8 +68,9 @@ abstract contract TitleBase is
         string memory attrOwner_,
         string memory attrKml_,
         string memory attrTag_,
-        string memory attrBuildingClassification_
-    ) public virtual nonReentrant {
+        string memory attrBuildingClassification_,
+        address to_
+    ) internal nonReentrant {
         uint256 id = _owners.length;
 
         _titles[id] = TitleStructV1_1({
@@ -90,7 +90,39 @@ abstract contract TitleBase is
             attrBuildingClassification: attrBuildingClassification_
         });
 
-        _safeMint(msg.sender, id);
+        _safeMint(to_, id);
+    }
+
+    /// @notice Mints a title
+    function mint(
+        string memory name_,
+        string memory description_,
+        string memory externalUrl_,
+        string memory image_,
+        string memory attrLandClassification_,
+        string memory attrLocation_,
+        string memory attrDeed_,
+        string memory attrParcels_,
+        string memory attrOwner_,
+        string memory attrKml_,
+        string memory attrTag_,
+        string memory attrBuildingClassification_
+    ) public virtual nonReentrant {
+        _mintTo(
+            name_,
+            description_,
+            externalUrl_,
+            image_,
+            attrLandClassification_,
+            attrLocation_,
+            attrDeed_,
+            attrParcels_,
+            attrOwner_,
+            attrKml_,
+            attrTag_,
+            attrBuildingClassification_,
+            msg.sender
+        );
     }
 
     //////////////////////////////

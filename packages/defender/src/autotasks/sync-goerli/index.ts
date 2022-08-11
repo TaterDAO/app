@@ -5,7 +5,7 @@ import type { AutotaskEvent } from "defender-autotask-utils";
 import sync from "../../libs/sync";
 
 const handler = async function (event: AutotaskEvent) {
-  await sync(event, "0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF");
+  await sync(event, "0x9B0b70eDaa3b6Ae70389d8514ED65AcD86386ef2");
 };
 
 // Local Development
