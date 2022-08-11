@@ -71,12 +71,14 @@ export default {
     },
   },
   solidity: {
-    version: "0.8.10",
+    version: "0.8.16",
+    // https://docs.soliditylang.org/en/v0.8.16/using-the-compiler.html#input-description
     settings: {
       optimizer: {
         enabled: true,
         runs: 200,
       },
+      viaIR: true,
     },
   },
   paths: {
