@@ -205,7 +205,7 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>Location</td>
-              <td>{location.replaceAll(",", ", ")}</td>
+              <td>{location.replace(/,/g, ", ")}</td>
             </tr>
             <tr>
               <td>Deed</td>
