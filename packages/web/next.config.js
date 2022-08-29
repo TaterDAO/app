@@ -11,7 +11,10 @@ const nextConfig = {
       `${process.env.INFURA_IPFS_PROJECT_ID}:${process.env.INFURA_IPFS_PROJECT_SECRET}`
     ).toString("base64")}`
   },
-  optimizeFonts: false
+  optimizeFonts: false,
+  images: {
+    domains: ["taterdao.infura-ipfs.io"]
+  }
 };
 
 module.exports = nextConfig;

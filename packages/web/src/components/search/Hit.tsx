@@ -3,9 +3,9 @@ import type { Hit as T_Hit } from "@T/Search";
 
 // Components
 import NextLink from "next/link";
-import Link from "@components/ui/Link";
 import ProfileLink from "@components/ProfileLink";
 import Tags from "@components/ui/Tags";
+import Image from "next/image";
 
 // Libs
 import styled from "styled-components";
@@ -24,29 +24,26 @@ const Container = styled.div`
   margin-top: var(--global-space-y-margin);
   border: 1px solid var(--global-color-border);
   border-radius: var(--global-border-radius);
-  padding: var(--global-space-y-margin);
+  overflow: hidden;
 
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  background-color: var(--global-color-bg);
 
   h5 {
     padding-top: 0.25rem;
   }
 `;
 
-const Image = styled.img`
-  width: 125px;
-  height: 125px;
-  object-fit: cover;
-  background: var(--global-color-bg-disabled);
-  margin: 0 auto var(--global-space-y-margin) auto;
-  border: 1px solid transparent;
-  border-radius: 100%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const ImageWrapper = styled.div`
+  position: relative;
+  height: 200px;
+`;
+
+const Content = styled.div`
+  padding: var(--global-space-y-margin);
 `;
 
 const Meta = styled.div``;
@@ -82,17 +79,26 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
   return (
     <Container>
       <NextLink href={endpoint}>
-        <Image src={getImageSrc(data.image)} />
+        <ImageWrapper>
+          <Image
+            src={getImageSrc(data.image)}
+            layout="fill"
+            objectFit="cover"
+            objectPosition="center"
+          />
+        </ImageWrapper>
       </NextLink>
-      <Meta>
-        <NextLink href={endpoint}>
-          <Name>{data.name}</Name>
-        </NextLink>
-        <h5>
-          Created by <ProfileLink address={data.owner} />
-        </h5>
-      </Meta>
-      {<Tags data={tags} tokenId={data.objectID} id="tags" />}
+      <Content>
+        <Meta>
+          <NextLink href={endpoint}>
+            <Name>{data.name}</Name>
+          </NextLink>
+          <h5>
+            Created by <ProfileLink address={data.owner} />
+          </h5>
+        </Meta>
+        {<Tags data={tags} tokenId={data.objectID} id="tags" />}
+      </Content>
     </Container>
   );
 };

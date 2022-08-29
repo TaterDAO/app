@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { SunLight } from "iconoir-react";
+import NextImage from "next/image";
 
 const Container = styled.div`
   width: 100%;
@@ -12,21 +13,8 @@ const Container = styled.div`
   background: var(--global-color-bg-disabled);
 
   margin-bottom: calc(var(--global-space-y-margin) * 2);
-`;
+  position: relative;
 
-const El = styled(Container)<{ src: string }>`
-  background-image: url(${({ src }) => src});
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-
-  color: var(--global-color-font-secondary);
-  font-style: italic;
-  text-align: center;
-  font-weight: 700;
-`;
-
-const Loading = styled(Container)`
   @keyframes rotate {
     100% {
       transform: rotate(360deg);
@@ -42,12 +30,19 @@ const Image: React.FC<{ src: string; loading?: boolean }> = ({
   src,
   loading = false
 }) => {
-  return loading ? (
-    <Loading>
-      <SunLight fontSize={60} color="var(--color-pale-yellow)" />
-    </Loading>
-  ) : (
-    <El src={src} />
+  return (
+    <Container>
+      {loading ? (
+        <SunLight fontSize={60} color="var(--color-pale-yellow)" />
+      ) : (
+        <NextImage
+          src={src}
+          layout="fill"
+          objectFit="contain"
+          objectPosition="center"
+        />
+      )}
+    </Container>
   );
 };
 
