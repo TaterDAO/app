@@ -103,6 +103,10 @@ const Map: React.FC<{
         gc.on("result", ({ result }: { result: Result }) => {
           onGeocoderSelection(result);
 
+          // Delete any polygons
+          draw.current?.deleteAll();
+
+          // Add marker
           const marker = new Marker();
           //@ts-ignore
           marker.setLngLat(result.geometry.coordinates);
