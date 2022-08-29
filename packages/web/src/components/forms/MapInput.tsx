@@ -112,7 +112,7 @@ const MapInput: React.FC<{
         onDraw={handleMapDraw}
         onGeocoderSelection={handleGeocoderSelection}
       />
-      {hasError && <ErrorMessage>Coordinates required</ErrorMessage>}
+      {hasError && <ErrorMessage>No location selected</ErrorMessage>}
     </Row>
   );
 };
