@@ -106,16 +106,9 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
         // Escape double quotes
         value = escapeQuotes(value);
 
-        // Escape colons
-        value = escapeColons(value);
-
-        // Is this a domain field w/o {http|https}?
-        if (
-          domainFields.includes(fieldId) &&
-          value !== "" &&
-          !new RegExp(/https?:\/\//).test(value)
-        ) {
-          value = `http://${value}`;
+        // If field isn't a domain, escape colons.
+        if (!domainFields.includes(fieldId)) {
+          value = escapeColons(value);
         }
       }
 
