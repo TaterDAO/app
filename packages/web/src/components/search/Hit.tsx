@@ -13,7 +13,7 @@ import {
   getLandClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import { isCoordinates } from "@libs/TitleLocation";
+import { isCoordinates, isPolygon } from "@libs/TitleLocation";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
@@ -72,7 +72,9 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
 
   const tags = [
     `Classification: ${landClassificationLabel}`,
-    isCoordinates(location) ? null : `Location: ${location}`,
+    isCoordinates(location) && isPolygon(location)
+      ? null
+      : `Location: ${location}`,
     `Parcels: ${data["attr.Parcels"]}`
   ].filter((v) => !!v);
 

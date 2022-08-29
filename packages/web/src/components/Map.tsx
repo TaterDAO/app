@@ -7,6 +7,7 @@ import mapbox, { geocoder } from "@services/Mapbox";
 // Libs
 import styled from "styled-components";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { Marker } from "mapbox-gl";
 import { getPolygonCenter } from "@libs/TitleLocation";
 
 // Types
@@ -15,6 +16,7 @@ import type {
   DrawDeleteEvent,
   DrawUpdateEvent
 } from "@mapbox/mapbox-gl-draw";
+import type { Result } from "@mapbox/mapbox-gl-geocoder";
 import type { Feature } from "@turf/turf";
 
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
@@ -41,13 +43,15 @@ const Map: React.FC<{
   onDraw?: (e: DrawEvent) => void | null;
   showGeocoder?: boolean;
   defaultBoundingBoxes?: Array<Feature>;
+  onGeocoderSelection?: (result: Result) => void;
 }> = ({
   defaultLng = -70.9,
   defaultLat = 42.35,
   defaultZoom = 9,
   onDraw = null,
   defaultBoundingBoxes = [],
-  showGeocoder = true
+  showGeocoder = true,
+  onGeocoderSelection = null
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
@@ -64,6 +68,9 @@ const Map: React.FC<{
   const [zoom, setZoom] = useState(defaultZoom);
 
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const [geocoderSelectionMarker, setGeocoderSelectionMarker] =
+    useState<Marker | null>(null);
 
   /**
    * Initialize.
@@ -89,19 +96,53 @@ const Map: React.FC<{
     });
 
     // Geocoder should be displayed first in the top-most right corner.
-    if (showGeocoder) map.current.addControl(geocoder());
+    if (showGeocoder) {
+      const gc = geocoder();
+
+      if (onGeocoderSelection) {
+        gc.on("result", ({ result }: { result: Result }) => {
+          onGeocoderSelection(result);
+
+          // Delete any polygons
+          draw.current?.deleteAll();
+
+          // Add marker
+          const marker = new Marker();
+          //@ts-ignore
+          marker.setLngLat(result.geometry.coordinates);
+          marker.addTo(map.current);
+          setGeocoderSelectionMarker(marker);
+        });
+      }
+
+      map.current.addControl(gc);
+    }
     map.current.addControl(new mapbox.NavigationControl());
     map.current.addControl(draw.current, "top-right");
-
-    if (!!onDraw) {
-      map.current.on("draw.create", onDraw);
-      map.current.on("draw.delete", onDraw);
-      map.current.on("draw.update", onDraw);
-    }
   });
 
   /**
-   * Add event listeners to map.
+   * Add state-dependent event listeners to map.
+   */
+  useEffect(() => {
+    if (!map.current) return;
+
+    if (!!onDraw) {
+      map.current.on("draw.create", (event: DrawCreateEvent) => {
+        // If marker exists, delete it.
+        if (!!geocoderSelectionMarker) {
+          geocoderSelectionMarker.remove();
+          setGeocoderSelectionMarker(null);
+        }
+        onDraw(event);
+      });
+      map.current.on("draw.delete", onDraw);
+      map.current.on("draw.update", onDraw);
+    }
+  }, [map.current, geocoderSelectionMarker]);
+
+  /**
+   * Add initial event listeners to map.
    */
   useEffect(() => {
     if (!map.current || loaded) return;

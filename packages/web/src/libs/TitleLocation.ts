@@ -10,6 +10,15 @@ function isCoordinates(value: string): boolean {
   return !re.test(value);
 }
 
+function isPolygon(value: string): boolean {
+  try {
+    makePolygons(value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function makePolygons(coordinateString: string): Array<Feature> {
   return coordinateString.split(";").map((coords) => {
     const coordinatePairs: Array<Position> = [];
@@ -34,4 +43,4 @@ function getPolygonCenter(polygon: Feature): Position {
   return center.geometry.coordinates;
 }
 
-export { isCoordinates, makePolygons, getPolygonCenter };
+export { isCoordinates, makePolygons, getPolygonCenter, isPolygon };
