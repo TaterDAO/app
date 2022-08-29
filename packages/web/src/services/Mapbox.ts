@@ -67,7 +67,9 @@ function geocoder(): MapboxGeocoder {
     localGeocoder: coordinatesGeocoder,
     zoom: 18,
     placeholder: "Search (e.g. -40, 170)",
-    reverseGeocode: true
+    reverseGeocode: true,
+    // Add market manually
+    marker: false
   });
 }
 
