@@ -12,7 +12,7 @@ const LocationInput: React.FC<{}> = ({}) => {
       form={form}
       fieldId="attrLocation_"
       label="Location"
-      description="Select the coordinates of your parcel(s) using the Polygon tool."
+      description="Search for an address or select the coordinates of your parcel(s) using the Polygon tool."
     />
   );
 };
