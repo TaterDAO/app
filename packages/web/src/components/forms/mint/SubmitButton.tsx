@@ -37,16 +37,9 @@ const SubmitButton: React.FC<{}> = ({}) => {
     }
   };
 
-  const hasError = Object.keys(form.errors).length > 0;
-
   return (
     <Row>
-      <Button
-        primary
-        disabled={hasError}
-        onClick={handleClick}
-        loading={form.submitting}
-      >
+      <Button primary onClick={handleClick} loading={form.submitting}>
         Mint
       </Button>
     </Row>

@@ -13,7 +13,7 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import { isCoordinates, makePolygons } from "@libs/TitleLocation";
+import { isCoordinates, makePolygons, isPolygon } from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -134,17 +134,28 @@ const TitlePage: NextPage<{
   const location = title["attr.Location"];
   const showMap = isCoordinates(location);
 
+  const sharedMapOptions = {
+    defaultZoom: 18,
+    showGeocoder: false
+  };
+
   return (
     <>
       <Banner withMap={showMap}>
         <Image src={getImageSrc(title.image)} />
-        {showMap && (
-          <Map
-            defaultZoom={18}
-            defaultBoundingBoxes={makePolygons(location)}
-            showGeocoder={false}
-          />
-        )}
+        {showMap &&
+          (isPolygon(location) ? (
+            <Map
+              {...sharedMapOptions}
+              defaultBoundingBoxes={makePolygons(location)}
+            />
+          ) : (
+            <Map
+              {...sharedMapOptions}
+              defaultLng={parseFloat(location.split(",")[0])}
+              defaultLat={parseFloat(location.split(",")[1])}
+            />
+          ))}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>
@@ -205,7 +216,7 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>Location</td>
-              <td>{location.replaceAll(",", ", ")}</td>
+              <td>{location.replace(/,/g, ", ")}</td>
             </tr>
             <tr>
               <td>Deed</td>
