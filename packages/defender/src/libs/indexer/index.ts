@@ -8,12 +8,12 @@ import type { RawMetadata } from "../../types/contract";
 import type { AbiItem } from "web3-utils";
 
 // 3rd Party modules
-import { DefenderRelayProvider } from "defender-relay-client/lib/web3";
 import Web3 from "web3";
 
 // Package modules
 import makeAlgoliaClient, { serializeTitles } from "../../services/algolia";
 import { decodeMetadata } from "../../utils/contract";
+import web3Provider from "../../services/web3";
 
 // Shared modules
 import ABI from "../../data/abi/contracts/TitleV1_1.sol/TitleV1_1.json";
@@ -36,8 +36,9 @@ class Indexer {
     networkId: string,
     contractAddress: string
   ) {
-    this._web3 = new Web3(
-      new DefenderRelayProvider(event, { speed: "average" })
+    this._web3 = web3Provider(
+      event.credentials as string,
+      event.relayerARN as string
     );
     this._contract = new this._web3.eth.Contract(
       ABI as Array<AbiItem>,
