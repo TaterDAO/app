@@ -10,33 +10,41 @@ Autotasks run lambda functions invoked via cron, webhooks or in response to an o
 
 Each autotask must define an identically named subdirectory within `src/autotasks` that contains `index.ts` file exporting a single `handler` function. **Alternatively, clone `autotasks/hello-world`**.
 
-### Setup
+### Development
+
+#### Setup
 
 ```shell
 nvm use stable
 yarn install
 ```
 
-### Local Development
+#### Running an Autotask on your Local Machine
 
 ```shell
 yarn build
 node dist/autotasks/<task name>
 ```
 
-### Production Build
+### Production
+
+#### Building
 
 ```shell
 nvm use lts/erbium # In production, autotasks are executed in a Node 12 runtime.
 yarn ncc build src/autotasks/<task name>/index.ts -o dist/autotasks/<task name> -m
 ```
 
-### Deploying
+#### Deploying
 
 ```shell
 yarn autotask:deploy <task name>
 ```
 
-### Production Testing
+#### Testing
 
 You are able to test `sync-goerli` and `sync-mainnet` by POST'ing to their respective Webhook URLs with bodies such as those found in [data/mocks](data/mocks/).
+
+#### Backfilling
+
+`todo: set up scripts that use the same method as Production Testing`
