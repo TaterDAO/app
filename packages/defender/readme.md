@@ -2,6 +2,10 @@
 
 ## Autotasks
 
+Autotasks run lambda functions invoked via cron, webhooks or in response to an on-chain transactions.
+
+- [Docs](https://docs.openzeppelin.com/defender/autotasks)
+
 ### Structure
 
 Each autotask must define an identically named subdirectory within `src/autotasks` that contains `index.ts` file exporting a single `handler` function. **Alternatively, clone `autotasks/hello-world`**.

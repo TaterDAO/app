@@ -4,14 +4,11 @@ import type {
   SentinelTriggerEvent,
   BlockTriggerEvent
 } from "defender-autotask-utils";
-import type { AutotaskRelayerParams } from "defender-relay-client";
 import type { AbiItem } from "web3-utils";
 
-// 3rd Party Modules
-import { DefenderRelayProvider } from "defender-relay-client/lib/web3";
-import Web3 from "web3";
-
 // Package Modules
+import { typeCastSignatureArgs } from "../utils/contract";
+import web3Provider from "../services/web3";
 import ABI from "../data/abi/contracts/TitleV1_1_ReadOnlyReplica.sol/TitleV1_1_ReadOnlyReplica.json";
 
 // =================
@@ -43,8 +40,8 @@ const MINT_METHOD_SIG =
 // ===================
 
 /**
- * Determines whether sync should occur. Returns boolean corresponding to
- * where the triggering event is a `SentinelTriggerEvent`.
+ * Determines whether sync should occur based on whether
+ * triggering event is a `SentinelTriggerEvent`.
  * @param event {AutotaskEvent} Event that triggered the Autotask
  * @returns {boolean} Should trigger?
  */
@@ -71,6 +68,8 @@ async function sync(
   event: AutotaskEvent,
   targetContractAddress: string
 ): Promise<void> {
+  // TODO: Don't throw out API requests.
+  // Start by logging the body for mint and then creating mocks for mint and burn.
   if (!shouldEventTriggerSync(event)) return;
 
   const triggerEvent = event.request?.body as BlockTriggerEvent;
@@ -82,18 +81,10 @@ async function sync(
     return;
   }
 
+  console.log(`Target Contract: ${targetContractAddress}`);
+
   // Type reason
   reason as FunctionConditionSummary;
-
-  const web3 = new Web3(
-    new DefenderRelayProvider(
-      {
-        credentials: event.credentials as string,
-        relayerARN: event.relayerARN as string
-      } as AutotaskRelayerParams,
-      { speed: "average" }
-    )
-  );
 
   console.log(`Relaying ${reason.signature}`);
   console.log("Params", reason.params);
@@ -102,25 +93,40 @@ async function sync(
   const trxFrom = triggerEvent.transaction.from;
   console.log(`Original Sender: ${trxFrom}`);
 
+  const web3 = web3Provider(
+    event.credentials as string,
+    event.relayerARN as string,
+    //! DEV: Don't estimate the gas price in order to expose
+    // the underlying burn error.
+    { gasPrice: 1000000000000000 }
+  );
+
   const contract = new web3.eth.Contract(
     ABI as Array<AbiItem>,
     targetContractAddress
   );
 
-  // If method is mint, it's necessary to use the ReadReplica mint signature
-  // and set the `to_` arg equal to the original trx sender.
-  let method: CallableFunction;
-  const args = reason.args;
+  // Prepare the transaction.
+  let trx: any;
   if (reason.signature.startsWith("mint(")) {
-    method = contract.methods[MINT_METHOD_SIG];
-    args.push(trxFrom);
+    // If method is mint, it's necessary to use the ReadReplica mint signature.  This contains an additional `to_` argument:
+    // an address that the token should be minted to. It is appended to the args array with the original trx sender's address.
+    trx = contract.methods[MINT_METHOD_SIG](
+      ...typeCastSignatureArgs(MINT_METHOD_SIG, [...reason.args, trxFrom])
+    );
   } else {
-    method = contract.methods[reason.signature];
+    trx = contract.methods[reason.signature](
+      ...typeCastSignatureArgs(reason.signature, reason.args)
+    );
   }
 
-  const res = await method(...args).send({
+  console.log("Syncing");
+
+  const res = await trx.send({
     // `msg.sender` will always be relay address.
-    from: (await web3.eth.getAccounts())[0]
+    from: (await web3.eth.getAccounts())[0],
+    //! DEV: don't estimate gas price
+    gas: 30000000
   });
 
   console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
