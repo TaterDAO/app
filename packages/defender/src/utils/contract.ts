@@ -41,7 +41,8 @@ function typeCastSignatureArgs(
   const typedArgs: TypedArgs = [];
   const argTypes = signature.split("(")[1].replace(")", "").split(",");
   argTypes.forEach((type, index) => {
-    if (type.includes("string")) typedArgs[index] = args[index];
+    if (type.includes("string") || type.includes("address"))
+      typedArgs[index] = args[index];
     else if (type.includes("uint")) typedArgs[index] = parseInt(args[index]);
     else if (type.includes("bool")) typedArgs[index] = args[index] == "true";
   });
@@ -49,3 +50,4 @@ function typeCastSignatureArgs(
 }
 
 export { decodeMetadata, typeCastSignatureArgs };
+export type { TypedArgs };

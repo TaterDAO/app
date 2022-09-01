@@ -2,9 +2,16 @@ import { describe, expect, test } from "@jest/globals";
 import { typeCastSignatureArgs } from "./contract";
 
 describe("typeCastSignatureArgs", () => {
-  test("String", () => {
+  test("Strings", () => {
     const output = typeCastSignatureArgs("mint(string)", ["test"]);
     expect(output[0]).toBe("test");
+  });
+
+  test("Addresses", () => {
+    const output = typeCastSignatureArgs("mint(address)", [
+      "0xd453cb82cb70b22bbb83fe7bafb4a4144a8b9165"
+    ]);
+    expect(output[0]).toBe("0xd453cb82cb70b22bbb83fe7bafb4a4144a8b9165");
   });
 
   test("Unsigned Integers", () => {
