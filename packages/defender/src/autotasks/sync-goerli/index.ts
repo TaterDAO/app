@@ -3,9 +3,10 @@ import type { AutotaskEvent } from "defender-autotask-utils";
 
 // Package Modules
 import sync from "../../libs/sync";
+import { GOERLI_REPLICA_CONTRACT_ADDRESS } from "../../constants/contracts";
 
 const handler = async function (event: AutotaskEvent) {
-  await sync(event, "0x9B0b70eDaa3b6Ae70389d8514ED65AcD86386ef2");
+  await sync(event, GOERLI_REPLICA_CONTRACT_ADDRESS);
 };
 
 // Local Development

@@ -4,12 +4,13 @@ import type { AutotaskEvent } from "defender-autotask-utils";
 
 // Package Modules
 import Indexer from "../../libs/indexer";
+import { ARBITRUM_TESTNET_CONTRACT_ADDRESS } from "../../constants/contracts";
 
 async function handler(event: AutotaskEvent & RelayerParams) {
   const indexer = new Indexer(
     event,
     "arbitrum_testnet",
-    "0x9724E0A0d2437d519Cea68738180c15d9514f41A"
+    ARBITRUM_TESTNET_CONTRACT_ADDRESS
   );
   await indexer.index();
 }
