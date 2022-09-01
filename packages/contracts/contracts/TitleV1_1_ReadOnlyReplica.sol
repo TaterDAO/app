@@ -144,4 +144,21 @@ contract TitleV1_1_ReadOnlyReplica is TitleBase, AccessControlUpgradeable {
     {
         revert DisabledMethod();
     }
+
+    function mint(
+        string memory name_,
+        string memory description_,
+        string memory externalUrl_,
+        string memory image_,
+        string memory attrLandClassification_,
+        string memory attrLocation_,
+        string memory attrDeed_,
+        string memory attrParcels_,
+        string memory attrOwner_,
+        string memory attrKml_,
+        string memory attrTag_,
+        string memory attrBuildingClassification_
+    ) public override {
+        revert DisabledMethod();
+    }
 }

@@ -8,6 +8,7 @@ import { ContractFactory } from "ethers";
 
 import EVM from "./utils/EVM";
 import { expect } from "chai";
+import { isBytes } from "ethers/lib/utils";
 
 // =====================
 // ===== Constants =====
@@ -19,6 +20,9 @@ const DISABLED_METHOD_ERROR = "reverted with custom error 'DisabledMethod()'";
 
 const MINT_METHOD_SIG =
   "mint(string,string,string,string,string,string,string,string,string,string,string,string,address)";
+
+const BASE_MINT_SIG =
+  "mint(string,string,string,string,string,string,string,string,string,string,string,string)";
 
 // =================
 // ===== State =====
@@ -105,6 +109,12 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
         owner.setApprovalForAll(ownerAddress, true)
       ).to.be.revertedWith(DISABLED_METHOD_ERROR);
     });
+
+    it(BASE_MINT_SIG, async () => {
+      await expect(
+        owner[BASE_MINT_SIG](...new Array(12).fill(""))
+      ).to.be.revertedWith(DISABLED_METHOD_ERROR);
+    });
   });
 
   context("Read-only Methods", async () => {
@@ -112,10 +122,14 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
       it("burn", async () => {
         await mint(aliceAddress);
         await writer.burn(0);
+        await expect(owner.ownerOf(0)).to.be.revertedWith(
+          "ERC721: owner query for nonexistent token"
+        );
       });
 
-      it("mint", async () => {
+      it(MINT_METHOD_SIG, async () => {
         await mint(aliceAddress);
+        expect((await owner.ownerOf(0)).toLowerCase()).to.equal(aliceAddress);
       });
 
       it("transferFrom", async () => {
@@ -153,7 +167,7 @@ describe("TitleV1_1_ReadOnlyReplica.sol", async () => {
         );
       });
 
-      it("mint", async () => {
+      it(BASE_MINT_SIG, async () => {
         await expect(mint(aliceAddress, owner)).to.be.revertedWith(
           accessControlError(ownerAddress)
         );
