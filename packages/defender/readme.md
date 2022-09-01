@@ -36,3 +36,7 @@ yarn ncc build src/autotasks/<task name>/index.ts -o dist/autotasks/<task name> 
 ```shell
 yarn autotask:deploy <task name>
 ```
+
+### Production Testing
+
+You are able to test `sync-goerli` and `sync-mainnet` by POST'ing to their respective Webhook URLs with bodies such as those found in [data/mocks](data/mocks/).

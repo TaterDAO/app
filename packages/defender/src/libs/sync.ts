@@ -68,8 +68,6 @@ async function sync(
   event: AutotaskEvent,
   targetContractAddress: string
 ): Promise<void> {
-  // TODO: Don't throw out API requests.
-  // Start by logging the body for mint and then creating mocks for mint and burn.
   if (!shouldEventTriggerSync(event)) return;
 
   const triggerEvent = event.request?.body as BlockTriggerEvent;
