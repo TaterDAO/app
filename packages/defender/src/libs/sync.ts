@@ -93,10 +93,7 @@ async function sync(
 
   const web3 = web3Provider(
     event.credentials as string,
-    event.relayerARN as string,
-    //! DEV: Don't estimate the gas price in order to expose
-    // the underlying burn error.
-    { gasPrice: 1000000000000000 }
+    event.relayerARN as string
   );
 
   const contract = new web3.eth.Contract(
@@ -122,9 +119,7 @@ async function sync(
 
   const res = await trx.send({
     // `msg.sender` will always be relay address.
-    from: (await web3.eth.getAccounts())[0],
-    //! DEV: don't estimate gas price
-    gas: 30000000
+    from: (await web3.eth.getAccounts())[0]
   });
 
   console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
