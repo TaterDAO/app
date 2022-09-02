@@ -10,7 +10,7 @@ function decodeMetadata(raw: string): RawMetadata | null {
   let text;
   try {
     const buff = Buffer.from(
-      raw.replace("data:application/json;base64,", ""),
+      raw.split("data:application/json;base64,")[1],
       "base64"
     );
     text = buff.toString("utf8");
