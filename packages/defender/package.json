@@ -3,12 +3,12 @@
   "license": "GPLv3",
   "private": true,
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -p src",
     "test": "jest",
     "autotask:build:index-contract-arbitrum": "yarn ncc build src/autotasks/index-contract-arbitrum/index.ts -o dist/autotasks/index-contract-arbitrum -m",
     "autotask:build:index-contract-arbitrum-testnet": "yarn ncc build src/autotasks/index-contract-arbitrum-testnet/index.ts -o dist/autotasks/index-contract-arbitrum-testnet -m",
     "autotask:build:sync-goerli": "yarn ncc build src/autotasks/sync-goerli/index.ts -o dist/autotasks/sync-goerli -m",
-    "autotask:deploy": "node dist/scripts/upload-autotask.js"
+    "autotask:deploy": "yarn build && ts-node -p scripts/tsconfig.json scripts/upload-autotask.ts"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
@@ -18,6 +18,7 @@
     "jest": "^29.0.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.8",
+    "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
