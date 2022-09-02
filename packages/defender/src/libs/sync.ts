@@ -91,10 +91,7 @@ async function sync(
   const trxFrom = triggerEvent.transaction.from;
   console.log(`Original Sender: ${trxFrom}`);
 
-  const web3 = web3Provider(
-    event.credentials as string,
-    event.relayerARN as string
-  );
+  const web3 = web3Provider(event);
 
   const contract = new web3.eth.Contract(
     ABI as Array<AbiItem>,

@@ -36,10 +36,7 @@ class Indexer {
     networkId: string,
     contractAddress: string
   ) {
-    this._web3 = web3Provider(
-      event.credentials as string,
-      event.relayerARN as string
-    );
+    this._web3 = web3Provider(event);
     this._contract = new this._web3.eth.Contract(
       ABI as Array<AbiItem>,
       contractAddress
