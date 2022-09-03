@@ -8,8 +8,7 @@ import type {
 import type { Contract } from "web3-eth-contract";
 import type { AbiItem } from "web3-utils";
 import type { default as Web3 } from "web3";
-import type { ApiRelayerParams } from "defender-relay-client/lib/relayer";
-import type { AutotaskRelayerCredentials } from "../services/web3";
+import type { RelayerAuthenticationCredentials } from "../libs/relayer";
 
 // Package Modules
 import { typeCastSignatureArgs } from "../utils/contract";
@@ -51,7 +50,7 @@ class Syncer {
 
   constructor(
     targetContractAddress: string,
-    syncerCredentials: AutotaskRelayerCredentials | ApiRelayerParams
+    syncerCredentials: RelayerAuthenticationCredentials
   ) {
     this.targetContractAddress = targetContractAddress;
 
