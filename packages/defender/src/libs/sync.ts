@@ -2,9 +2,14 @@
 import type {
   AutotaskEvent,
   SentinelTriggerEvent,
-  BlockTriggerEvent
+  BlockTriggerEvent,
+  SentinelConditionSummary
 } from "defender-autotask-utils";
+import type { Contract } from "web3-eth-contract";
 import type { AbiItem } from "web3-utils";
+import type { default as Web3 } from "web3";
+import type { ApiRelayerParams } from "defender-relay-client/lib/relayer";
+import type { AutotaskRelayerCredentials } from "../services/web3";
 
 // Package Modules
 import { typeCastSignatureArgs } from "../utils/contract";
@@ -14,6 +19,8 @@ import ABI from "../data/abi/contracts/TitleV1_1_ReadOnlyReplica.sol/TitleV1_1_R
 // =================
 // ===== Types =====
 // =================
+
+type Params = { [key: string]: any };
 
 // Originally declared by `defender-autotask-utils` but not publicly exported.
 interface FunctionConditionSummary {
@@ -25,7 +32,7 @@ interface FunctionConditionSummary {
   // Triggering Contract Address
   address: string;
   // Args by name
-  params: { [key: string]: any };
+  params: Params;
 }
 
 // =====================
@@ -35,17 +42,70 @@ interface FunctionConditionSummary {
 const MINT_METHOD_SIG =
   "mint(string,string,string,string,string,string,string,string,string,string,string,string,address)";
 
-// ===================
-// ===== Helpers =====
-// ===================
+class Syncer {
+  targetContractAddress: string;
+  relay: Web3;
+  contract: Contract;
+  relayAddress?: string;
+  _setup: boolean = false;
+
+  constructor(
+    targetContractAddress: string,
+    syncerCredentials: AutotaskRelayerCredentials | ApiRelayerParams
+  ) {
+    this.targetContractAddress = targetContractAddress;
+
+    this.relay = web3Provider(syncerCredentials);
+    this.contract = new this.relay.eth.Contract(
+      ABI as Array<AbiItem>,
+      targetContractAddress
+    );
+  }
+
+  async setup() {
+    this.relayAddress = (await this.relay.eth.getAccounts())[0];
+    this._setup = true;
+  }
+
+  /**
+   * Syncs the triggering transaction to target contract.
+   */
+  async run(
+    methodSignature: string,
+    args: Array<string> = [],
+    trxFromAddress: string
+  ) {
+    if (!this._setup) throw new Error("Must call #setup first");
+    console.log("Syncing");
+
+    // Prepare the transaction.
+    let trx: any;
+    if (methodSignature.startsWith("mint(")) {
+      // If method is mint, it's necessary to use the ReadReplica mint signature.  This contains an additional `to_` argument:
+      // an address that the token should be minted to. It is appended to the args array with the original trx sender's address.
+      trx = this.contract.methods[MINT_METHOD_SIG](
+        ...typeCastSignatureArgs(MINT_METHOD_SIG, [...args, trxFromAddress])
+      );
+    } else {
+      trx = this.contract.methods[methodSignature](
+        ...typeCastSignatureArgs(methodSignature, args)
+      );
+    }
+
+    // `msg.sender` will always be relay address.
+    const res = await trx.send({ from: this.relayAddress });
+
+    console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
+  }
+}
 
 /**
  * Determines whether sync should occur based on whether
  * triggering event is a `SentinelTriggerEvent`.
  * @param event {AutotaskEvent} Event that triggered the Autotask
- * @returns {boolean} Should trigger?
+ * @returns {boolean} Is sentinel trigger event?
  */
-function shouldEventTriggerSync(event: AutotaskEvent): boolean {
+function isSentinelTriggerEvent(event: AutotaskEvent): boolean {
   const data = event.request?.body;
   return (
     !!data &&
@@ -54,72 +114,38 @@ function shouldEventTriggerSync(event: AutotaskEvent): boolean {
   );
 }
 
-// =====================
-// ===== Main Func =====
-// =====================
-
 /**
- * Syncs the triggering transaction to target contract.
- * @param event Signature of the AutoTask that's running the sync.
- * @param targetContractAddress Address of the ReadOnlyReplica contract.
- * @returns void.
+ * Autotask should only be triggered by Autotask functions.
+ * @returns {boolean} Is function trigger?
  */
-async function sync(
-  event: AutotaskEvent,
-  targetContractAddress: string
-): Promise<void> {
-  if (!shouldEventTriggerSync(event)) return;
-
-  const triggerEvent = event.request?.body as BlockTriggerEvent;
-  const [reason] = triggerEvent.matchReasons;
-
-  // Should only be triggered by functions
-  if (reason.type !== "function") {
-    console.log("Non-function Trigger");
-    return;
-  }
-
-  console.log(`Target Contract: ${targetContractAddress}`);
-
-  // Type reason
-  reason as FunctionConditionSummary;
-
-  console.log(`Relaying ${reason.signature}`);
-  console.log("Params", reason.params);
-
-  // Get the address that sent the original transaction
-  const trxFrom = triggerEvent.transaction.from;
-  console.log(`Original Sender: ${trxFrom}`);
-
-  const web3 = web3Provider(event);
-
-  const contract = new web3.eth.Contract(
-    ABI as Array<AbiItem>,
-    targetContractAddress
-  );
-
-  // Prepare the transaction.
-  let trx: any;
-  if (reason.signature.startsWith("mint(")) {
-    // If method is mint, it's necessary to use the ReadReplica mint signature.  This contains an additional `to_` argument:
-    // an address that the token should be minted to. It is appended to the args array with the original trx sender's address.
-    trx = contract.methods[MINT_METHOD_SIG](
-      ...typeCastSignatureArgs(MINT_METHOD_SIG, [...reason.args, trxFrom])
-    );
-  } else {
-    trx = contract.methods[reason.signature](
-      ...typeCastSignatureArgs(reason.signature, reason.args)
-    );
-  }
-
-  console.log("Syncing");
-
-  const res = await trx.send({
-    // `msg.sender` will always be relay address.
-    from: (await web3.eth.getAccounts())[0]
-  });
-
-  console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
+function isFunctionTrigger(reason: SentinelConditionSummary): boolean {
+  return reason.type === "function";
 }
 
-export default sync;
+/**
+ * Routine for verifying whether sync should be run and subsequently running sync.
+ * Should be called within an Autotask lambda handler.
+ */
+async function autotaskSync(
+  targetContractAddress: string,
+  event: AutotaskEvent
+) {
+  if (!isSentinelTriggerEvent(event)) return;
+
+  const triggerEvent = event.request?.body as BlockTriggerEvent;
+  let [reason] = triggerEvent.matchReasons;
+
+  if (!isFunctionTrigger(reason)) return;
+
+  // Type
+  reason = reason as FunctionConditionSummary;
+
+  const s = new Syncer(targetContractAddress, {
+    relayerARN: event.relayerARN as string,
+    credentials: event.credentials as string
+  });
+  await s.setup();
+  await s.run(reason.signature, reason.args, triggerEvent.transaction.from);
+}
+
+export { Syncer, autotaskSync };

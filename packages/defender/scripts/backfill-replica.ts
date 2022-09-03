@@ -22,7 +22,7 @@ import {
 
 import web3Provider from "../src/services/web3";
 import { decodeMetadata } from "../src/utils/contract";
-import sync from "../src/libs/sync";
+import { Syncer } from "../src/libs/sync";
 
 import ABI_TitleV1_1 from "../src/data/abi/contracts/TitleV1_1.sol/TitleV1_1.json";
 
@@ -100,6 +100,8 @@ class Routine {
   sourceProvider: Web3;
   from: string | undefined = undefined;
 
+  syncer?: Syncer;
+
   constructor(networkPairId: string) {
     const pair = networkPairs[networkPairId];
     if (!pair) {
@@ -162,99 +164,77 @@ class Routine {
     );
   }
 
+  private async _fetchTokenMetadata(
+    tokenId: string
+  ): Promise<RawMetadata | null> {
+    try {
+      // Bugfix: Directly call the relayer.  Otherwise the combination of Web3.js and the Defender Relay Client
+      // causes error messages to be passed into an event emitter that results in an uncaught exception.
+      //@ts-ignore
+      const res = await sourceRelayer.call("eth_call", [
+        {
+          data: this.contract.methods.tokenURI(parseInt(tokenId)).encodeABI(),
+          from: this.from,
+          gas: undefined,
+          gasPrice: undefined,
+          to: this.source.contractAddress
+        },
+        "latest"
+      ]);
+      if (res.result) {
+        return decodeMetadata(this.sourceProvider.utils.toAscii(res.result));
+      } else if (
+        res.error.message ===
+        "execution reverted: ERC721Metadata: URI query for nonexistent token"
+      ) {
+        return null;
+      } else {
+        throw res.error;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async syncMutations(mutations: Array<StateMutation>): Promise<void> {
     //@ts-ignore
     const sourceRelayer = this.sourceProvider.currentProvider.base.relayer;
 
+    const s = new Syncer(this.replica.contractAddress, {
+      apiKey: this.replica.relayApiKey,
+      apiSecret: this.replica.relayApiSecret
+    });
+    await s.setup();
+
     for await (const mutation of mutations) {
-      let reason: any;
       if (mutation.type === TransferType.MINT) {
-        let metadata: RawMetadata | null;
-        try {
-          // Bugfix: Directly call the relayer.  Otherwise the combination of Web3.js and the Defender Relay Client
-          // causes error messages to be passed into an event emitter that results in an uncaught exception.
-          //@ts-ignore
-          const res = await sourceRelayer.call("eth_call", [
-            {
-              data: this.contract.methods
-                .tokenURI(parseInt(mutation.tokenId))
-                .encodeABI(),
-              from: this.from,
-              gas: undefined,
-              gasPrice: undefined,
-              to: this.source.contractAddress
-            },
-            "latest"
-          ]);
-          if (res.result) {
-            metadata = decodeMetadata(
-              this.sourceProvider.utils.toAscii(res.result)
-            );
-          } else if (
-            res.error.message ===
-            "execution reverted: ERC721Metadata: URI query for nonexistent token"
-          ) {
-            metadata = null;
-          } else {
-            throw res.error;
-          }
-        } catch (error) {
-          throw error;
-        }
+        const metadata = await this._fetchTokenMetadata(mutation.tokenId);
 
-        // Compile placeholder data. It is necessary to send the mint transaction in order
-        // to increment the token ids.
-        const params = {
-          name_: metadata?.name || "",
-          description_: metadata?.description || "",
-          externalUrl_: metadata?.external_url || "",
-          image_: metadata?.image || "",
-          attrLandClassification_: metadata?.attributes[0].value || "",
-          attrLocation_: metadata?.attributes[1].value || "",
-          attrDeed_: metadata?.attributes[2].value || "",
-          attrParcels_: metadata?.attributes[3].value || "",
-          attrOwner_: metadata?.attributes[4].value || "",
-          attrKml_: metadata?.attributes[5].value || "",
-          attrTag_: metadata?.attributes[6].value || "",
-          attrBuildingClassification_: metadata?.attributes[9].value || ""
-        };
-
-        reason = {
-          type: "function",
-          signature:
-            "mint(string,string,string,string,string,string,string,string,string,string,string,string)",
-          address: this.source.contractAddress,
-          args: Object.values(params),
-          params
-        };
+        await s.run(
+          "mint(string,string,string,string,string,string,string,string,string,string,string,string)",
+          // Compile placeholder data. It is necessary to send the mint transaction in order
+          // to increment the token ids.
+          Object.values({
+            name_: metadata?.name || "",
+            description_: metadata?.description || "",
+            externalUrl_: metadata?.external_url || "",
+            image_: metadata?.image || "",
+            attrLandClassification_: metadata?.attributes[0].value || "",
+            attrLocation_: metadata?.attributes[1].value || "",
+            attrDeed_: metadata?.attributes[2].value || "",
+            attrParcels_: metadata?.attributes[3].value || "",
+            attrOwner_: metadata?.attributes[4].value || "",
+            attrKml_: metadata?.attributes[5].value || "",
+            attrTag_: metadata?.attributes[6].value || "",
+            attrBuildingClassification_: metadata?.attributes[9].value || ""
+          }),
+          mutation.owner
+        );
       } else if (mutation.type === TransferType.BURN) {
-        reason = {
-          type: "function",
-          signature: "burn(uint256)",
-          address: this.source.contractAddress,
-          args: [mutation.tokenId],
-          params: { id_: mutation.tokenId }
-        };
+        await s.run("burn(uint256)", [mutation.tokenId], mutation.owner);
       } else {
         throw new Error(`Bad transfer type: ${mutation.type}`);
       }
-
-      // Sync:
-      await sync(
-        {
-          apiKey: this.replica.relayApiKey,
-          apiSecret: this.replica.relayApiSecret,
-          request: {
-            //@ts-ignore
-            body: {
-              transaction: { from: mutation.owner },
-              matchReasons: [reason],
-              type: "BLOCK"
-            }
-          }
-        },
-        this.replica.contractAddress
-      );
     }
   }
 

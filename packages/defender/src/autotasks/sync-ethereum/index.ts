@@ -2,11 +2,11 @@
 import type { AutotaskEvent } from "defender-autotask-utils";
 
 // Package Modules
-import sync from "../../libs/sync";
+import { autotaskSync } from "../../libs/sync";
 import { MAINNET_REPLICA_CONTRACT_ADDRESS } from "../../constants/contracts";
 
 const handler = async function (event: AutotaskEvent) {
-  await sync(event, MAINNET_REPLICA_CONTRACT_ADDRESS);
+  await autotaskSync(MAINNET_REPLICA_CONTRACT_ADDRESS, event);
 };
 
 // Local Development
