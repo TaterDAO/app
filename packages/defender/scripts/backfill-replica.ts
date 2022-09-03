@@ -1,8 +1,6 @@
 // Types
 import type { AbiItem } from "web3-utils";
 type AbiItems = Array<AbiItem>;
-import type { default as Web3 } from "web3";
-import type { Contract } from "web3-eth-contract";
 import type { RawMetadata } from "../src/types/contract";
 
 // 3rd Party Libs
@@ -23,6 +21,8 @@ import {
 import web3Provider from "../src/services/web3";
 import { decodeMetadata } from "../src/utils/contract";
 import { Syncer } from "../src/libs/sync";
+import Provider from "../src/libs/provider";
+import { TitleContract } from "../src/libs/contracts";
 
 import ABI_TitleV1_1 from "../src/data/abi/contracts/TitleV1_1.sol/TitleV1_1.json";
 
@@ -97,10 +97,13 @@ class Routine {
   source: SourceNetworkInterface;
   replica: ReplicaNetworkInterface;
 
-  sourceProvider: Web3;
+  sourceProvider: Provider;
   from: string | undefined = undefined;
 
   syncer?: Syncer;
+
+  //@ts-ignore
+  contract: TitleContract;
 
   constructor(networkPairId: string) {
     const pair = networkPairs[networkPairId];
@@ -117,23 +120,20 @@ class Routine {
     });
   }
 
-  get contract(): Contract {
-    if (!this.from) throw new Error("Call setup first");
-    return new this.sourceProvider.eth.Contract(
-      this.source.contractABI,
-      this.source.contractAddress,
-      { from: this.from }
-    );
-  }
-
   async setup() {
-    const [relayAddress] = await this.sourceProvider.eth.getAccounts();
+    const [relayAddress] = await this.sourceProvider.fromAddress();
     this.from = relayAddress;
+
+    this.contract = new TitleContract(
+      this.source.contractAddress,
+      this.sourceProvider,
+      relayAddress
+    );
   }
 
   async makeStateMutations(): Promise<Array<StateMutation>> {
     const sourceMintEvents = (
-      await this.contract.getPastEvents("Transfer", {
+      await this.contract.transfers({
         filter: { from: "0x0000000000000000000000000000000000000000" },
         fromBlock: this.source.contractDeploymentBlock
       })
@@ -146,7 +146,7 @@ class Routine {
 
     // SOURCE STATE: query burns
     const sourceBurnEvents = (
-      await this.contract.getPastEvents("Transfer", {
+      await this.contract.transfers({
         filter: { to: "0x0000000000000000000000000000000000000000" },
         fromBlock: this.source.contractDeploymentBlock
       })

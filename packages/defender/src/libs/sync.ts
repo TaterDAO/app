@@ -5,15 +5,13 @@ import type {
   BlockTriggerEvent,
   SentinelConditionSummary
 } from "defender-autotask-utils";
-import type { Contract } from "web3-eth-contract";
-import type { AbiItem } from "web3-utils";
-import type { default as Web3 } from "web3";
+import type Provider from "../libs/provider";
 import type { RelayerAuthenticationCredentials } from "../libs/relayer";
 
 // Package Modules
 import { typeCastSignatureArgs } from "../utils/contract";
 import web3Provider from "../services/web3";
-import ABI from "../data/abi/contracts/TitleV1_1_ReadOnlyReplica.sol/TitleV1_1_ReadOnlyReplica.json";
+import { ReadOnlyReplicaTitleContract } from "../libs/contracts";
 
 // =================
 // ===== Types =====
@@ -42,9 +40,9 @@ const MINT_METHOD_SIG =
   "mint(string,string,string,string,string,string,string,string,string,string,string,string,address)";
 
 class Syncer {
-  targetContractAddress: string;
-  relay: Web3;
-  contract: Contract;
+  // Replica Relayer Provider
+  provider: Provider;
+  contract: ReadOnlyReplicaTitleContract;
   relayAddress?: string;
   _setup: boolean = false;
 
@@ -52,17 +50,15 @@ class Syncer {
     targetContractAddress: string,
     syncerCredentials: RelayerAuthenticationCredentials
   ) {
-    this.targetContractAddress = targetContractAddress;
-
-    this.relay = web3Provider(syncerCredentials);
-    this.contract = new this.relay.eth.Contract(
-      ABI as Array<AbiItem>,
-      targetContractAddress
+    this.provider = web3Provider(syncerCredentials);
+    this.contract = new ReadOnlyReplicaTitleContract(
+      targetContractAddress,
+      this.provider
     );
   }
 
   async setup() {
-    this.relayAddress = (await this.relay.eth.getAccounts())[0];
+    this.relayAddress = await this.provider.fromAddress();
     this._setup = true;
   }
 
