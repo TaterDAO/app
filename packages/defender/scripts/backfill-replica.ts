@@ -316,7 +316,7 @@ class Routine {
 
   console.log(`${mutationsToApply.length} mutations to apply`);
 
-  // if (mutationsToApply.length > 0) {
-  //   await routine.applyMutations(mutationsToApply);
-  // }
+  if (mutationsToApply.length > 0) {
+    await routine.applyMutations(mutationsToApply);
+  }
 })();
