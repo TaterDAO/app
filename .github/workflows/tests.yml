@@ -72,6 +72,13 @@ jobs:
           session-id: ${{ steps.migration-00.outputs.session-id }}
           hardhat-directory: ./packages/contracts
 
+      - name: "Run Migration:02"
+        uses: 721labs/hardhat-session-action@main
+        with:
+          cmd: "migration:02"
+          session-id: ${{ steps.migration-00.outputs.session-id }}
+          hardhat-directory: ./packages/contracts
+
       - name: "Cache CI data"
         uses: actions/cache@v2
         with:
