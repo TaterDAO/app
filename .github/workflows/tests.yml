@@ -87,6 +87,7 @@ jobs:
           key: "ci-cache"
   defender-tests:
     name: "Defender:Tests"
+    runs-on: ubuntu-latest
     needs: []
     defaults:
       run:
