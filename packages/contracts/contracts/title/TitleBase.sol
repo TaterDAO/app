@@ -29,6 +29,12 @@ abstract contract TitleBase is
     /// State
     //////////////////////////////
 
+    // NOTE: Unused within Replica contracts; however storage layouts need
+    // to remain in the same order between across contract upgrades. Declaring
+    // within the relevant child contract would place the declaration below _titles,
+    // breaking the upgradability.
+    address public proxyRegistryAddress;
+
     mapping(uint256 => TitleStructV1_1) internal _titles;
 
     //////////////////////////////

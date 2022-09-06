@@ -18,12 +18,6 @@ contract TitleV1_1 is TitleBase {
     using StringsUpgradeable for uint8;
 
     //////////////////////////////
-    /// State
-    //////////////////////////////
-
-    address public proxyRegistryAddress;
-
-    //////////////////////////////
     /// Constructor
     //////////////////////////////
 
