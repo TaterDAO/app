@@ -69,7 +69,7 @@ class Syncer {
     methodSignature: string,
     args: Array<string> = [],
     trxFromAddress: string
-  ) {
+  ): Promise<boolean> {
     if (!this._setup) throw new Error("Must call #setup first");
     console.log("Syncing");
     console.log({
@@ -93,9 +93,18 @@ class Syncer {
     }
 
     // `msg.sender` will always be relay address.
-    const res = await trx.send({ from: this.relayAddress });
-
-    console.log(`Trx Response:\n\n${JSON.stringify(res)}`);
+    return new Promise((resolve, reject) => {
+      trx
+        .send({ from: this.relayAddress })
+        .on("receipt", (receipt: any) => {
+          console.log(`Trx Response:\n\n${JSON.stringify(receipt)}`);
+          resolve(true);
+        })
+        .on("error", (error: any, receipt: any) => {
+          console.log("Sync Error!");
+          throw error;
+        });
+    });
   }
 }
 
