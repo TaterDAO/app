@@ -164,6 +164,14 @@ class Routine {
     );
   }
 
+  /**
+   * Exposes the provider's JSON RPC relayer.
+   */
+  get sourceRelayer() {
+    //@ts-ignore
+    return this.sourceProvider.currentProvider.base.relayer;
+  }
+
   private async _fetchTokenMetadata(
     tokenId: string
   ): Promise<RawMetadata | null> {
@@ -171,7 +179,7 @@ class Routine {
       // Bugfix: Directly call the relayer.  Otherwise the combination of Web3.js and the Defender Relay Client
       // causes error messages to be passed into an event emitter that results in an uncaught exception.
       //@ts-ignore
-      const res = await sourceRelayer.call("eth_call", [
+      const res = await this.sourceRelayer.call("eth_call", [
         {
           data: this.contract.methods.tokenURI(parseInt(tokenId)).encodeABI(),
           from: this.from,
@@ -197,9 +205,6 @@ class Routine {
   }
 
   async syncMutations(mutations: Array<StateMutation>): Promise<void> {
-    //@ts-ignore
-    const sourceRelayer = this.sourceProvider.currentProvider.base.relayer;
-
     const s = new Syncer(this.replica.contractAddress, {
       apiKey: this.replica.relayApiKey,
       apiSecret: this.replica.relayApiSecret
