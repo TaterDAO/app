@@ -10,6 +10,9 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
+// Utils
+import { transactionsDisabled } from "@utils/flags";
+
 const Container = styled.div`
   margin: var(--global-space-y-margin) 0;
 `;
@@ -46,7 +49,7 @@ const BurnForm: React.FC<{ tokenId: number; titleName: string }> = ({
   return (
     <Container>
       <Button
-        disabled={submitting}
+        disabled={submitting || transactionsDisabled()}
         onClick={handleClick}
         primary
         loading={burning}

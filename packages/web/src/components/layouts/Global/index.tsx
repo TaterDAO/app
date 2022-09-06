@@ -15,6 +15,9 @@ import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
 
+// Utils
+import { transactionsDisabled } from "@utils/flags";
+
 const Container = styled.div`
   min-height: 100vh;
 
@@ -72,16 +75,21 @@ const AlertBanner = styled.div`
 `;
 
 function showAlertBanner(): boolean {
-  if (process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS) return true;
+  if (transactionsDisabled()) return true;
   else return false;
 }
 
 function alertBannerMessage(): string {
-  if (process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS) {
+  if (transactionsDisabled()) {
     return "Minting and Burning are currently disabled for scheduled maintenance.";
   } else {
     return "";
   }
+}
+
+function canCreate(): boolean {
+  if (transactionsDisabled()) return false;
+  else return true;
 }
 
 const Layout = ({ children }: { children: JSX.Element }) => {
@@ -90,7 +98,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       <VerticalNav>
         <Logo />
         <ExploreButton />
-        <CreateButton />
+        {canCreate() && <CreateButton />}
         <AboutButton />
         <WhitepaperButton />
         <Divider />
