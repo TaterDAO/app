@@ -121,7 +121,7 @@ class Routine {
   }
 
   async setup() {
-    const [relayAddress] = await this.sourceProvider.fromAddress();
+    const relayAddress = await this.sourceProvider.fromAddress();
     this.from = relayAddress;
 
     this.contract = new TitleContract(
