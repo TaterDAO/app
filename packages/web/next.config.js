@@ -9,7 +9,9 @@ const nextConfig = {
     NEXT_PUBLIC_ALGOLIA_APPLICATION_ID: process.env.ALGOLIA_APPLICATION_ID,
     INFURA_IPFS_JWT: `Basic ${Buffer.from(
       `${process.env.INFURA_IPFS_PROJECT_ID}:${process.env.INFURA_IPFS_PROJECT_SECRET}`
-    ).toString("base64")}`
+    ).toString("base64")}`,
+    // Flag to disable minting / burning application-wide. Useful when running migrations or backfills.
+    NEXT_PUBLIC_DISABLE_TRANSACTIONS: true
   },
   optimizeFonts: false,
   images: {

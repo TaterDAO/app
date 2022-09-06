@@ -62,6 +62,28 @@ const HeadNavContent = styled(MainContent)`
   height: 100%;
 `;
 
+const AlertBanner = styled.div`
+  width: 100%;
+
+  text-align: center;
+  padding: 0.5rem;
+
+  background-color: var(--global-color-attention);
+`;
+
+function showAlertBanner(): boolean {
+  if (process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS) return true;
+  else return false;
+}
+
+function alertBannerMessage(): string {
+  if (process.env.NEXT_PUBLIC_DISABLE_TRANSACTIONS) {
+    return "Minting and Burning are currently disabled for scheduled maintenance.";
+  } else {
+    return "";
+  }
+}
+
 const Layout = ({ children }: { children: JSX.Element }) => {
   return (
     <Container>
@@ -85,6 +107,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             <Wallets />
           </HeadNavContent>
         </HeadNav>
+        {showAlertBanner() && <AlertBanner>{alertBannerMessage()}</AlertBanner>}
         <ContentContainer>
           <MainContent>{children}</MainContent>
         </ContentContainer>
