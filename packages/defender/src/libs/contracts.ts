@@ -13,42 +13,38 @@ import Provider from "./provider";
 
 type ABI = Array<AbiItem>;
 
-class Contract {
-  abi?: ABI;
-  address: string;
-  provider: Provider;
+function Contract(abi: ABI) {
+  return class {
+    abi: ABI = abi;
+    address: string;
+    provider: Provider;
 
-  _contract: EthContract;
+    _contract: EthContract;
 
-  constructor(address: string, provider: Provider, from?: string) {
-    this.address = address;
-    this.provider = provider;
+    constructor(address: string, provider: Provider, from?: string) {
+      this.address = address;
+      this.provider = provider;
 
-    const options: { [key: string]: string } = {};
-    if (!!from) options["from"] = from;
+      const options: { [key: string]: string } = {};
+      if (!!from) options["from"] = from;
 
-    this._contract = new provider.eth.Contract(
-      this.abi as ABI,
-      address,
-      options
-    );
-  }
+      this._contract = new provider.eth.Contract(this.abi, address, options);
+    }
 
-  get methods() {
-    return this._contract.methods;
-  }
+    get methods() {
+      return this._contract.methods;
+    }
 
-  async transfers(config: PastEventOptions): Promise<EventData[]> {
-    return this._contract.getPastEvents("Transfer", config);
-  }
+    async transfers(config: PastEventOptions): Promise<EventData[]> {
+      return this._contract.getPastEvents("Transfer", config);
+    }
+  };
 }
 
-class TitleContract extends Contract {
-  abi = ABI_TITLE as ABI;
-}
+class TitleContract extends Contract(ABI_TITLE as ABI) {}
 
-class ReadOnlyReplicaTitleContract extends Contract {
-  abi = ABI_TITLE_READ_ONLY_REPLICA as ABI;
-}
+class ReadOnlyReplicaTitleContract extends Contract(
+  ABI_TITLE_READ_ONLY_REPLICA as ABI
+) {}
 
 export { TitleContract, ReadOnlyReplicaTitleContract };
