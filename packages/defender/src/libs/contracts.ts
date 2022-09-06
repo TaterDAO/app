@@ -25,6 +25,8 @@ function Contract(abi: ABI) {
       this.address = address;
       this.provider = provider;
 
+      console.log({ address, from });
+
       const options: { [key: string]: string } = {};
       if (!!from) options["from"] = from;
 
