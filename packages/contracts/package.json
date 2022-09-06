@@ -17,7 +17,7 @@
     "migrate:01:prod": "yarn compile && yarn hardhat migration:01 --network arbitrum_mainnet --address 0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF",
     "migrate:02:dev": "yarn compile && yarn hardhat migration:02 --network hardhat --writer 0x7351dc227bacc5b33d1e14c778e46439852673b7",
     "migrate:02:test": "yarn compile && yarn hardhat migration:02 --network goerli --writer 0x7351dc227bacc5b33d1e14c778e46439852673b7",
-    "migrate:02:prod": ""
+    "migrate:02:prod": "yarn compile && yarn hardhat migration:02 --network ethereum --writer 0x009cfc9c5a45b0ac7aebb99efc1c1e2d425ec98b"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",

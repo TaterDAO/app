@@ -23,6 +23,7 @@ const {
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
   ALCHEMY_GOERLI_URI,
+  ALCHEMY_MAINNET_URI,
 } = process.env;
 
 // Import Migrations
@@ -67,6 +68,11 @@ export default {
     arbitrum_mainnet: {
       url: ALCHEMY_ARBITRUM_MAINNET_URI || "https://arb1.arbitrum.io/rpc",
       chainId: 42161,
+      accounts,
+    },
+    ethereum: {
+      url: ALCHEMY_MAINNET_URI || "",
+      chainId: 1,
       accounts,
     },
   },
