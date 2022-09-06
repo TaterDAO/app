@@ -75,7 +75,8 @@ jobs:
       - name: "Run Migration:02"
         uses: 721labs/hardhat-session-action@main
         with:
-          cmd: "migration:02"
+          # Any writer address suffices
+          cmd: "migration:02 --writer 0x7351dc227bacc5b33d1e14c778e46439852673b7"
           session-id: ${{ steps.migration-00.outputs.session-id }}
           hardhat-directory: ./packages/contracts
 
