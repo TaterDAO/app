@@ -8,6 +8,7 @@
     "autotask:build:index-contract-arbitrum": "yarn ncc build src/autotasks/index-contract-arbitrum/index.ts -o dist/autotasks/index-contract-arbitrum -m",
     "autotask:build:index-contract-arbitrum-testnet": "yarn ncc build src/autotasks/index-contract-arbitrum-testnet/index.ts -o dist/autotasks/index-contract-arbitrum-testnet -m",
     "autotask:build:sync-goerli": "yarn ncc build src/autotasks/sync-goerli/index.ts -o dist/autotasks/sync-goerli -m",
+    "autotask:build:sync-ethereum": "yarn ncc build src/autotasks/sync-ethereum/index.ts -o dist/autotasks/sync-ethereum -m",
     "autotask:deploy": "ts-node scripts/upload-autotask.ts",
     "scripts:backfill:replica": "ts-node scripts/backfill-replica.ts"
   },
