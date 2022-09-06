@@ -132,15 +132,14 @@ async function autotaskSync(
 
   if (!isFunctionTrigger(reason)) return;
 
-  // Type
-  reason = reason as FunctionConditionSummary;
-
   const s = new Syncer(targetContractAddress, {
     relayerARN: event.relayerARN as string,
     credentials: event.credentials as string
   });
   await s.setup();
-  await s.run(reason.signature, reason.args, triggerEvent.transaction.from);
+
+  const { signature, args } = reason as FunctionConditionSummary;
+  await s.run(signature, args, triggerEvent.transaction.from);
 }
 
 export { Syncer, autotaskSync };
