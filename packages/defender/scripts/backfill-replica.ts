@@ -195,7 +195,7 @@ class Routine {
    * @param replicaMutations State mutations already applied to replica state.
    * @returns Mutations that have not yet been applied.
    */
-  resolveDrift(
+  filterAppliedMutations(
     sourceMutations: Array<StateMutation>,
     replicaMutations: Array<StateMutation>
   ): Array<StateMutation> {
@@ -244,9 +244,7 @@ class Routine {
     }
   }
 
-  async applyMutationsToReplica(
-    mutations: Array<StateMutation>
-  ): Promise<void> {
+  async applyMutations(mutations: Array<StateMutation>): Promise<void> {
     const s = new Syncer(this.replica.contractAddress, this.replica.relay);
     await s.setup();
 
@@ -281,31 +279,6 @@ class Routine {
       }
     }
   }
-
-  async run() {
-    await this.setup();
-    //@ts-ignore
-    const sourceMutations = await this.makeStateMutations(
-      this.sourceContract,
-      this.source.contractDeploymentBlock
-    );
-
-    const replicaMutations = await this.makeStateMutations(
-      this.replicaContract,
-      this.replica.contractDeploymentBlock
-    );
-
-    const mutationsToApply = this.resolveDrift(
-      sourceMutations,
-      replicaMutations
-    );
-
-    console.log(`${mutationsToApply.length} mutations to apply`);
-
-    if (mutationsToApply.length > 0) {
-      //await this.applyMutationsToReplica(mutationsToApply);
-    }
-  }
 }
 
 // RUN: Main Routine.
@@ -318,6 +291,32 @@ class Routine {
   if (!Boolean(networkPairId))
     throw new Error("Network Pair ID argument required");
 
-  const r = new Routine(networkPairId);
-  await r.run();
+  // SETUP
+
+  const routine = new Routine(networkPairId);
+  await routine.setup();
+
+  // Query source mutations, replica mutations, and filter out source mutations
+  // which have already been applied.
+
+  const sourceMutations = await routine.makeStateMutations(
+    routine.sourceContract,
+    routine.source.contractDeploymentBlock
+  );
+
+  const replicaMutations = await routine.makeStateMutations(
+    routine.replicaContract,
+    routine.replica.contractDeploymentBlock
+  );
+
+  const mutationsToApply = routine.filterAppliedMutations(
+    sourceMutations,
+    replicaMutations
+  );
+
+  console.log(`${mutationsToApply.length} mutations to apply`);
+
+  // if (mutationsToApply.length > 0) {
+  //   await routine.applyMutations(mutationsToApply);
+  // }
 })();
