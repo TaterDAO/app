@@ -4,6 +4,8 @@ const handler = async function () {
 
 // Local Development
 if (require.main === module) {
+  require("dotenv").config();
+
   try {
     handler();
   } catch (error) {

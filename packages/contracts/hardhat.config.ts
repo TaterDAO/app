@@ -22,16 +22,20 @@ const {
   REPORT_GAS,
   ETHERSCAN_API_KEY,
   COINMARKETCAP_API_KEY,
+  ALCHEMY_GOERLI_URI,
+  ALCHEMY_MAINNET_URI,
 } = process.env;
 
 // Import Migrations
 import m00 from "./tasks/migrations/00";
 import m01 from "./tasks/migrations/01";
+import m02 from "./tasks/migrations/02";
 
 // Add global flags to migrations
-const migrations = [m00, m01];
+const migrations = [m00, m01, m02];
 migrations.forEach((migration) => {
-  migration.addFlag("write", "Write outputs to filesystem?");
+  //! Deprecated
+  // migration.addFlag("write", "Write outputs to filesystem?");
 });
 
 const accounts = TATERDAO_ADMIN_PRIVATE_KEY ? [TATERDAO_ADMIN_PRIVATE_KEY] : [];
@@ -50,6 +54,11 @@ export default {
   defaultNetwork: "hardhat",
   networks: {
     rinkeby: { url: ALCHEMY_RINKEBY_URI || "", chainId: 4, accounts },
+    goerli: {
+      url: ALCHEMY_GOERLI_URI || "",
+      chainId: 5,
+      accounts,
+    },
     arbitrum_testnet: {
       url: ALCHEMY_ARBITRUM_TESTNET_URI || "https://rinkeby.arbitrum.io/rpc",
       //url: "https://rinkeby.arbitrum.io/rpc",
@@ -61,14 +70,21 @@ export default {
       chainId: 42161,
       accounts,
     },
+    ethereum: {
+      url: ALCHEMY_MAINNET_URI || "",
+      chainId: 1,
+      accounts,
+    },
   },
   solidity: {
-    version: "0.8.10",
+    version: "0.8.16",
+    // https://docs.soliditylang.org/en/v0.8.16/using-the-compiler.html#input-description
     settings: {
       optimizer: {
         enabled: true,
         runs: 200,
       },
+      viaIR: true,
     },
   },
   paths: {

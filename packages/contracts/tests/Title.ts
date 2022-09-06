@@ -73,6 +73,7 @@ let signers: Array<SignerWithAddress>;
 let evm: EVM;
 
 let factory: ContractFactory;
+let upgrade_factory: ContractFactory;
 let contract: Contract;
 
 let owner: Contract;
@@ -97,6 +98,7 @@ describe("TitleV1_0.sol", async () => {
 
     // Deploy contract
     factory = await ethers.getContractFactory("TitleV1_0");
+    upgrade_factory = await ethers.getContractFactory("TitleV1_1");
     contract = await upgrades.deployProxy(factory, [OPENSEA_PROXY_ADDRESS]);
     await contract.deployed();
 
@@ -123,7 +125,10 @@ describe("TitleV1_0.sol", async () => {
   });
 
   it("upgrades", async () => {
-    const upgraded = await upgrades.upgradeProxy(contract.address, factory);
+    const upgraded = await upgrades.upgradeProxy(
+      contract.address,
+      upgrade_factory
+    );
     expect(upgraded.address).to.equal(contract.address);
   });
 

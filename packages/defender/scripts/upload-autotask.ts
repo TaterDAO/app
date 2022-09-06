@@ -1,5 +1,5 @@
 import path from "path";
-import client from "../services/autotask";
+import client from "../src/services/autotask";
 
 (async () => {
   const args = process.argv.slice(2);

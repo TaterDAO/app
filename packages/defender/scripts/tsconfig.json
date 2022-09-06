@@ -3,13 +3,14 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "dist",
-    "rootDir": "./src",
+    "outDir": "./../dist",
     "sourceMap": true,
     "strict": true,
     "target": "es2019",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "exclude": ["node_modules"]
 }

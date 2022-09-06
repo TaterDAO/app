@@ -3,29 +3,22 @@ import type { AutotaskEvent } from "defender-autotask-utils";
 import type { RelayerParams } from "defender-relay-client";
 import type { SearchIndex, SearchClient } from "algoliasearch";
 import type { ObjectWithObjectID } from "@algolia/client-search";
-import type { Contract } from "web3-eth-contract";
 import type { RawMetadata } from "../../types/contract";
-import type { AbiItem } from "web3-utils";
-
-// 3rd Party modules
-import { DefenderRelayProvider } from "defender-relay-client/lib/web3";
-import Web3 from "web3";
+import type Provider from "../../libs/provider";
 
 // Package modules
+import { TitleContract } from "../contracts";
 import makeAlgoliaClient, { serializeTitles } from "../../services/algolia";
 import { decodeMetadata } from "../../utils/contract";
-
-// Shared modules
-import ABI from "../../data/abi/contracts/TitleV1_0.sol/TitleV1_0.json";
+import web3Provider from "../../services/web3";
 
 // Types
 type AlgoliaRecordsById = { [id: string]: ObjectWithObjectID };
 
 class Indexer {
   // Contract
-  private _web3: Web3;
-  private _contract: Contract;
-  private _cachedFrom: undefined | string = undefined;
+  private provider: Provider;
+  private _contract: TitleContract;
 
   // Algolia
   private _algoliaClient: SearchClient;
@@ -36,13 +29,8 @@ class Indexer {
     networkId: string,
     contractAddress: string
   ) {
-    this._web3 = new Web3(
-      new DefenderRelayProvider(event, { speed: "average" })
-    );
-    this._contract = new this._web3.eth.Contract(
-      ABI as Array<AbiItem>,
-      contractAddress
-    );
+    this.provider = web3Provider(event);
+    this._contract = new TitleContract(contractAddress, this.provider);
 
     this._algoliaClient = makeAlgoliaClient(
       event.secrets?.ALGOLIA_APPLICATION_ID as string,
@@ -51,17 +39,8 @@ class Indexer {
     this._algoliaIndex = this._algoliaClient.initIndex(`titles-${networkId}`);
   }
 
-  /**
-   * Returns the sender address. Implements a get-cache-or-query strategy.
-   * @returns Promise resolving address.
-   */
   private async _from(): Promise<string> {
-    if (this._cachedFrom) return this._cachedFrom;
-    else {
-      const [from] = await this._web3.eth.getAccounts();
-      this._cachedFrom = from;
-      return from;
-    }
+    return await this.provider.fromAddress();
   }
 
   /**
@@ -112,7 +91,7 @@ class Indexer {
     toBlock: number;
   }> {
     const range = 1000;
-    const currentBlockNumber = await this._web3.eth.getBlockNumber();
+    const currentBlockNumber = await this.provider.eth.getBlockNumber();
     return {
       fromBlock: currentBlockNumber - range,
       toBlock: currentBlockNumber
@@ -136,7 +115,7 @@ class Indexer {
     const requiresDeIndexing: { [id: string]: boolean } = {};
     const burned: { [id: string]: boolean } = {};
     (
-      await this._contract.getPastEvents("Transfer", {
+      await this._contract.transfers({
         filter: { to: "0x0000000000000000000000000000000000000000" },
         ...blockRange
       })
@@ -169,7 +148,7 @@ class Indexer {
     // MINTING: Determine which tokens have been minted, not burned, and require indexing.
     const shouldIndex: Array<string> = [];
     (
-      await this._contract.getPastEvents("Transfer", {
+      await this._contract.transfers({
         filter: { from: "0x0000000000000000000000000000000000000000" },
         ...blockRange
       })

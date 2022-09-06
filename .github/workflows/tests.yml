@@ -72,13 +72,47 @@ jobs:
           session-id: ${{ steps.migration-00.outputs.session-id }}
           hardhat-directory: ./packages/contracts
 
+      - name: "Run Migration:02"
+        uses: 721labs/hardhat-session-action@main
+        with:
+          # Any writer address suffices
+          cmd: "migration:02 --writer 0x7351dc227bacc5b33d1e14c778e46439852673b7"
+          session-id: ${{ steps.migration-00.outputs.session-id }}
+          hardhat-directory: ./packages/contracts
+
       - name: "Cache CI data"
         uses: actions/cache@v2
         with:
           path: |
             ./.ci/proxyInstanceAddress
           key: "ci-cache"
+  defender-tests:
+    name: "Defender:Tests"
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./packages/defender
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      - name: "Run"
+        run: "yarn test"
   web-tests-e2e:
     name: "Web:Tests:E2E"
     runs-on: ubuntu-latest

@@ -10,6 +10,16 @@
       "args": ["--network", "hardhat", "test"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug: Backfill Replica",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/defender",
+      "runtimeExecutable": "yarn",
+      "args": ["scripts:backfill:replica", "test"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
