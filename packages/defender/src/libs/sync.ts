@@ -72,6 +72,11 @@ class Syncer {
   ) {
     if (!this._setup) throw new Error("Must call #setup first");
     console.log("Syncing");
+    console.log({
+      methodSignature,
+      args,
+      trxFromAddress
+    });
 
     // Prepare the transaction.
     let trx: any;
