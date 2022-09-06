@@ -4,10 +4,10 @@ import { SunLight } from "iconoir-react";
 const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
   border-radius: var(--global-border-radius);
   background-color: ${({ primary }) =>
-    primary ? "var(--color-bright-indigo)" : "transparent"};
+    primary ? "var(--global-color-attention)" : "transparent"};
   border: 1px solid;
   border-color ${({ primary }) =>
-    primary ? "var(--color-bright-indigo)" : "var(--global-color-border)"};
+    primary ? "var(--global-color-attention)" : "var(--global-color-border)"};
   color: var(--global-color-font);
 
   padding: 0.75rem 1.25rem;

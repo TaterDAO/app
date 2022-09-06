@@ -81,7 +81,7 @@ const Option = styled.div<{ selected: boolean; disabled: boolean }>`
     `
   &:hover {
     ${Label} {
-      color: ${selected ? "inherit" : "var(--color-bright-indigo)"};
+      color: ${selected ? "inherit" : "var(--global-color-attention)"};
     }
 
     ${ArrowWrapper} {
@@ -93,7 +93,7 @@ const Option = styled.div<{ selected: boolean; disabled: boolean }>`
   `}
 
   background-color: ${({ selected }) =>
-    selected ? "var(--color-bright-indigo)" : "transparent"};
+    selected ? "var(--global-color-attention)" : "transparent"};
 `;
 
 const ICON_SIZE = 20;
