@@ -47,4 +47,8 @@ You are able to test `sync-goerli` and `sync-mainnet` by POST'ing to their respe
 
 #### Backfilling
 
-`todo: set up scripts that use the same method as Production Testing`
+In order to backfill a new replica, run the script below.
+
+```shell
+scripts:backfill:replica
+```
