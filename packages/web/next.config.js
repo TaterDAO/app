@@ -11,7 +11,7 @@ const nextConfig = {
       `${process.env.INFURA_IPFS_PROJECT_ID}:${process.env.INFURA_IPFS_PROJECT_SECRET}`
     ).toString("base64")}`,
     // Flag to disable minting / burning application-wide. Useful when running migrations or backfills.
-    NEXT_PUBLIC_DISABLE_TRANSACTIONS: true
+    NEXT_PUBLIC_DISABLE_TRANSACTIONS: false
   },
   optimizeFonts: false,
   images: {
