@@ -23,9 +23,19 @@ import SubmitButton from "@components/forms/mint/SubmitButton";
 
 // Hooks
 import useWeb3 from "@hooks/useWeb3";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+// Utils
+import { transactionsDisabled } from "@utils/flags";
 
 const MintPage: NextPage = ({}) => {
   const web3 = useWeb3();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (transactionsDisabled()) router.push("/");
+  }, []);
 
   return (
     <TitledPage title="New Property Title">

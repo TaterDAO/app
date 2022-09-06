@@ -125,8 +125,8 @@ const Select: React.FC<any> = (props) => {
 const FileInput = styled(Input).attrs({ type: "file" })`
   &::file-selector-button {
     border-radius: var(--global-border-radius);
-    background-color: var(--color-bright-indigo);
-    border: 1px solid var(--color-bright-indigo);
+    background-color: var(--global-color-attention);
+    border: 1px solid var(--global-color-attention);
     color: var(--global-color-font);
     padding: 0.75rem 1.25rem;
     margin-right: 1rem;

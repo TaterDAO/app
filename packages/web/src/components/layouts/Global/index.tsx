@@ -15,6 +15,9 @@ import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
 
+// Utils
+import { transactionsDisabled } from "@utils/flags";
+
 const Container = styled.div`
   min-height: 100vh;
 
@@ -62,13 +65,40 @@ const HeadNavContent = styled(MainContent)`
   height: 100%;
 `;
 
+const AlertBanner = styled.div`
+  width: 100%;
+
+  text-align: center;
+  padding: 0.5rem;
+
+  background-color: var(--global-color-attention);
+`;
+
+function showAlertBanner(): boolean {
+  if (transactionsDisabled()) return true;
+  else return false;
+}
+
+function alertBannerMessage(): string {
+  if (transactionsDisabled()) {
+    return "Minting and Burning are currently disabled for scheduled maintenance.";
+  } else {
+    return "";
+  }
+}
+
+function canCreate(): boolean {
+  if (transactionsDisabled()) return false;
+  else return true;
+}
+
 const Layout = ({ children }: { children: JSX.Element }) => {
   return (
     <Container>
       <VerticalNav>
         <Logo />
         <ExploreButton />
-        <CreateButton />
+        {canCreate() && <CreateButton />}
         <AboutButton />
         <WhitepaperButton />
         <Divider />
@@ -85,6 +115,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             <Wallets />
           </HeadNavContent>
         </HeadNav>
+        {showAlertBanner() && <AlertBanner>{alertBannerMessage()}</AlertBanner>}
         <ContentContainer>
           <MainContent>{children}</MainContent>
         </ContentContainer>

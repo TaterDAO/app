@@ -68,6 +68,8 @@ export default createGlobalStyle`
     --global-color-font-secondary: var(--color-fossil);
     --global-color-error: var(--color-bright-red);
 
+    --global-color-attention: var(--color-bright-indigo);
+
     --global-font: 'Open Sans';
     --global-border-radius: 2rem;
 
