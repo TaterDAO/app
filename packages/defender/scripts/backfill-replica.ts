@@ -22,7 +22,10 @@ import web3Provider from "../src/services/web3";
 import { decodeMetadata } from "../src/utils/contract";
 import { Syncer } from "../src/libs/sync";
 import Provider from "../src/libs/provider";
-import { TitleContract } from "../src/libs/contracts";
+import {
+  TitleContract,
+  ReadOnlyReplicaTitleContract
+} from "../src/libs/contracts";
 
 import ABI_TitleV1_1 from "../src/data/abi/contracts/TitleV1_1.sol/TitleV1_1.json";
 
@@ -30,13 +33,15 @@ import ABI_TitleV1_1 from "../src/data/abi/contracts/TitleV1_1.sol/TitleV1_1.jso
 
 interface BaseNetworkInterface {
   contractAddress: string;
-  relayApiKey: string;
-  relayApiSecret: string;
+  contractDeploymentBlock: number;
+  relay: {
+    apiKey: string;
+    apiSecret: string;
+  };
 }
 
 interface SourceNetworkInterface extends BaseNetworkInterface {
   contractABI: AbiItems;
-  contractDeploymentBlock: number;
 }
 
 interface ReplicaNetworkInterface extends BaseNetworkInterface {}
@@ -52,13 +57,18 @@ const networkPairs: { [id: string]: NetworkPair } = {
       contractAddress: ARBITRUM_TESTNET_CONTRACT_ADDRESS,
       contractABI: ABI_TitleV1_1 as AbiItems,
       contractDeploymentBlock: 12057052,
-      relayApiKey: process.env.ARBITRUM_TESTNET_RELAY_API_KEY as string,
-      relayApiSecret: process.env.ARBITRUM_TESTNET_RELAY_API_SECRET as string
+      relay: {
+        apiKey: process.env.ARBITRUM_TESTNET_RELAY_API_KEY as string,
+        apiSecret: process.env.ARBITRUM_TESTNET_RELAY_API_SECRET as string
+      }
     },
     replica: {
       contractAddress: GOERLI_REPLICA_CONTRACT_ADDRESS,
-      relayApiKey: process.env.ETHEREUM_GOERLI_RELAY_API_KEY as string,
-      relayApiSecret: process.env.ETHEREUM_GOERLI_RELAY_API_SECRET as string
+      contractDeploymentBlock: 0,
+      relay: {
+        apiKey: process.env.ETHEREUM_GOERLI_RELAY_API_KEY as string,
+        apiSecret: process.env.ETHEREUM_GOERLI_RELAY_API_SECRET as string
+      }
     }
   },
   prod: {
@@ -66,13 +76,18 @@ const networkPairs: { [id: string]: NetworkPair } = {
       contractAddress: ARBITRUM_ONE_CONTRACT_ADDRESS,
       contractABI: ABI_TitleV1_1 as AbiItems,
       contractDeploymentBlock: 13644033,
-      relayApiKey: process.env.ARBITRUM_ONE_RELAY_API_KEY as string,
-      relayApiSecret: process.env.ARBITRUM_ONE_RELAY_API_SECRET as string
+      relay: {
+        apiKey: process.env.ARBITRUM_ONE_RELAY_API_KEY as string,
+        apiSecret: process.env.ARBITRUM_ONE_RELAY_API_SECRET as string
+      }
     },
     replica: {
       contractAddress: MAINNET_REPLICA_CONTRACT_ADDRESS,
-      relayApiKey: process.env.ETHEREUM_MAINNET_RELAY_API_KEY as string,
-      relayApiSecret: process.env.ETHEREUM_MAINNET_RELAY_API_SECRET as string
+      contractDeploymentBlock: 15485986,
+      relay: {
+        apiKey: process.env.ETHEREUM_MAINNET_RELAY_API_KEY as string,
+        apiSecret: process.env.ETHEREUM_MAINNET_RELAY_API_SECRET as string
+      }
     }
   }
 };
@@ -98,12 +113,14 @@ class Routine {
   replica: ReplicaNetworkInterface;
 
   sourceProvider: Provider;
-  from: string | undefined = undefined;
+  replicaProvider: Provider;
+  sourceFrom: string | undefined = undefined;
 
   syncer?: Syncer;
 
   //@ts-ignore
-  contract: TitleContract;
+  sourceContract: TitleContract;
+  replicaContract: ReadOnlyReplicaTitleContract;
 
   constructor(networkPairId: string) {
     const pair = networkPairs[networkPairId];
@@ -114,28 +131,33 @@ class Routine {
     this.source = pair.source;
     this.replica = pair.replica;
 
-    this.sourceProvider = web3Provider({
-      apiKey: pair.source.relayApiKey,
-      apiSecret: pair.source.relayApiSecret
-    });
-  }
+    this.sourceProvider = web3Provider(this.source.relay);
+    this.replicaProvider = web3Provider(this.replica.relay);
 
-  async setup() {
-    const relayAddress = await this.sourceProvider.fromAddress();
-    this.from = relayAddress;
-
-    this.contract = new TitleContract(
-      this.source.contractAddress,
-      this.sourceProvider,
-      relayAddress
+    this.replicaContract = new ReadOnlyReplicaTitleContract(
+      this.replica.contractAddress,
+      this.replicaProvider
     );
   }
 
-  async makeStateMutations(): Promise<Array<StateMutation>> {
+  async setup() {
+    this.sourceFrom = await this.sourceProvider.fromAddress();
+
+    this.sourceContract = new TitleContract(
+      this.source.contractAddress,
+      this.sourceProvider,
+      this.sourceFrom
+    );
+  }
+
+  async makeStateMutations(
+    contract: TitleContract | ReadOnlyReplicaTitleContract,
+    deploymentBlock: number
+  ): Promise<Array<StateMutation>> {
     const sourceMintEvents = (
-      await this.contract.transfers({
+      await contract.transfers({
         filter: { from: "0x0000000000000000000000000000000000000000" },
-        fromBlock: this.source.contractDeploymentBlock
+        fromBlock: deploymentBlock
       })
     ).map((event) => ({
       blockNumber: event.blockNumber,
@@ -146,9 +168,9 @@ class Routine {
 
     // SOURCE STATE: query burns
     const sourceBurnEvents = (
-      await this.contract.transfers({
+      await contract.transfers({
         filter: { to: "0x0000000000000000000000000000000000000000" },
-        fromBlock: this.source.contractDeploymentBlock
+        fromBlock: deploymentBlock
       })
     ).map((event) => ({
       blockNumber: event.blockNumber,
@@ -162,6 +184,22 @@ class Routine {
     return [...sourceMintEvents, ...sourceBurnEvents].sort(
       (a, b) => a.blockNumber - b.blockNumber
     );
+  }
+
+  /**
+   * Determines which source mutations are yet-to-be-applied to replica state. Does so
+   * by looking at the difference in length between the source and replica arrays and returning
+   * all source events after the last replica event index.
+   * Note: Mutation content is ignored.
+   * @param sourceMutations All source state mutations.
+   * @param replicaMutations State mutations already applied to replica state.
+   * @returns Mutations that have not yet been applied.
+   */
+  resolveDrift(
+    sourceMutations: Array<StateMutation>,
+    replicaMutations: Array<StateMutation>
+  ): Array<StateMutation> {
+    return sourceMutations.slice(replicaMutations.length);
   }
 
   /**
@@ -181,8 +219,10 @@ class Routine {
       //@ts-ignore
       const res = await this.sourceRelayer.call("eth_call", [
         {
-          data: this.contract.methods.tokenURI(parseInt(tokenId)).encodeABI(),
-          from: this.from,
+          data: this.sourceContract.methods
+            .tokenURI(parseInt(tokenId))
+            .encodeABI(),
+          from: this.sourceFrom,
           gas: undefined,
           gasPrice: undefined,
           to: this.source.contractAddress
@@ -204,11 +244,10 @@ class Routine {
     }
   }
 
-  async syncMutations(mutations: Array<StateMutation>): Promise<void> {
-    const s = new Syncer(this.replica.contractAddress, {
-      apiKey: this.replica.relayApiKey,
-      apiSecret: this.replica.relayApiSecret
-    });
+  async applyMutationsToReplica(
+    mutations: Array<StateMutation>
+  ): Promise<void> {
+    const s = new Syncer(this.replica.contractAddress, this.replica.relay);
     await s.setup();
 
     for await (const mutation of mutations) {
@@ -245,8 +284,27 @@ class Routine {
 
   async run() {
     await this.setup();
-    const mutations = await this.makeStateMutations();
-    await this.syncMutations(mutations);
+    //@ts-ignore
+    const sourceMutations = await this.makeStateMutations(
+      this.sourceContract,
+      this.source.contractDeploymentBlock
+    );
+
+    const replicaMutations = await this.makeStateMutations(
+      this.replicaContract,
+      this.replica.contractDeploymentBlock
+    );
+
+    const mutationsToApply = this.resolveDrift(
+      sourceMutations,
+      replicaMutations
+    );
+
+    console.log(`${mutationsToApply.length} mutations to apply`);
+
+    if (mutationsToApply.length > 0) {
+      //await this.applyMutationsToReplica(mutationsToApply);
+    }
   }
 }
 
