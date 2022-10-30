@@ -31,7 +31,7 @@ const BaseFileInput: React.FC<{
   mimeType: string;
   acceptMultiple?: boolean;
   handleUpload: (
-    files: FileList | File,
+    fileOrFiles: File | FileList,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => Promise<void>;
   handleClear?: () => void;

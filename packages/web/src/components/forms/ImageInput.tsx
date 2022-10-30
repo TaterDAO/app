@@ -26,16 +26,14 @@ const ImageInput: React.FC<{
 
   /**
    * Parses dimensions from image and sets it to state.
-   * @param files One or more files (depending on whether `acceptMultiple` is true)
+   * @param file One or more files (depending on whether `acceptMultiple` is true)
    * @param setError Callable to set error message.
    * @returns Promise
    */
   const handleImageUpload = async (
-    files: FileList | File,
+    file: File,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    const file = files as File;
-
     // Validate file size
     if (file.size / 1e6 > MAX_IMAGE_FILE_SIZE) {
       setError(`Image exceeds maximum file size of ${MAX_IMAGE_FILE_SIZE}mb`);
