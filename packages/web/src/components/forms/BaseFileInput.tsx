@@ -11,7 +11,7 @@ import InputMeta from "./InputMetadata";
 import styled from "styled-components";
 
 // Hooks
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 // Types
 import type { GenericFormState } from "@T/Form";
@@ -31,7 +31,7 @@ const BaseFileInput: React.FC<{
   mimeType: string;
   acceptMultiple?: boolean;
   handleUpload: (
-    event: React.ChangeEvent<HTMLInputElement>,
+    files: FileList | File,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => Promise<void>;
   handleClear?: () => void;
@@ -53,6 +53,18 @@ const BaseFileInput: React.FC<{
   const hasError =
     Boolean(internalErrorMessage) || Boolean(form.errors[fieldId]);
 
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target?.files;
+
+    // Halt execution if there is nothing to upload.
+    if (!files) return;
+
+    await handleUpload(
+      acceptMultiple ? files : files[0],
+      setInternalErrorMessage
+    );
+  };
+
   const hasPreview = filePreview !== null;
 
   return (
@@ -69,7 +81,7 @@ const BaseFileInput: React.FC<{
           ref={inputRef}
           accept={mimeType}
           multiple={acceptMultiple}
-          onChange={(event) => handleUpload(event, setInternalErrorMessage)}
+          onChange={handleChange}
         />
         {hasPreview && <Button onClick={handleClear}>Clear</Button>}
       </InputWrapper>

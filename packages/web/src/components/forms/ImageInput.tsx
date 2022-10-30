@@ -24,13 +24,17 @@ const ImageInput: React.FC<{
 }> = ({ form, fieldId, label, description }) => {
   const el = useRef<HTMLInputElement>(null);
 
+  /**
+   * Parses dimensions from image and sets it to state.
+   * @param files One or more files (depending on whether `acceptMultiple` is true)
+   * @param setError Callable to set error message.
+   * @returns Promise
+   */
   const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
+    files: FileList | File,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    const file = event.target?.files ? event.target.files[0] : null;
-
-    if (!file) return;
+    const file = files as File;
 
     // Validate file size
     if (file.size / 1e6 > MAX_IMAGE_FILE_SIZE) {
