@@ -36,7 +36,7 @@ const BaseFileInput: React.FC<{
   ) => Promise<void>;
   handleClear?: () => void;
   filePreview: React.ReactElement | null;
-  inputRef: React.RefObject<any>;
+  inputRef: React.RefObject<HTMLInputElement>;
 }> = ({
   form,
   fieldId,
