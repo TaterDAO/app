@@ -22,51 +22,32 @@ const MapInput: React.FC<{
   label: string;
   description: string;
 }> = ({ form, fieldId, label, description }) => {
-  // STATE: UI
-  const hasError = Boolean(form.errors[fieldId]);
-  const [interacted, setInteracted] = useState<boolean>(false);
+  // STATE
+  // Inputted value can either by a set of features (polygons) or a
+  // lat,lng coordinate point.
 
-  // STATE: Each feature is a polygon
   const [features, setFeatures] = useState<Features>({});
-  const boxCount = Object.keys(features).length;
+  const [point, setPoint] = useState<{ lng: number; lat: number } | null>(null);
 
-  const mergedCoordinateValue = useMemo(
-    () => reduceFeaturesToString(features),
-    [features]
+  // Parse state to determine a single inputted value.
+  const value = useMemo(
+    () =>
+      point
+        ? `${point.lat}, ${point.lng}`
+        : Object.values(features).length
+        ? reduceFeaturesToString(features)
+        : "",
+    [features, point]
   );
 
-  // STATE: Point
-  const [point, setPoint] = useState<{ lng: number; lat: number } | null>(null);
-  const pointSelected = point != null;
-  const pointString = pointSelected ? `${point.lat}, ${point.lng}` : "";
-
-  // EFFECTS
-
   /**
-   * When point or polygon state is set, set interacted as true.
+   * Update form state when feature(s) or point is selected.
    */
   useEffect(() => {
-    if (boxCount > 0 || pointSelected) setInteracted(true);
-  }, [boxCount, pointSelected]);
-
-  /**
-   * Update form state when coordinates change.
-   */
-  useEffect(() => {
-    // Don't prematurely show the error message
-    if (!interacted) return;
-
-    form.setValue(fieldId, mergedCoordinateValue);
-    form.validateField(fieldId, mergedCoordinateValue);
-  }, [interacted, mergedCoordinateValue]);
-
-  useEffect(() => {
-    // Don't prematurely show the error message
-    if (!interacted) return;
-
-    form.setValue(fieldId, pointString);
-    form.validateField(fieldId, pointString);
-  }, [interacted, pointString]);
+    form.setValue(fieldId, value);
+    // Do not throw error until user submits the form.
+    if (value) form.validateField(fieldId, value);
+  }, [value]);
 
   // EVENT HANDLERS
 
@@ -86,6 +67,9 @@ const MapInput: React.FC<{
           };
         }
       });
+
+      // Unset any point values
+      setPoint(null);
     }
   };
 
@@ -94,6 +78,9 @@ const MapInput: React.FC<{
       lng: result.geometry.coordinates[1],
       lat: result.geometry.coordinates[0]
     });
+
+    // Unset any feature values
+    setFeatures({});
   };
 
   // RENDER
@@ -110,7 +97,9 @@ const MapInput: React.FC<{
         onDraw={handleMapDraw}
         onGeocoderSelection={handleGeocoderSelection}
       />
-      {hasError && <ErrorMessage>No location selected</ErrorMessage>}
+      {Boolean(form.errors[fieldId]) && (
+        <ErrorMessage>No location selected</ErrorMessage>
+      )}
     </Row>
   );
 };
