@@ -8,9 +8,13 @@ import type { GenericFormState } from "@T/Form";
 import type { DrawEvent } from "@components/Map";
 import type { Polygon, Position } from "geojson";
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
+import type { Features } from "@T/geojson";
 
 // Hooks
 import { useState, useEffect, useMemo } from "react";
+
+// Utils
+import { reduceFeaturesToString } from "@libs/TitleLocation";
 
 const MapInput: React.FC<{
   form: GenericFormState;
@@ -22,19 +26,13 @@ const MapInput: React.FC<{
   const hasError = Boolean(form.errors[fieldId]);
   const [interacted, setInteracted] = useState<boolean>(false);
 
-  // STATE: Polygons
-
-  const [polygons, setPolygons] = useState<{
-    [boundBoxId: string]: Position[][];
-  }>({});
-  const boxCount = Object.keys(polygons).length;
+  // STATE: Each feature is a polygon
+  const [features, setFeatures] = useState<Features>({});
+  const boxCount = Object.keys(features).length;
 
   const mergedCoordinateValue = useMemo(
-    () =>
-      Object.values(polygons)
-        .map((coordinates) => coordinates.toString())
-        .join(";"),
-    [polygons]
+    () => reduceFeaturesToString(features),
+    [features]
   );
 
   // STATE: Point
@@ -76,7 +74,7 @@ const MapInput: React.FC<{
     for (const feature of e.features) {
       const id = feature.id as string;
 
-      setPolygons((prevState) => {
+      setFeatures((prevState) => {
         if (e.type === "draw.delete") {
           const newState = { ...prevState };
           delete newState[id];

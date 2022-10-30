@@ -13,7 +13,11 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import { isCoordinates, makePolygons, isPolygon } from "@libs/TitleLocation";
+import {
+  isCoordinates,
+  coordinateStringToFeatureList,
+  isPolygon
+} from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -147,7 +151,7 @@ const TitlePage: NextPage<{
           (isPolygon(location) ? (
             <Map
               {...sharedMapOptions}
-              defaultBoundingBoxes={makePolygons(location)}
+              defaultBoundingBoxes={coordinateStringToFeatureList(location)}
             />
           ) : (
             <Map
