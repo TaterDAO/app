@@ -23,6 +23,15 @@ const InputWrapper = styled.div`
   row-gap: var(--global-space-y-margin);
 `;
 
+type ErrorSetter = React.Dispatch<React.SetStateAction<string>>;
+
+type HandleFileUpload = (file: File, setError: ErrorSetter) => Promise<void>;
+
+type HandleFilesUpload = (
+  files: FileList,
+  setError: ErrorSetter
+) => Promise<void>;
+
 const BaseFileInput: React.FC<{
   form: GenericFormState;
   fieldId: string;
@@ -30,10 +39,7 @@ const BaseFileInput: React.FC<{
   description: string;
   mimeType: string;
   acceptMultiple?: boolean;
-  handleUpload: (
-    fileOrFiles: File | FileList,
-    setError: React.Dispatch<React.SetStateAction<string>>
-  ) => Promise<void>;
+  handleUpload: HandleFileUpload | HandleFilesUpload;
   handleClear?: () => void;
   filePreview: React.ReactElement | null;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -60,6 +66,7 @@ const BaseFileInput: React.FC<{
     if (!files) return;
 
     await handleUpload(
+      //@ts-ignore
       acceptMultiple ? files : files[0],
       setInternalErrorMessage
     );
