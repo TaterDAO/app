@@ -17,7 +17,7 @@ export default {
     chain: {
       id: 421613,
       internalId: "arbitrum_goerli",
-      name: "Arbitrum Nitro Rollup Testnet"
+      name: "Arbitrum Nitro Goerli Rollup Testnet"
     },
     contract: {
       address: ""
