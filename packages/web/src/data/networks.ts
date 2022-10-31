@@ -20,7 +20,7 @@ export default {
       name: "Arbitrum Nitro Goerli Rollup Testnet"
     },
     contract: {
-      address: ""
+      address: "0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF"
     },
     rpc: {
       endpoint: process.env.ALCHEMY_ARB_GOERLI_URI as string
