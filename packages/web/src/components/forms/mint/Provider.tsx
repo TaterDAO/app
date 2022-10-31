@@ -5,7 +5,7 @@ import { useState } from "react";
 import useWeb3 from "@hooks/useWeb3";
 
 // Types
-import type { GenericFormState } from "@T/Form";
+import type { GenericFormState, SerializedMintFormFields } from "@T/Form";
 import type { Image } from "@T/Image";
 
 // Utils
@@ -55,6 +55,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
    */
   const validateField = (fieldId: string, value?: string): boolean => {
     const { error } = defaultState.validationSchema.validate({
+      //@ts-ignore
       [fieldId]: value || values[fieldId]
     });
     if (!error) {
@@ -88,7 +89,8 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
   const submit = async () => {
     setSubmitting(true);
 
-    const cleanState: GenericFormState["values"] = {};
+    //@ts-ignore
+    const cleanState: SerializedMintFormFields = {};
 
     // Validate
 
@@ -102,7 +104,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
 
       let value = values[fieldId];
 
-      if (!!value) {
+      if (!!value && fieldId != "attrLocation_") {
         // Escape double quotes
         value = escapeQuotes(value);
 
@@ -112,6 +114,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
         }
       }
 
+      //@ts-ignore
       cleanState[fieldId] = value;
     }
 
@@ -121,6 +124,24 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
       cleanState["image_"] = res.uri;
     } else {
       cleanState["image_"] = "";
+    }
+
+    // Serialize location
+    if (values.attrLocation_ && values.attrLocation_.type === "Point") {
+      const [lng, lat] = values.attrLocation_.coordinates;
+      cleanState["attrLocation_"] = `${lat}, ${lng}`;
+    } else if (
+      values.attrLocation_ &&
+      values.attrLocation_.type === "FeatureCollection"
+    ) {
+      cleanState["attrLocation_"] = Object.values(
+        values.attrLocation_?.features
+      )
+        //@ts-ignore
+        .map((feature) => feature.geometry.coordinates.toString())
+        .join(";");
+    } else {
+      throw new Error("Bad location data");
     }
 
     // Submit the transaction on-chain
