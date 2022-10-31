@@ -119,27 +119,23 @@ const Map: React.FC<{
     }
     map.current.addControl(new mapbox.NavigationControl());
     map.current.addControl(draw.current, "top-right");
-  });
-
-  /**
-   * Add state-dependent event listeners to map.
-   */
-  useEffect(() => {
-    if (!map.current) return;
 
     if (!!onDraw) {
-      map.current.on("draw.create", (event: DrawCreateEvent) => {
-        // If marker exists, delete it.
-        if (!!geocoderSelectionMarker) {
-          geocoderSelectionMarker.remove();
-          setGeocoderSelectionMarker(null);
-        }
-        onDraw(event);
-      });
+      map.current.on("draw.create", onDraw);
       map.current.on("draw.delete", onDraw);
       map.current.on("draw.update", onDraw);
     }
-  }, [map.current, geocoderSelectionMarker]);
+  });
+
+  /**
+   * When value is updated, remove marker.
+   */
+  useEffect(() => {
+    if (!!geocoderSelectionMarker && value.type === "FeatureCollection") {
+      geocoderSelectionMarker.remove();
+      setGeocoderSelectionMarker(null);
+    }
+  }, [value, geocoderSelectionMarker]);
 
   /**
    * Add initial event listeners to map.
