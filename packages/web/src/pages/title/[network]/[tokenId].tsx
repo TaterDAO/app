@@ -1,6 +1,7 @@
 // Types
 import type { NextPage, GetServerSideProps } from "next";
 import type { Hit } from "@T/Search";
+import type { FeatureCollection, Point } from "geojson";
 
 // Services
 import algolia from "@services/Algolia";
@@ -138,28 +139,27 @@ const TitlePage: NextPage<{
   const location = title["attr.Location"];
   const showMap = isCoordinates(location);
 
-  const sharedMapOptions = {
-    defaultZoom: 18,
-    showGeocoder: false
-  };
-
   return (
     <>
       <Banner withMap={showMap}>
         <Image src={getImageSrc(title.image)} />
-        {showMap &&
-          (isPolygon(location) ? (
-            <Map
-              {...sharedMapOptions}
-              defaultBoundingBoxes={coordinateStringToFeatureList(location)}
-            />
-          ) : (
-            <Map
-              {...sharedMapOptions}
-              defaultLng={parseFloat(location.split(",")[0])}
-              defaultLat={parseFloat(location.split(",")[1])}
-            />
-          ))}
+        {showMap && (
+          <Map
+            defaultZoom={18}
+            showGeocoder={false}
+            value={
+              isPolygon(location)
+                ? ({
+                    type: "FeatureCollection",
+                    features: makePolygons(location)
+                  } as FeatureCollection)
+                : ({
+                    type: "Point",
+                    coordinates: location.split(",").map((l) => parseFloat(l))
+                  } as Point)
+            }
+          />
+        )}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
       <Name>{title.name}</Name>

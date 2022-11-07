@@ -1,7 +1,5 @@
 // Types
-import type { Feature } from "@turf/turf";
-import type { Position } from "geojson";
-import type { Features } from "@T/geojson";
+import type { Position, Feature } from "geojson";
 
 // Libs
 import * as turf from "@turf/turf";
@@ -54,7 +52,8 @@ export function coordinateStringToFeatureList(
   });
 }
 
-export function getPolygonCenter(polygon: Feature): Position {
+function getPolygonCenter(polygon: Feature): Position {
+  //@ts-ignore
   const center = turf.center(polygon.geometry);
   return center.geometry.coordinates;
 }

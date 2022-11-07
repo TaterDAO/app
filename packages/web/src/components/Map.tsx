@@ -18,6 +18,7 @@ import type {
 } from "@mapbox/mapbox-gl-draw";
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
 import type { Feature } from "@turf/turf";
+import type { FeatureCollection, Point } from "geojson";
 
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
@@ -30,28 +31,27 @@ const MapContainer = styled.div`
 
 /**
  * Renders a Mapbox map.
- * @param props.defaultLng Initial longitude on render.
- * @param props.defaultLat Initial latitude on render.
  * @param props.defaultZoom Initial zoom on render.
  * @param props.onDraw Handler for draw events.  If not passed, drawing will not be enabled.
  * @param props.showGeocoder Should search input be displayed?
  */
 const Map: React.FC<{
-  defaultLng?: number;
-  defaultLat?: number;
   defaultZoom?: number;
   onDraw?: (e: DrawEvent) => void | null;
   showGeocoder?: boolean;
   defaultBoundingBoxes?: Array<Feature>;
   onGeocoderSelection?: (result: Result) => void;
+  value?: FeatureCollection | Point;
 }> = ({
-  defaultLng = -70.9,
-  defaultLat = 42.35,
   defaultZoom = 9,
   onDraw = null,
   defaultBoundingBoxes = [],
   showGeocoder = true,
-  onGeocoderSelection = null
+  onGeocoderSelection = null,
+  value = {
+    type: "Point",
+    coordinates: [-70.9, 42.35] // lng, lat
+  } as Point
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
@@ -59,9 +59,9 @@ const Map: React.FC<{
 
   // Center on the first bounding box if provided.
   const startingCoords =
-    defaultBoundingBoxes.length > 0
-      ? getPolygonCenter(defaultBoundingBoxes[0])
-      : [defaultLng, defaultLat];
+    value.type === "FeatureCollection"
+      ? getPolygonCenter((value as FeatureCollection).features[0])
+      : (value as Point).coordinates;
 
   const [lng, setLng] = useState(startingCoords[0]);
   const [lat, setLat] = useState(startingCoords[1]);
@@ -119,27 +119,23 @@ const Map: React.FC<{
     }
     map.current.addControl(new mapbox.NavigationControl());
     map.current.addControl(draw.current, "top-right");
-  });
-
-  /**
-   * Add state-dependent event listeners to map.
-   */
-  useEffect(() => {
-    if (!map.current) return;
 
     if (!!onDraw) {
-      map.current.on("draw.create", (event: DrawCreateEvent) => {
-        // If marker exists, delete it.
-        if (!!geocoderSelectionMarker) {
-          geocoderSelectionMarker.remove();
-          setGeocoderSelectionMarker(null);
-        }
-        onDraw(event);
-      });
+      map.current.on("draw.create", onDraw);
       map.current.on("draw.delete", onDraw);
       map.current.on("draw.update", onDraw);
     }
-  }, [map.current, geocoderSelectionMarker]);
+  });
+
+  /**
+   * When value is updated, remove marker.
+   */
+  useEffect(() => {
+    if (!!geocoderSelectionMarker && value.type === "FeatureCollection") {
+      geocoderSelectionMarker.remove();
+      setGeocoderSelectionMarker(null);
+    }
+  }, [value, geocoderSelectionMarker]);
 
   /**
    * Add initial event listeners to map.

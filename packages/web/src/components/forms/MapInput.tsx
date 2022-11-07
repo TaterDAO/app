@@ -6,9 +6,8 @@ import Map from "@components/Map";
 // Types
 import type { GenericFormState } from "@T/Form";
 import type { DrawEvent } from "@components/Map";
-import type { Polygon, Position } from "geojson";
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
-import type { Features } from "@T/geojson";
+import type { FeatureCollection, Point } from "geojson";
 
 // Hooks
 import { useState, useEffect, useMemo } from "react";
@@ -22,61 +21,58 @@ const MapInput: React.FC<{
   label: string;
   description: string;
 }> = ({ form, fieldId, label, description }) => {
-  // STATE
-  // Inputted value can either by a set of features (polygons) or a
-  // lat,lng coordinate point.
-
-  const [features, setFeatures] = useState<Features>({});
-  const [point, setPoint] = useState<{ lng: number; lat: number } | null>(null);
-
-  // Parse state to determine a single inputted value.
-  const value = useMemo(
-    () =>
-      point
-        ? `${point.lat}, ${point.lng}`
-        : Object.values(features).length
-        ? reduceFeaturesToString(features)
-        : "",
-    [features, point]
+  const [value, setValue] = useState<Point | FeatureCollection | undefined>(
+    undefined
   );
 
+  // EFFECTS
+
   /**
-   * Update form state when feature(s) or point is selected.
+   * Update form state when coordinates change.
    */
   useEffect(() => {
     form.setValue(fieldId, value);
-    // Do not throw error until user submits the form.
-    if (value) form.validateField(fieldId, value);
+    if (!!value) form.validateField(fieldId, value);
   }, [value]);
 
   // EVENT HANDLERS
 
   const handleMapDraw = (e: DrawEvent) => {
-    for (const feature of e.features) {
-      const id = feature.id as string;
+    setValue((prevState) => {
+      // Default feature set
+      let features =
+        prevState && prevState.type === "FeatureCollection"
+          ? prevState.features
+          : [];
+      if (e.type == "draw.create") {
+        features = [...features, ...e.features];
+      } else if (e.type == "draw.update") {
+        e.features.forEach((updatedFeature) => {
+          features.forEach((feature, index) => {
+            if (updatedFeature.id == feature.id) {
+              features[index] = updatedFeature;
+            }
+          });
+        });
+      } else if (e.type == "draw.delete") {
+        const filterIds = e.features.map((f) => f.id);
+        features = features.filter(
+          (feature) => !filterIds.includes(feature.id)
+        );
+      }
 
-      setFeatures((prevState) => {
-        if (e.type === "draw.delete") {
-          const newState = { ...prevState };
-          delete newState[id];
-          return newState;
-        } else {
-          return {
-            ...prevState,
-            [id]: (feature.geometry as Polygon).coordinates
-          };
-        }
-      });
-
-      // Unset any point values
-      setPoint(null);
-    }
+      return {
+        type: "FeatureCollection",
+        features
+      };
+    });
   };
 
-  const handleGeocoderSelection = (result: Result) => {
-    setPoint({
-      lng: result.geometry.coordinates[1],
-      lat: result.geometry.coordinates[0]
+  const handlePointSelection = (result: Result) => {
+    const [lat, lng] = result.geometry.coordinates;
+    setValue({
+      type: "Point",
+      coordinates: [lng, lat]
     });
 
     // Unset any feature values
@@ -95,7 +91,8 @@ const MapInput: React.FC<{
       />
       <Map
         onDraw={handleMapDraw}
-        onGeocoderSelection={handleGeocoderSelection}
+        onGeocoderSelection={handlePointSelection}
+        value={value}
       />
       {Boolean(form.errors[fieldId]) && (
         <ErrorMessage>No location selected</ErrorMessage>
