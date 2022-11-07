@@ -2,6 +2,8 @@ import Joi from "joi";
 import type { Image } from "@T/Image";
 import type { FeatureCollection, Point } from "geojson";
 
+import type { State, Action } from "@contexts/mint/types";
+
 interface Option {
   value: string;
   label: string;
@@ -71,6 +73,12 @@ interface GenericFormState {
   submit: () => Promise<void>;
   errors: MintFormErrorsByField;
   validateField: (fieldId: string, value?: any) => boolean;
+  // TODO:
+  // Mixing Mint-form specific type declarations into the GenericFormState
+  // makes it non-generic... this should be rectified & Generic Form more generally
+  // deprecated.
+  dispatch: React.Dispatch<Action>;
+  state: State;
 }
 
 export type { Option, ParentLinkedOption, GenericFormState };
