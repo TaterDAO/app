@@ -22,11 +22,9 @@ export interface MintFormFields {
   externalUrl_: string;
   attrLandClassification_: string;
   attrBuildingClassification_: string;
-  attrLocation_: FeatureCollection | Point | undefined;
   attrDeed_: string;
   attrParcels_: string;
   attrOwner_: string;
-  attrKml_: string;
   attrTag_: string;
 }
 

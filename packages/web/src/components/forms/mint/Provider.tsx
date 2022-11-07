@@ -36,6 +36,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     defaultState.errors
   );
 
+  //! WIP | Currently: KML & Location
   const [state, dispatch] = useReducer(reducer, DEFAULT_STATE);
 
   const setValue = (fieldId: string, value: string) => {
@@ -98,17 +99,20 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     //@ts-ignore
     const cleanState: SerializedMintFormFields = {};
 
+    // Merge state and reducer values.
+    const mergedValues: any = { ...values, ...state };
+
     // Validate
 
     // Validate and sanitize inputs
-    for (const fieldId in values) {
+    for (const fieldId in mergedValues) {
       const valid = validateField(fieldId);
       if (!valid) {
         setSubmitting(false);
         throw { type: "field-validation", fieldId };
       }
 
-      let value = values[fieldId];
+      let value = mergedValues[fieldId];
 
       if (!!value && fieldId != "attrLocation_") {
         // Escape double quotes

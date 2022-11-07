@@ -1,6 +1,7 @@
 import type { Image } from "@T/Image";
 import type { FeatureCollection, Point } from "geojson";
 
+// TODO: Migrate to Location types file
 export type Location = FeatureCollection | Point | undefined;
 
 export interface State {
