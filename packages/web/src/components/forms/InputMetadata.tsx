@@ -6,21 +6,16 @@ import {
   FieldDescription
 } from "@components/ui/Form";
 
-// Types
-import type { GenericFormState } from "@T/Form";
-
 const InputMeta: React.FC<{
-  form: GenericFormState;
   fieldId: string;
   label: string;
   description: string;
-}> = ({ form, fieldId, label, description }) => {
+  required: boolean;
+}> = ({ fieldId, label, description, required }) => {
   return (
     <FieldMeta id={`form-input-metadata-${fieldId}`}>
       <FieldLabel>{label}</FieldLabel>
-      {form.requiredFields.includes(fieldId) && (
-        <FieldSecondaryLabel>Required</FieldSecondaryLabel>
-      )}
+      {required && <FieldSecondaryLabel>Required</FieldSecondaryLabel>}
       <FieldDescription>{description}</FieldDescription>
     </FieldMeta>
   );

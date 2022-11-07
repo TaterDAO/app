@@ -18,10 +18,10 @@ const TextInput: React.FC<{
   return (
     <Row>
       <InputMeta
-        form={form}
         fieldId={fieldId}
         label={label}
         description={description}
+        required={form.requiredFields.includes(fieldId)}
       />
       <Input
         disabled={form.submitting}
