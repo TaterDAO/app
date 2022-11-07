@@ -13,19 +13,19 @@ export default {
     },
     explorer: "https://arbiscan.io/"
   },
-  421611: {
+  421613: {
     chain: {
-      id: 421611,
-      internalId: "arbitrum_testnet",
-      name: "Arbitrum Testnet"
+      id: 421613,
+      internalId: "arbitrum_goerli",
+      name: "Arbitrum Nitro Goerli Rollup Testnet"
     },
     contract: {
-      address: "0x9724E0A0d2437d519Cea68738180c15d9514f41A"
+      address: "0x7a03b4132d38FAC364Cb13c51625B92aB7d15fAF"
     },
     rpc: {
-      endpoint: process.env.ALCHEMY_ARB_RINKEBY_URI as string
+      endpoint: process.env.ALCHEMY_ARB_GOERLI_URI as string
     },
-    explorer: "https://testnet.arbiscan.io/"
+    explorer: "https://goerli-rollup-explorer.arbitrum.io/"
   },
   31337: {
     chain: {
