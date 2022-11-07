@@ -19,6 +19,7 @@ import type {
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
 import type { Feature } from "@turf/turf";
 import type { FeatureCollection, Point } from "geojson";
+import type { Location } from "@contexts/mint/types";
 
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
@@ -41,7 +42,7 @@ const Map: React.FC<{
   showGeocoder?: boolean;
   defaultBoundingBoxes?: Array<Feature>;
   onGeocoderSelection?: (result: Result) => void;
-  value?: FeatureCollection | Point;
+  value: Location;
 }> = ({
   defaultZoom = 9,
   onDraw = null,
@@ -60,7 +61,8 @@ const Map: React.FC<{
   // Center on the first bounding box if provided.
   const startingCoords =
     value.type === "FeatureCollection"
-      ? getPolygonCenter((value as FeatureCollection).features[0])
+      ? //@ts-ignore
+        getPolygonCenter((value as FeatureCollection).features[0])
       : (value as Point).coordinates;
 
   const [lng, setLng] = useState(startingCoords[0]);
