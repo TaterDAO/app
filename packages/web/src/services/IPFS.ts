@@ -4,20 +4,16 @@ import type { Image } from "@T/Image";
 // Libs
 import axios from "axios";
 
-/**
- * Uploads an image to IPFS via Infura
- * @see https://docs.infura.io/infura/networks/ipfs/how-to/manage-files#add-a-file
- */
-async function uploadImage(
-  image: Image
-): Promise<{ name: string; hash: string; size: number; uri: string } | never> {
-  // Load form data
-  const formData = new FormData();
-  formData.append("file", image.src as File);
+// Types
+export type FileMetadata = {
+  name: string;
+  hash: string;
+  size: number;
+  uri: string;
+};
 
-  const {
-    data: { Hash, Name, Size }
-  } = await axios.post("https://ipfs.infura.io:5001/api/v0/add", formData, {
+async function request(url: string, data: object | null): Promise<any> {
+  return await axios.post(url, data, {
     headers: {
       Accept: "application/json",
       Authorization: process.env.INFURA_IPFS_JWT as string,
@@ -25,6 +21,28 @@ async function uploadImage(
       "User-Agent": "TATERDAO"
     }
   });
+}
+
+export async function removeFile(hash: string): Promise<void> {
+  const res = await request(
+    `https://ipfs.infura.io:5001/api/v0/pin/rm?arg=${hash}`,
+    null
+  );
+  console.log(res);
+}
+
+/**
+ * Uploads a file to IPFS.
+ * @see https://docs.infura.io/infura/networks/ipfs/how-to/manage-files#add-a-file
+ */
+export async function uploadFile(file: File): Promise<FileMetadata | never> {
+  // Setup form data
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const {
+    data: { Hash, Name, Size }
+  } = await request("https://ipfs.infura.io:5001/api/v0/add", formData);
 
   return {
     name: Name,
@@ -34,4 +52,10 @@ async function uploadImage(
   };
 }
 
-export { uploadImage };
+/**
+ * Uploads an image to IPFS via Infura
+ * @see https://docs.infura.io/infura/networks/ipfs/how-to/manage-files#add-a-file
+ */
+export async function uploadImage(image: Image): Promise<FileMetadata | never> {
+  return uploadFile(image.src as File);
+}
