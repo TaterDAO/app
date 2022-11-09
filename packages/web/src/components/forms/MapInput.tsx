@@ -73,9 +73,6 @@ const MapInput: React.FC<{
       type: "Point",
       coordinates: [lng, lat]
     });
-
-    // Unset any feature values
-    setFeatures({});
   };
 
   // RENDER
