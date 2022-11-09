@@ -1,7 +1,7 @@
 import Context, { defaultState } from "./Context";
 
 // Hooks
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import useWeb3 from "@hooks/useWeb3";
 
 // Types
@@ -13,6 +13,10 @@ import { escapeQuotes, escapeColons } from "@utils/form";
 
 // Services
 import * as ipfs from "@services/IPFS";
+
+// Context
+import reducer from "@contexts/mint/reducer";
+import { DEFAULT_STATE } from "@contexts/mint/constants";
 
 const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
 
@@ -31,6 +35,9 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
   const [errors, setError] = useState<GenericFormState["errors"]>(
     defaultState.errors
   );
+
+  //! WIP | Currently: KML & Location
+  const [state, dispatch] = useReducer(reducer, DEFAULT_STATE);
 
   const setValue = (fieldId: string, value: string) => {
     setValues((prevState) => ({
@@ -92,17 +99,20 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     //@ts-ignore
     const cleanState: SerializedMintFormFields = {};
 
+    // Merge state and reducer values.
+    const mergedValues: any = { ...values, ...state };
+
     // Validate
 
     // Validate and sanitize inputs
-    for (const fieldId in values) {
+    for (const fieldId in mergedValues) {
       const valid = validateField(fieldId);
       if (!valid) {
         setSubmitting(false);
         throw { type: "field-validation", fieldId };
       }
 
-      let value = values[fieldId];
+      let value = mergedValues[fieldId];
 
       if (!!value && fieldId != "attrLocation_") {
         // Escape double quotes
@@ -167,7 +177,9 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
         },
         submit,
         errors,
-        validateField
+        validateField,
+        state,
+        dispatch
       }}
     >
       {children}

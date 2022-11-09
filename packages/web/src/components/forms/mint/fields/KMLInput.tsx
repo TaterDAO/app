@@ -13,6 +13,9 @@ import { reduceFeaturesToString } from "@libs/TitleLocation";
 
 const FIELD_ID = "attrKml_";
 
+// Context
+import { ActionType } from "@contexts/mint/types";
+
 const KMLInput: React.FC<{}> = ({}) => {
   const form = useMintForm();
   const el = useRef<HTMLInputElement>(null);
@@ -37,6 +40,7 @@ const KMLInput: React.FC<{}> = ({}) => {
             {}
           )
         );
+        //form.dispatch({ type: ActionType.SetKML, value: e.target.value });
         form.setValue("attrLocation_", coordinateString);
       } catch (error) {
         setError("There was an error processing your KML");

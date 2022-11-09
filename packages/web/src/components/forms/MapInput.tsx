@@ -7,10 +7,10 @@ import Map from "@components/Map";
 import type { GenericFormState } from "@T/Form";
 import type { DrawEvent } from "@components/Map";
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
-import type { FeatureCollection, Point } from "geojson";
+import type { Location } from "@contexts/mint/types";
 
 // Hooks
-import { useState, useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 // Utils
 import { reduceFeaturesToString } from "@libs/TitleLocation";
@@ -20,57 +20,56 @@ const MapInput: React.FC<{
   fieldId: string;
   label: string;
   description: string;
-}> = ({ form, fieldId, label, description }) => {
-  const [value, setValue] = useState<Point | FeatureCollection | undefined>(
-    undefined
-  );
-
+  value: Location;
+  onChange: (value: Location) => void;
+}> = ({ form, fieldId, label, description, value, onChange }) => {
   // EFFECTS
 
   /**
-   * Update form state when coordinates change.
+   * Throw an error if no value is provided.
    */
   useEffect(() => {
-    form.setValue(fieldId, value);
     if (!!value) form.validateField(fieldId, value);
   }, [value]);
 
   // EVENT HANDLERS
 
   const handleMapDraw = (e: DrawEvent) => {
-    setValue((prevState) => {
-      // Default feature set
-      let features =
-        prevState && prevState.type === "FeatureCollection"
-          ? prevState.features
-          : [];
-      if (e.type == "draw.create") {
-        features = [...features, ...e.features];
-      } else if (e.type == "draw.update") {
-        e.features.forEach((updatedFeature) => {
-          features.forEach((feature, index) => {
-            if (updatedFeature.id == feature.id) {
-              features[index] = updatedFeature;
-            }
-          });
+    const prevState = value;
+    // Default feature set
+    let features =
+      prevState && prevState.type === "FeatureCollection"
+        ? prevState.features
+        : [];
+    if (e.type == "draw.create") {
+      features = [...features, ...e.features];
+    } else if (e.type == "draw.update") {
+      e.features.forEach((updatedFeature) => {
+        features.forEach((feature, index) => {
+          if (updatedFeature.id == feature.id) {
+            features[index] = updatedFeature;
+          }
         });
-      } else if (e.type == "draw.delete") {
-        const filterIds = e.features.map((f) => f.id);
-        features = features.filter(
-          (feature) => !filterIds.includes(feature.id)
-        );
-      }
+      });
+    } else if (e.type == "draw.delete") {
+      const filterIds = e.features.map((f) => f.id);
+      features = features.filter((feature) => !filterIds.includes(feature.id));
+    }
 
-      return {
-        type: "FeatureCollection",
-        features
-      };
-    });
+    // If last polygon is deleted, features will be an empty array.
+    onChange(
+      features.length
+        ? {
+            type: "FeatureCollection",
+            features
+          }
+        : undefined
+    );
   };
 
   const handlePointSelection = (result: Result) => {
     const [lat, lng] = result.geometry.coordinates;
-    setValue({
+    onChange({
       type: "Point",
       coordinates: [lng, lat]
     });
@@ -84,10 +83,10 @@ const MapInput: React.FC<{
   return (
     <Row>
       <InputMeta
-        form={form}
         fieldId={fieldId}
         label={label}
         description={description}
+        required={form.requiredFields.includes(fieldId)}
       />
       <Map
         onDraw={handleMapDraw}
