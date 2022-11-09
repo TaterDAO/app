@@ -7,6 +7,8 @@ import useWeb3 from "@hooks/useWeb3";
 // Types
 import type { GenericFormState, SerializedMintFormFields } from "@T/Form";
 import type { Image } from "@T/Image";
+import type { Feature } from "geojson";
+import type { FileMetadata } from "@services/IPFS";
 
 // Utils
 import { escapeQuotes, escapeColons } from "@utils/form";
@@ -97,24 +99,21 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     setSubmitting(true);
 
     //@ts-ignore
-    const cleanState: SerializedMintFormFields = {};
-
-    // Merge state and reducer values.
-    const mergedValues: any = { ...values, ...state };
+    const payload: SerializedMintFormFields = {};
 
     // Validate
 
     // Validate and sanitize inputs
-    for (const fieldId in mergedValues) {
+    for (const fieldId in values) {
       const valid = validateField(fieldId);
       if (!valid) {
         setSubmitting(false);
         throw { type: "field-validation", fieldId };
       }
 
-      let value = mergedValues[fieldId];
+      let value = values[fieldId];
 
-      if (!!value && fieldId != "attrLocation_") {
+      if (!!value) {
         // Escape double quotes
         value = escapeQuotes(value);
 
@@ -125,40 +124,55 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
       }
 
       //@ts-ignore
-      cleanState[fieldId] = value;
-    }
-
-    // Upload image to IPFs
-    if (!!images.image_) {
-      const res = await ipfs.uploadImage(images.image_);
-      cleanState["image_"] = res.uri;
-    } else {
-      cleanState["image_"] = "";
+      payload[fieldId] = value;
     }
 
     // Serialize location
-    if (values.attrLocation_ && values.attrLocation_.type === "Point") {
-      const [lng, lat] = values.attrLocation_.coordinates;
-      cleanState["attrLocation_"] = `${lat}, ${lng}`;
-    } else if (
-      values.attrLocation_ &&
-      values.attrLocation_.type === "FeatureCollection"
-    ) {
-      cleanState["attrLocation_"] = Object.values(
-        values.attrLocation_?.features
-      )
-        //@ts-ignore
-        .map((feature) => feature.geometry.coordinates.toString())
-        .join(";");
+    if (state.attrLocation_) {
+      if (state.attrLocation_.type === "Point") {
+        const [lng, lat] = state.attrLocation_.coordinates;
+        payload["attrLocation_"] = `${lat}, ${lng}`;
+      } else if (state.attrLocation_.type === "FeatureCollection") {
+        // Reduce features into a single string
+        payload["attrLocation_"] = Object.values(state.attrLocation_?.features)
+          //@ts-ignore
+          .map((feature: Feature) => feature.geometry.coordinates.toString())
+          .join(";");
+      } else {
+        throw { type: "field-validation", fieldId: "attrLocation_" };
+      }
     } else {
-      throw new Error("Bad location data");
+      throw { type: "field-validation", fieldId: "attrLocation_" };
     }
 
-    // Submit the transaction on-chain
+    //? IPFS UPLOADS
+
+    // Upload image to IPFS
+    let imageIPFSMetadata: FileMetadata | null = null;
+    if (!!images.image_) {
+      imageIPFSMetadata = await ipfs.uploadImage(images.image_);
+      payload["image_"] = imageIPFSMetadata.uri;
+    } else {
+      payload["image_"] = "";
+    }
+
+    // Upload KML to IPFS
+    let kmlIPFSMetadata: FileMetadata | null = null;
+    if (state.attrKml_) {
+      kmlIPFSMetadata = await ipfs.uploadFile(state.attrKml_);
+      payload["attrKml_"] = kmlIPFSMetadata.uri;
+    } else {
+      payload["attrKml_"] = "";
+    }
+
+    //? Submit the transaction on-chain
     try {
-      await window.td.minter?.mint(cleanState, web3.wallet.address as string);
+      await window.td.minter?.mint(payload, web3.wallet.address as string);
     } catch (error) {
       setSubmitting(false);
+      // Unpin image and KML files if present
+      if (imageIPFSMetadata) await ipfs.removeFile(imageIPFSMetadata.hash);
+      if (kmlIPFSMetadata) await ipfs.removeFile(kmlIPFSMetadata.hash);
       throw error;
     }
   };

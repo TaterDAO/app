@@ -14,7 +14,11 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import { isCoordinates, makePolygons, isPolygon } from "@libs/TitleLocation";
+import {
+  isCoordinates,
+  isPolygon,
+  coordinateStringToFeatureList
+} from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -147,7 +151,7 @@ const TitlePage: NextPage<{
               isPolygon(location)
                 ? ({
                     type: "FeatureCollection",
-                    features: makePolygons(location)
+                    features: coordinateStringToFeatureList(location)
                   } as FeatureCollection)
                 : ({
                     type: "Point",

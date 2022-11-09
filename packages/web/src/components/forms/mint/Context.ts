@@ -13,11 +13,9 @@ const defaultState = {
     externalUrl_: "",
     attrLandClassification_: "",
     attrBuildingClassification_: "",
-    attrLocation_: undefined,
     attrDeed_: "",
     attrParcels_: "",
     attrOwner_: "",
-    attrKml_: "",
     attrTag_: ""
   } as GenericFormState["values"],
   requiredFields: [

@@ -14,7 +14,7 @@ export interface State {
   // attrDeed_: string;
   // attrParcels_: string;
   // attrOwner_: string;
-  attrKml_: string;
+  attrKml_: File | undefined;
   // attrTag_: string;
   // images: { [fieldId: string]: Image | null };
 }
@@ -30,6 +30,7 @@ export enum ActionType {
   SetParcels = "SET_PARCELS",
   SetOwner = "SET_OWNER",
   SetKML = "SET_KML",
+  UnsetKML = "UNSET_KML",
   SetTag = "SET_TAG"
   // TODO: Images
 }
@@ -85,7 +86,11 @@ interface SetOwnerAction extends BaseAction {
 
 interface SetKMLAction extends BaseAction {
   type: ActionType.SetKML;
-  value: string;
+  file: File;
+}
+
+interface UnsetKMLAction extends BaseAction {
+  type: ActionType.UnsetKML;
 }
 
 interface SetTagAction extends BaseAction {
@@ -104,6 +109,7 @@ export type Action =
   | SetParcelsAction
   | SetOwnerAction
   | SetKMLAction
+  | UnsetKMLAction
   | SetTagAction;
 
 export interface ContextState extends State {
