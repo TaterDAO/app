@@ -27,11 +27,11 @@ const MultiStepMintForm: React.FC<{}> = ({}) => {
           <ExternalUrlInput />
           <LandClassificationInput />
           <BuildingClassificationInput />
+          <KMLInput />
           <LocationInput />
           <DeedInput />
           <ParcelsInput />
           <OwnerInput />
-          <KMLInput />
           <TagsInput />
           <SubmitButton />
         </Container>
