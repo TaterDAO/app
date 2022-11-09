@@ -10,8 +10,8 @@ const InputMeta: React.FC<{
   fieldId: string;
   label: string;
   description: string;
-  required: boolean;
-}> = ({ fieldId, label, description, required }) => {
+  required?: boolean;
+}> = ({ fieldId, label, description, required = false }) => {
   return (
     <FieldMeta id={`form-input-metadata-${fieldId}`}>
       <FieldLabel>{label}</FieldLabel>
