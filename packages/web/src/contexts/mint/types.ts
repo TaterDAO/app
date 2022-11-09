@@ -14,7 +14,7 @@ export interface State {
   // attrDeed_: string;
   // attrParcels_: string;
   // attrOwner_: string;
-  attrKml_: string;
+  attrKml_: File | undefined;
   // attrTag_: string;
   // images: { [fieldId: string]: Image | null };
 }
@@ -85,7 +85,7 @@ interface SetOwnerAction extends BaseAction {
 
 interface SetKMLAction extends BaseAction {
   type: ActionType.SetKML;
-  value: string;
+  file: File;
 }
 
 interface SetTagAction extends BaseAction {

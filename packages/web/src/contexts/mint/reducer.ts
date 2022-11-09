@@ -31,7 +31,7 @@ function reducer(state: State, action: Action): State {
     //   return { ...state, attrOwner_: action.value };
     // }
     case ActionType.SetKML: {
-      return { ...state, attrKml_: action.value };
+      return { ...state, attrKml_: action.file };
     }
     // case ActionType.SetTag: {
     //   return { ...state, attrTag_: action.value };

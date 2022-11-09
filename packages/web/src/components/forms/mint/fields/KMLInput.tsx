@@ -8,9 +8,6 @@ import { useRef } from "react";
 // libs
 import { kml as makeKML } from "@tmcw/togeojson";
 
-// utils
-import { reduceFeaturesToString } from "@libs/TitleLocation";
-
 const FIELD_ID = "attrKml_";
 
 // Context
@@ -24,6 +21,7 @@ const KMLInput: React.FC<{}> = ({}) => {
     file: File,
     setError: React.Dispatch<React.SetStateAction<string>>
   ) => {
+    // Parse Geojson from XML
     const reader = new FileReader();
     reader.onload = (_event) => {
       try {
@@ -43,10 +41,14 @@ const KMLInput: React.FC<{}> = ({}) => {
       } catch (error) {
         setError("There was an error processing your KML");
       }
-
-      // TODO: Upload file to Pinata
     };
     reader.readAsText(file);
+
+    // Attach file to state
+    form.dispatch({
+      type: ActionType.SetKML,
+      file
+    });
   };
 
   const handleClear = () => {
