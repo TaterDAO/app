@@ -1,0 +1,70 @@
+name: tests-defender
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "packages/defender/**"
+jobs:
+  tests:
+    name: "Defender:Tests"
+    runs-on: ubuntu-latest
+    needs: []
+    defaults:
+      run:
+        working-directory: ./packages/defender
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: "Install JS Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      - name: "Run"
+        run: "yarn test"
+
+    name: "Web:Tests:Unit"
+    runs-on: ubuntu-latest
+    needs: [contract-migrations]
+    defaults:
+      run:
+        working-directory: ./packages/web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: "Install Node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - name: "Cache Dependencies"
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: "Install Web Dependencies"
+        run: "yarn install --frozen-lockfile --dev"
+
+      - name: "Restore CI cache"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./.ci/proxyInstanceAddress
+          key: "ci-cache"
+
+      - name: "Run tests"
+        run: "yarn test:unit"
+        env:
+          CHAIN_ENDPOINT: ${{ needs.contract-migrations.outputs.session-endpoint }}
