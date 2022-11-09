@@ -135,6 +135,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
       } else if (state.attrLocation_.type === "FeatureCollection") {
         // Reduce features into a single string
         payload["attrLocation_"] = Object.values(state.attrLocation_?.features)
+          //@ts-ignore
           .map((feature: Feature) => feature.geometry.coordinates.toString())
           .join(";");
       } else {
@@ -149,7 +150,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     // Upload image to IPFS
     let imageIPFSMetadata: FileMetadata | null = null;
     if (!!images.image_) {
-      const imageIPFSMetadata = await ipfs.uploadImage(images.image_);
+      imageIPFSMetadata = await ipfs.uploadImage(images.image_);
       payload["image_"] = imageIPFSMetadata.uri;
     } else {
       payload["image_"] = "";
@@ -158,7 +159,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     // Upload KML to IPFS
     let kmlIPFSMetadata: FileMetadata | null = null;
     if (state.attrKml_) {
-      const kmlIPFSMetadata = await ipfs.uploadFile(state.attrKml_);
+      kmlIPFSMetadata = await ipfs.uploadFile(state.attrKml_);
       payload["attrKml_"] = kmlIPFSMetadata.uri;
     } else {
       payload["attrKml_"] = "";

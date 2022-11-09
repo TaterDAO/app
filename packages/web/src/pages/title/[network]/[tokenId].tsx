@@ -16,8 +16,8 @@ import {
 } from "@libs/TitleClassifications";
 import {
   isCoordinates,
-  coordinateStringToFeatureList,
-  isPolygon
+  isPolygon,
+  coordinateStringToFeatureList
 } from "@libs/TitleLocation";
 
 // Components
@@ -151,7 +151,7 @@ const TitlePage: NextPage<{
               isPolygon(location)
                 ? ({
                     type: "FeatureCollection",
-                    features: makePolygons(location)
+                    features: coordinateStringToFeatureList(location)
                   } as FeatureCollection)
                 : ({
                     type: "Point",
