@@ -59,14 +59,14 @@ const Map: React.FC<{
   const draw = useRef<MapboxDraw>();
 
   // Center on the first bounding box if provided.
-  const startingCoords =
+  const [centerLng, centerLat] =
     value.type === "FeatureCollection"
       ? //@ts-ignore
         getPolygonCenter((value as FeatureCollection).features[0])
       : (value as Point).coordinates;
 
-  const [lng, setLng] = useState(startingCoords[0]);
-  const [lat, setLat] = useState(startingCoords[1]);
+  const [lng, setLng] = useState(centerLng);
+  const [lat, setLat] = useState(centerLat);
   const [zoom, setZoom] = useState(defaultZoom);
 
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -138,6 +138,24 @@ const Map: React.FC<{
       setGeocoderSelectionMarker(null);
     }
   }, [value, geocoderSelectionMarker]);
+
+  /**
+   * When a Feature Collection is added either via the user drawing a polygon or
+   * via KML upload, recenter the map on the polygon(s) and ensure that they are
+   * drawn on the map (in the case of KML upload).
+   */
+  useEffect(() => {
+    if (draw.current && map.current && value?.type === "FeatureCollection") {
+      // Draw polygon
+      draw.current?.add(value);
+      // Center
+      map.current.flyTo({
+        center: [centerLng, centerLat],
+        essential: true,
+        zoom
+      });
+    }
+  }, [map.current, draw.current, value, centerLng, centerLat]);
 
   /**
    * Add initial event listeners to map.

@@ -30,18 +30,16 @@ const KMLInput: React.FC<{}> = ({}) => {
         // Use coordinates to set Location value
         const xml = _event.target?.result as string;
         const kml = makeKML(new DOMParser().parseFromString(xml, "text/xml"));
-        const coordinateString = reduceFeaturesToString(
-          kml.features.reduce(
-            (memo, feature) => ({
-              ...memo,
-              //@ts-ignore
-              [feature?.id]: feature.geometry?.coordinates
-            }),
-            {}
-          )
-        );
-        //form.dispatch({ type: ActionType.SetKML, value: e.target.value });
-        form.setValue("attrLocation_", coordinateString);
+
+        // Update location
+        form.dispatch({
+          type: ActionType.SetLocation,
+          value: {
+            type: "FeatureCollection",
+            //@ts-ignore
+            features: kml.features
+          }
+        });
       } catch (error) {
         setError("There was an error processing your KML");
       }

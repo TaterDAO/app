@@ -52,7 +52,7 @@ export function coordinateStringToFeatureList(
   });
 }
 
-function getPolygonCenter(polygon: Feature): Position {
+export function getPolygonCenter(polygon: Feature): Position {
   //@ts-ignore
   const center = turf.center(polygon.geometry);
   return center.geometry.coordinates;
