@@ -30,6 +30,7 @@ export enum ActionType {
   SetParcels = "SET_PARCELS",
   SetOwner = "SET_OWNER",
   SetKML = "SET_KML",
+  UnsetKML = "UNSET_KML",
   SetTag = "SET_TAG"
   // TODO: Images
 }
@@ -88,6 +89,10 @@ interface SetKMLAction extends BaseAction {
   file: File;
 }
 
+interface UnsetKMLAction extends BaseAction {
+  type: ActionType.UnsetKML;
+}
+
 interface SetTagAction extends BaseAction {
   type: ActionType.SetTag;
   value: string;
@@ -104,6 +109,7 @@ export type Action =
   | SetParcelsAction
   | SetOwnerAction
   | SetKMLAction
+  | UnsetKMLAction
   | SetTagAction;
 
 export interface ContextState extends State {

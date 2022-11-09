@@ -52,7 +52,7 @@ const KMLInput: React.FC<{}> = ({}) => {
   };
 
   const handleClear = () => {
-    form.setValue(FIELD_ID, "");
+    form.dispatch({ type: ActionType.UnsetKML });
   };
 
   return (
