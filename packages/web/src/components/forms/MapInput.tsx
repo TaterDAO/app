@@ -12,9 +12,6 @@ import type { Location } from "@contexts/mint/types";
 // Hooks
 import { useEffect } from "react";
 
-// Utils
-import { reduceFeaturesToString } from "@libs/TitleLocation";
-
 const MapInput: React.FC<{
   form: GenericFormState;
   fieldId: string;

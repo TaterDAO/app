@@ -4,19 +4,6 @@ import type { Position, Feature } from "geojson";
 // Libs
 import * as turf from "@turf/turf";
 
-/**
- * Given an Features object, reduce each feature's coordinate bounding box
- * into a single coordinates string then combine each coordinate string into
- * a single "merged" string.
- * @param features
- * @returns
- */
-export function reduceFeaturesToString(features: Features): string {
-  return Object.values(features)
-    .map((coordinates) => coordinates.toString())
-    .join(";");
-}
-
 export function isCoordinates(value: string): boolean {
   const re = new RegExp(/[a-z]+/);
   return !re.test(value);
