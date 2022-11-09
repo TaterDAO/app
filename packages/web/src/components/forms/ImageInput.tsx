@@ -77,10 +77,10 @@ const ImageInput: React.FC<{
   return (
     <Row>
       <InputMeta
-        form={form}
         fieldId={fieldId}
         label={label}
         description={description}
+        required={form.requiredFields.includes(fieldId)}
       />
       <InputWrapper>
         {hasPreview && <PreviewImage data={preview as Image} />}

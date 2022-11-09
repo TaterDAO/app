@@ -19,10 +19,10 @@ const SelectInput: React.FC<{
   return (
     <Row>
       <InputMeta
-        form={form}
         fieldId={fieldId}
         label={label}
         description={description}
+        required={form.requiredFields.includes(fieldId)}
       />
       <Select
         disabled={form.submitting}

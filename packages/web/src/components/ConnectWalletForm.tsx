@@ -1,6 +1,12 @@
+// Utils
 import styled from "styled-components";
-import Button from "./ui/Button";
+
+// Hooks
 import useWeb3 from "@hooks/useWeb3";
+
+// Components
+import TitledPage from "@components/layouts/TitledPage";
+import Button from "./ui/Button";
 
 const Container = styled.div`
   border: 1px solid var(--global-color-border);
@@ -11,11 +17,13 @@ const Container = styled.div`
 const ConnectWalletForm = () => {
   const web3 = useWeb3();
   return (
-    <Container>
-      <Button onClick={web3.wallet.connect} primary>
-        Connect Wallet
-      </Button>
-    </Container>
+    <TitledPage title="Connect Wallet">
+      <Container>
+        <Button onClick={web3.wallet.connect} primary>
+          Connect Wallet
+        </Button>
+      </Container>
+    </TitledPage>
   );
 };
 
