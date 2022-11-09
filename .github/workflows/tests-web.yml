@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "packages/web/**"
+      - ".github/workflows/tests-web.yml"
 jobs:
   e2e:
     name: "Web:Tests:E2E"

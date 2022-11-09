@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "packages/contracts/**"
+      - ".github/workflows/tests-contracts.yml"
 jobs:
   tests:
     name: "Contract:Tests"

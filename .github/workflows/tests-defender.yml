@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "packages/defender/**"
+      - ".github/workflows/tests-defender.yml"
 jobs:
   tests:
     name: "Defender:Tests"
