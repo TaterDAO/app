@@ -137,28 +137,35 @@ const TitlePage: NextPage<{
     : title["attr.BuildingClassification"];
 
   const location = title["attr.Location"];
-  const showMap = isCoordinates(location);
+
+  const mapValue = useMemo(() => {
+    // If location is not a valid coordinate string, do not render the map.
+    if (!isCoordinates(location)) return null;
+
+    try {
+      // At this point, we are unsure if the coordinate string is a feature collection
+      // or a single point.  Attempt to parse it as a feature collection, and if an error
+      // is thrown in doing so, parse it as a point.
+      return {
+        type: "FeatureCollection",
+        features: coordinateStringToFeatureList(location)
+      } as FeatureCollection;
+    } catch (error) {
+      return {
+        type: "Point",
+        coordinates: location.split(",").map((l) => parseFloat(l))
+      } as Point;
+    }
+  }, [location]);
+
+  const showMap = !!mapValue;
 
   return (
     <>
       <Banner withMap={showMap}>
         <Image src={getImageSrc(title.image)} />
         {showMap && (
-          <Map
-            defaultZoom={18}
-            showGeocoder={false}
-            value={
-              isPolygon(location)
-                ? ({
-                    type: "FeatureCollection",
-                    features: coordinateStringToFeatureList(location)
-                  } as FeatureCollection)
-                : ({
-                    type: "Point",
-                    coordinates: location.split(",").map((l) => parseFloat(l))
-                  } as Point)
-            }
-          />
+          <Map defaultZoom={18} showGeocoder={false} value={mapValue} />
         )}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
