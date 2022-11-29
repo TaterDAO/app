@@ -26,7 +26,8 @@ jobs:
   unit:
     name: "Web:Tests:Unit"
     runs-on: ubuntu-latest
-    needs: [contract-migrations]
+    #needs: [contract-migrations]
+    needs: []
     defaults:
       run:
         working-directory: ./packages/web
@@ -57,5 +58,5 @@ jobs:
 
       - name: "Run tests"
         run: "yarn test:unit"
-        env:
-          CHAIN_ENDPOINT: ${{ needs.contract-migrations.outputs.session-endpoint }}
+        #env:
+        #  CHAIN_ENDPOINT: ${{ needs.contract-migrations.outputs.session-endpoint }}
