@@ -14,11 +14,7 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import {
-  isCoordinates,
-  isPolygon,
-  coordinateStringToFeatureList
-} from "@libs/TitleLocation";
+import { isCoordinates, deserializeFeatures } from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -137,28 +133,26 @@ const TitlePage: NextPage<{
     : title["attr.BuildingClassification"];
 
   const location = title["attr.Location"];
-  const showMap = isCoordinates(location);
+
+  const mapValue = useMemo(() => {
+    // If location is not a valid coordinate string, do not render the map.
+    if (!isCoordinates(location)) return null;
+
+    // Feature collection will contain 1 or more Features (Point or Polygon).
+    return {
+      type: "FeatureCollection",
+      features: deserializeFeatures(location)
+    } as FeatureCollection;
+  }, [location]);
+
+  const showMap = !!mapValue;
 
   return (
     <>
       <Banner withMap={showMap}>
         <Image src={getImageSrc(title.image)} />
         {showMap && (
-          <Map
-            defaultZoom={18}
-            showGeocoder={false}
-            value={
-              isPolygon(location)
-                ? ({
-                    type: "FeatureCollection",
-                    features: coordinateStringToFeatureList(location)
-                  } as FeatureCollection)
-                : ({
-                    type: "Point",
-                    coordinates: location.split(",").map((l) => parseFloat(l))
-                  } as Point)
-            }
-          />
+          <Map defaultZoom={18} showGeocoder={false} value={mapValue} />
         )}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>

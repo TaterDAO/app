@@ -12,6 +12,7 @@ import type { FileMetadata } from "@services/IPFS";
 
 // Utils
 import { escapeQuotes, escapeColons } from "@utils/form";
+import { serializeFeatures } from "@libs/TitleLocation";
 
 // Services
 import * as ipfs from "@services/IPFS";
@@ -129,18 +130,18 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
 
     // Serialize location
     if (state.attrLocation_) {
+      let features: Array<Feature> = [];
       if (state.attrLocation_.type === "Point") {
-        const [lng, lat] = state.attrLocation_.coordinates;
-        payload["attrLocation_"] = `${lat}, ${lng}`;
+        features.push({
+          type: "Feature",
+          geometry: state.attrLocation_,
+          properties: {}
+        });
       } else if (state.attrLocation_.type === "FeatureCollection") {
-        // Reduce features into a single string
-        payload["attrLocation_"] = Object.values(state.attrLocation_?.features)
-          //@ts-ignore
-          .map((feature: Feature) => feature.geometry.coordinates.toString())
-          .join(";");
-      } else {
-        throw { type: "field-validation", fieldId: "attrLocation_" };
+        features = Object.values(state.attrLocation_?.features);
       }
+
+      payload["attrLocation_"] = serializeFeatures(features);
     } else {
       throw { type: "field-validation", fieldId: "attrLocation_" };
     }
