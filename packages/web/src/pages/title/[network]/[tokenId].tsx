@@ -16,7 +16,6 @@ import {
 } from "@libs/TitleClassifications";
 import {
   isCoordinates,
-  isPolygon,
   coordinateStringToFeatureList
 } from "@libs/TitleLocation";
 
