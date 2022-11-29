@@ -150,7 +150,13 @@ const TitlePage: NextPage<{
         features: coordinatesStringToFeatures(location)
       } as FeatureCollection;
     } catch (error) {
-      console.log(error);
+      // Parse error message
+      const msg = (error as any).toString() as string;
+      if (msg.endsWith("corrupted coordinate string")) return null;
+
+      // Otherwise: error was thrown by turf.
+      // TODO: `coordinatesStringToFeatures` should throw a specific error
+      // to indicate that coordinate string is a point and not a feature collection.
       return {
         type: "Point",
         coordinates: location.split(",").map((l) => parseFloat(l))

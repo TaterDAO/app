@@ -31,6 +31,11 @@ export function coordinatesStringToFeatures(
   return coordinates.split(";").map((coords) => {
     const positions: Array<Position> = [];
     const coordArr = coords.split(",");
+
+    // Sanity check: each coordinate string should be of even length.
+    if (coordArr.length % 2 != 0)
+      throw new Error("corrupted coordinate string");
+
     for (let index = 0; index < coordArr.length; index += 2) {
       const lng = parseFloat(coordArr[index]);
       const lat = parseFloat(coordArr[index + 1]);
