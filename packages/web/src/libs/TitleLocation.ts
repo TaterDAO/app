@@ -11,31 +11,32 @@ export function isCoordinates(value: string): boolean {
 
 export function isPolygon(value: string): boolean {
   try {
-    coordinateStringToFeatureList(value);
+    coordinatesStringToFeatures(value);
     return true;
   } catch (error) {
     return false;
   }
 }
 
-export function coordinateStringToFeatureList(
-  coordinateString: string
+/**
+ * Deserializes a coordinate string into an array of valid GeoJson Features.
+ * @param coordinates String containing one or more features joined by semicolons.
+ * For example:
+ *  -100,50,-100,20,50,70,60,40;2,4,6,8,10,12,-20
+ * @returns Array of features.
+ */
+export function coordinatesStringToFeatures(
+  coordinates: string
 ): Array<Feature> {
-  return coordinateString.split(";").map((coords) => {
-    const coordinatePairs: Array<Position> = [];
-    let lat: number;
-
-    coords.split(",").forEach((coord, index) => {
-      const n = parseFloat(coord);
-      if (index % 2 === 0) {
-        lat = n;
-      } else {
-        const pos = [lat, n];
-        coordinatePairs.push(pos);
-      }
-    });
-
-    return turf.polygon([coordinatePairs]);
+  return coordinates.split(";").map((coords) => {
+    const positions: Array<Position> = [];
+    const coordArr = coords.split(",");
+    for (let index = 0; index < coordArr.length; index += 2) {
+      const lng = parseFloat(coordArr[index]);
+      const lat = parseFloat(coordArr[index + 1]);
+      positions.push([lng, lat]);
+    }
+    return turf.polygon([positions]);
   });
 }
 
