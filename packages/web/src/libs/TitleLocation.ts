@@ -72,28 +72,14 @@ export function deserializeFeatures(coordinateString: string): Array<Feature> {
     // always be zero as TATRs do not support altitude, etc.
     // Older TATRs will contain this value. Check.
     const hasZ = coordArr[2] === 0;
+    // If a Z value is present, it should be skipped.
+    const incrementor = hasZ ? 3 : 2;
 
-    // Each coordinate will be added to a position until it has x,y,z values.
-    let position: Position = [];
-
-    // Iterate through each coordinate to create their respective Positions.
-    coordArr.forEach((coordinate) => {
-      // coordinate is either x or y.
-      if (position.length < 2) {
-        position.push(coordinate);
-      } else {
-        if (hasZ) {
-          // Coordinate is z
-          position.push(0);
-          // Push Position and clear for next Position setting.
-          positions.push(position);
-          position = [];
-        } else {
-          // Coordinate is y of next Position.
-          position.push(coordinate);
-        }
-      }
-    });
+    for (let index = 0; index < coordArr.length; index += incrementor) {
+      const x = coordArr[index];
+      const y = coordArr[index + 1];
+      positions.push([x, y, 0]);
+    }
 
     return turf.polygon([positions]);
   });
