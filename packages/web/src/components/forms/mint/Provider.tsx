@@ -130,8 +130,8 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     // Serialize location
     if (state.attrLocation_) {
       if (state.attrLocation_.type === "Point") {
-        const [lng, lat] = state.attrLocation_.coordinates;
-        payload["attrLocation_"] = `${lat}, ${lng}`;
+        // `lng,lat`
+        payload["attrLocation_"] = state.attrLocation_.coordinates.toString();
       } else if (state.attrLocation_.type === "FeatureCollection") {
         // Reduce features into a single string
         payload["attrLocation_"] = Object.values(state.attrLocation_?.features)
