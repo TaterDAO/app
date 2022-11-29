@@ -16,7 +16,7 @@ import {
 } from "@libs/TitleClassifications";
 import {
   isCoordinates,
-  coordinateStringToFeatureList
+  coordinatesStringToFeatures
 } from "@libs/TitleLocation";
 
 // Components
@@ -147,9 +147,10 @@ const TitlePage: NextPage<{
       // is thrown in doing so, parse it as a point.
       return {
         type: "FeatureCollection",
-        features: coordinateStringToFeatureList(location)
+        features: coordinatesStringToFeatures(location)
       } as FeatureCollection;
     } catch (error) {
+      console.log(error);
       return {
         type: "Point",
         coordinates: location.split(",").map((l) => parseFloat(l))
