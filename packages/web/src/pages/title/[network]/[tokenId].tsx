@@ -14,10 +14,7 @@ import {
   getBuildingClassificationFromValue,
   classificationLabel
 } from "@libs/TitleClassifications";
-import {
-  isCoordinates,
-  coordinatesStringToFeatures
-} from "@libs/TitleLocation";
+import { isCoordinates, deserializeFeatures } from "@libs/TitleLocation";
 
 // Components
 import ProfileLink from "@components/ProfileLink";
@@ -141,27 +138,11 @@ const TitlePage: NextPage<{
     // If location is not a valid coordinate string, do not render the map.
     if (!isCoordinates(location)) return null;
 
-    try {
-      // At this point, we are unsure if the coordinate string is a feature collection
-      // or a single point.  Attempt to parse it as a feature collection, and if an error
-      // is thrown in doing so, parse it as a point.
-      return {
-        type: "FeatureCollection",
-        features: coordinatesStringToFeatures(location)
-      } as FeatureCollection;
-    } catch (error) {
-      // Parse error message
-      const msg = (error as any).toString() as string;
-      if (msg.endsWith("corrupted coordinate string")) return null;
-
-      // Otherwise: error was thrown by turf.
-      // TODO: `coordinatesStringToFeatures` should throw a specific error
-      // to indicate that coordinate string is a point and not a feature collection.
-      return {
-        type: "Point",
-        coordinates: location.split(",").map((l) => parseFloat(l))
-      } as Point;
-    }
+    // Feature collection will contain 1 or more Features (Point or Polygon).
+    return {
+      type: "FeatureCollection",
+      features: deserializeFeatures(location)
+    } as FeatureCollection;
   }, [location]);
 
   const showMap = !!mapValue;
