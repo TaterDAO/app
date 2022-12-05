@@ -31,7 +31,7 @@ node dist/autotasks/<task name>
 #### Building
 
 ```shell
-nvm use lts/erbium # In production, autotasks are executed in a Node 12 runtime.
+nvm use # In production, autotasks are executed in a Node 16 runtime.
 yarn ncc build src/autotasks/<task name>/index.ts -o dist/autotasks/<task name> -m
 ```
 
