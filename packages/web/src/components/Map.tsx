@@ -21,6 +21,14 @@ import type { Feature } from "@turf/turf";
 import type { FeatureCollection, Point } from "geojson";
 import type { Location } from "@contexts/mint/types";
 
+// Components
+import Button from "@components/ui/Button";
+import { CenterAlign } from "iconoir-react";
+
+// Utils
+import { createPortal } from "react-dom";
+import { csr } from "@utils/browser";
+
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
 const MapContainer = styled.div`
@@ -30,11 +38,50 @@ const MapContainer = styled.div`
   position: relative;
 `;
 
+const DEFAULT_COORDINATES = [-70.9, 42.35]; // lng, lat
+
+const CenterButton: React.FC<{ handleClick: () => void }> = ({
+  handleClick
+}) => {
+  // Portals can only be used client-side.
+  if (!csr()) return null;
+
+  // Has container rendered yet?
+  const compassBtnEl = document.getElementsByClassName("mapboxgl-ctrl-compass");
+  if (compassBtnEl.length === 0) return null;
+
+  // Compass is rendered; use parent as container.
+  const container = compassBtnEl[0].parentElement as HTMLElement;
+
+  const el = (
+    <Button
+      onClick={handleClick}
+      // Future: Track position changes to lng,lat and only enable button on change.
+      //disabled={centerLng !== lng || centerLat !== lat}
+    >
+      <CenterAlign
+        className="mapboxgl-ctrl-icon"
+        style={{
+          transform: "scale(1) rotateX(0deg) rotateZ(0deg)",
+          height: "20px",
+          width: "20px",
+          margin: "0 auto"
+        }}
+        color="black"
+      />
+    </Button>
+  );
+
+  return createPortal(el, container);
+};
+
 /**
  * Renders a Mapbox map.
  * @param props.defaultZoom Initial zoom on render.
  * @param props.onDraw Handler for draw events.  If not passed, drawing will not be enabled.
  * @param props.showGeocoder Should search input be displayed?
+ * @param props.value Selected or default location.
+ * @param props.shouldRenderCenterBtn Should a button that re-centers the map (on the selected location) be rendered?
  */
 const Map: React.FC<{
   defaultZoom?: number;
@@ -43,6 +90,7 @@ const Map: React.FC<{
   defaultBoundingBoxes?: Array<Feature>;
   onGeocoderSelection?: (result: Result) => void;
   value: Location;
+  shouldRenderCenterBtn?: boolean;
 }> = ({
   defaultZoom = 9,
   onDraw = null,
@@ -51,8 +99,9 @@ const Map: React.FC<{
   onGeocoderSelection = null,
   value = {
     type: "Point",
-    coordinates: [-70.9, 42.35] // lng, lat
-  } as Point
+    coordinates: DEFAULT_COORDINATES
+  } as Point,
+  shouldRenderCenterBtn = false
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
@@ -119,7 +168,11 @@ const Map: React.FC<{
 
       map.current.addControl(gc);
     }
-    map.current.addControl(new mapbox.NavigationControl());
+    map.current.addControl(
+      new mapbox.NavigationControl({
+        visualizePitch: true
+      })
+    );
     map.current.addControl(draw.current, "top-right");
 
     if (!!onDraw) {
@@ -176,7 +229,33 @@ const Map: React.FC<{
       });
   }, [map.current, loaded]);
 
-  return <MapContainer ref={mapContainer} />;
+  // Event Handlers
+
+  /**
+   * Revert map center to `centerLng` and `centerLat` extracted
+   * from `props.value`.
+   */
+  const handleCentering = () => {
+    // Update state
+    setLng(centerLng);
+    setLat(centerLat);
+
+    // Update map
+    map.current.flyTo({
+      center: [centerLng, centerLat],
+      essential: true,
+      zoom
+    });
+  };
+
+  // Render
+
+  return (
+    <>
+      <MapContainer ref={mapContainer} />
+      {shouldRenderCenterBtn && <CenterButton handleClick={handleCentering} />}
+    </>
+  );
 };
 
 export default Map;

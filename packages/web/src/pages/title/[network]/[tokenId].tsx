@@ -152,7 +152,12 @@ const TitlePage: NextPage<{
       <Banner withMap={showMap}>
         <Image src={getImageSrc(title.image)} />
         {showMap && (
-          <Map defaultZoom={18} showGeocoder={false} value={mapValue} />
+          <Map
+            defaultZoom={18}
+            showGeocoder={false}
+            value={mapValue}
+            shouldRenderCenterBtn
+          />
         )}
       </Banner>
       <TokenID>Token ID: {title.tokenId}</TokenID>
