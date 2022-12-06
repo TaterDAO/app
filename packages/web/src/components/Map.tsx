@@ -21,6 +21,9 @@ import type { Feature } from "@turf/turf";
 import type { FeatureCollection, Point } from "geojson";
 import type { Location } from "@contexts/mint/types";
 
+// Components
+import Button from "@components/ui/Button";
+
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
 const MapContainer = styled.div`
@@ -30,11 +33,15 @@ const MapContainer = styled.div`
   position: relative;
 `;
 
+const DEFAULT_COORDINATES = [-70.9, 42.35]; // lng, lat
+
 /**
  * Renders a Mapbox map.
  * @param props.defaultZoom Initial zoom on render.
  * @param props.onDraw Handler for draw events.  If not passed, drawing will not be enabled.
  * @param props.showGeocoder Should search input be displayed?
+ * @param props.value Selected or default location.
+ * @param props.shouldRenderCenterBtn Should a button that re-centers the map (on the selected location) be rendered?
  */
 const Map: React.FC<{
   defaultZoom?: number;
@@ -43,6 +50,7 @@ const Map: React.FC<{
   defaultBoundingBoxes?: Array<Feature>;
   onGeocoderSelection?: (result: Result) => void;
   value: Location;
+  shouldRenderCenterBtn?: boolean;
 }> = ({
   defaultZoom = 9,
   onDraw = null,
@@ -51,8 +59,9 @@ const Map: React.FC<{
   onGeocoderSelection = null,
   value = {
     type: "Point",
-    coordinates: [-70.9, 42.35] // lng, lat
-  } as Point
+    coordinates: DEFAULT_COORDINATES
+  } as Point,
+  shouldRenderCenterBtn = false
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapbox.Map>();
@@ -180,7 +189,41 @@ const Map: React.FC<{
       });
   }, [map.current, loaded]);
 
-  return <MapContainer ref={mapContainer} />;
+  // Event Handlers
+
+  /**
+   * Revert map center to `centerLng` and `centerLat` extracted
+   * from `props.value`.
+   */
+  const handleCentering = () => {
+    // Update state
+    setLng(centerLng);
+    setLat(centerLat);
+
+    // Update map
+    map.current.flyTo({
+      center: [centerLng, centerLat],
+      essential: true,
+      zoom
+    });
+  };
+
+  // Render
+
+  return (
+    <>
+      <MapContainer ref={mapContainer} />
+      {shouldRenderCenterBtn && (
+        <Button
+          onClick={handleCentering}
+          // Future: Track position changes to lng,lat and only enable button on change.
+          //disabled={centerLng !== lng || centerLat !== lat}
+        >
+          Center
+        </Button>
+      )}
+    </>
+  );
 };
 
 export default Map;
