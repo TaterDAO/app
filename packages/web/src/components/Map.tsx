@@ -119,7 +119,11 @@ const Map: React.FC<{
 
       map.current.addControl(gc);
     }
-    map.current.addControl(new mapbox.NavigationControl());
+    map.current.addControl(
+      new mapbox.NavigationControl({
+        visualizePitch: true
+      })
+    );
     map.current.addControl(draw.current, "top-right");
 
     if (!!onDraw) {
