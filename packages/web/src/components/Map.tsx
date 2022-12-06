@@ -23,6 +23,11 @@ import type { Location } from "@contexts/mint/types";
 
 // Components
 import Button from "@components/ui/Button";
+import { CenterAlign } from "iconoir-react";
+
+// Utils
+import { createPortal } from "react-dom";
+import { csr } from "@utils/browser";
 
 type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 
@@ -34,6 +39,41 @@ const MapContainer = styled.div`
 `;
 
 const DEFAULT_COORDINATES = [-70.9, 42.35]; // lng, lat
+
+const CenterButton: React.FC<{ handleClick: () => void }> = ({
+  handleClick
+}) => {
+  // Portals can only be used client-side.
+  if (!csr()) return null;
+
+  // Has container rendered yet?
+  const compassBtnEl = document.getElementsByClassName("mapboxgl-ctrl-compass");
+  if (compassBtnEl.length === 0) return null;
+
+  // Compass is rendered; use parent as container.
+  const container = compassBtnEl[0].parentElement as HTMLElement;
+
+  const el = (
+    <Button
+      onClick={handleClick}
+      // Future: Track position changes to lng,lat and only enable button on change.
+      //disabled={centerLng !== lng || centerLat !== lat}
+    >
+      <CenterAlign
+        className="mapboxgl-ctrl-icon"
+        style={{
+          transform: "scale(1) rotateX(0deg) rotateZ(0deg)",
+          height: "20px",
+          width: "20px",
+          margin: "0 auto"
+        }}
+        color="black"
+      />
+    </Button>
+  );
+
+  return createPortal(el, container);
+};
 
 /**
  * Renders a Mapbox map.
@@ -213,15 +253,7 @@ const Map: React.FC<{
   return (
     <>
       <MapContainer ref={mapContainer} />
-      {shouldRenderCenterBtn && (
-        <Button
-          onClick={handleCentering}
-          // Future: Track position changes to lng,lat and only enable button on change.
-          //disabled={centerLng !== lng || centerLat !== lat}
-        >
-          Center
-        </Button>
-      )}
+      {shouldRenderCenterBtn && <CenterButton handleClick={handleCentering} />}
     </>
   );
 };

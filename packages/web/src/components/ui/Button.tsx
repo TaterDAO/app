@@ -74,7 +74,7 @@ const Button: React.FC<{
   primary?: boolean;
   disabled?: boolean;
   loading?: boolean;
-  children: string;
+  children: string | React.ReactElement;
   onClick: () => any;
 }> = ({
   children,
