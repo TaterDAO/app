@@ -1,5 +1,6 @@
+// Types
 import type { State, Action } from "./types";
-import { ActionType } from "./types";
+import { ActionType, Chain } from "./types";
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -39,6 +40,19 @@ function reducer(state: State, action: Action): State {
     // case ActionType.SetTag: {
     //   return { ...state, attrTag_: action.value };
     // }
+    case ActionType.AddChain: {
+      const updatedChains = state.chains;
+      updatedChains.add(action.value as Chain);
+      return { ...state, chains: updatedChains };
+    }
+    case ActionType.RemoveChain: {
+      const updatedChains = state.chains;
+      updatedChains.delete(action.value as Chain);
+      return {
+        ...state,
+        chains: updatedChains
+      };
+    }
     default: {
       return state;
     }

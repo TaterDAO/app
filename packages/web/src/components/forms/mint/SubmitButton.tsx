@@ -16,6 +16,11 @@ const SubmitButton: React.FC<{}> = ({}) => {
   const web3 = useWeb3();
 
   const handleClick = async () => {
+    // TODO: Write metadata to the API
+    // TODO: Confirm that wallet is connected
+    // TODO: Prompt user to connect wallet if not already connected
+    // TODO: Iterate through networks
+
     try {
       await form.submit();
       toast.success(`Transaction submitted to ${web3.network.name}`);
@@ -37,10 +42,17 @@ const SubmitButton: React.FC<{}> = ({}) => {
     }
   };
 
+  const chainCount = form.state.chains.size;
+
   return (
     <Row>
-      <Button primary onClick={handleClick} loading={form.submitting}>
-        Mint
+      <Button
+        primary
+        onClick={handleClick}
+        loading={form.submitting}
+        disabled={chainCount === 0}
+      >
+        {`Mint (${chainCount})`}
       </Button>
     </Row>
   );

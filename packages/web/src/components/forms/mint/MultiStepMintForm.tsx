@@ -15,6 +15,7 @@ import TagsInput from "@components/forms/mint/fields/TagsInput";
 import ImageInput from "@components/forms/mint/fields/ImageInput";
 import SubmitButton from "@components/forms/mint/SubmitButton";
 import TitledPage from "@components/layouts/TitledPage";
+import ChainInput from "@components/forms/mint/ChainInput";
 
 const MultiStepMintForm: React.FC<{}> = ({}) => {
   return (
@@ -33,6 +34,7 @@ const MultiStepMintForm: React.FC<{}> = ({}) => {
           <ParcelsInput />
           <OwnerInput />
           <TagsInput />
+          <ChainInput />
           <SubmitButton />
         </Container>
       </MintFormProvider>
