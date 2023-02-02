@@ -11,5 +11,5 @@ export const DEFAULT_STATE = {
   attrKml_: undefined,
   // attrTag_: "",
   // images: {}
-  chains: new Set()
+  chains: new Set([])
 };
