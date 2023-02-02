@@ -15,8 +15,7 @@ interface ParentLinkedOption extends Option {
   parent: Option | null;
 }
 
-export interface MintFormFields {
-  [fieldId: string]: any;
+export interface MintFormFields extends Record<string, string> {
   name_: string;
   description_: string;
   externalUrl_: string;
@@ -43,8 +42,7 @@ export interface SerializedMintFormFields {
   attrTag_: string;
 }
 
-type MintFormErrorsByField = {
-  [fieldId: string]: string;
+interface MintFormErrorsByField extends Record<string, string> {
   name_: string;
   description_: string;
   externalUrl_: string;
@@ -57,7 +55,7 @@ type MintFormErrorsByField = {
   attrOwner_: string;
   attrKml_: string;
   attrTag_: string;
-};
+}
 
 interface GenericFormState {
   submitting: boolean;
