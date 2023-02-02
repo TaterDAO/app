@@ -18,8 +18,8 @@ import { serializeFeatures } from "@libs/TitleLocation";
 import * as ipfs from "@services/IPFS";
 
 // Libs
-import { db } from "@services/Firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { metadataCollection } from "@services/Firebase";
+import { addDoc } from "firebase/firestore";
 
 // Context
 import reducer from "@contexts/mint/reducer";
@@ -170,7 +170,7 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     }
 
     // Save metadata to database
-    const ref = await addDoc(collection(db, "metadata"), payload);
+    const ref = await addDoc(metadataCollection, payload);
     console.log(ref);
 
     // TODO: Use same token id
