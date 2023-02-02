@@ -6,7 +6,6 @@ import Wordmark from "@components/global/Wordmark";
 import Logo from "@components/global/Logo";
 import ExploreButton from "@components/global/ExploreButton";
 import CreateButton from "@components/global/CreateButton";
-import Wallets from "@components/Wallets";
 import SnapshotButton from "@components/global//SnapshotButton";
 import DiscordButton from "@components/global/DiscordButton";
 import AboutButton from "@components/global/AboutButton";
@@ -14,6 +13,7 @@ import TwitterButton from "@components/global/TwitterButton";
 import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
+import ProfileButton from "@components/global/ProfileButton";
 
 // Utils
 import { transactionsDisabled } from "@utils/flags";
@@ -65,6 +65,12 @@ const HeadNavContent = styled(MainContent)`
   height: 100%;
 `;
 
+const HeadNavRightContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--global-space-nav-margin);
+`;
+
 const AlertBanner = styled.div`
   width: 100%;
 
@@ -112,7 +118,9 @@ const Layout = ({ children }: { children: JSX.Element }) => {
         <HeadNav>
           <HeadNavContent>
             <Wordmark />
-            <Wallets />
+            <HeadNavRightContent>
+              <ProfileButton />
+            </HeadNavRightContent>
           </HeadNavContent>
         </HeadNav>
         {showAlertBanner() && <AlertBanner>{alertBannerMessage()}</AlertBanner>}
