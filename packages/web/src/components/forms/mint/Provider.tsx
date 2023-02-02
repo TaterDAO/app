@@ -17,6 +17,10 @@ import { serializeFeatures } from "@libs/TitleLocation";
 // Services
 import * as ipfs from "@services/IPFS";
 
+// Libs
+import { db } from "@services/Firebase";
+import { collection, addDoc } from "firebase/firestore";
+
 // Context
 import reducer from "@contexts/mint/reducer";
 import { DEFAULT_STATE } from "@contexts/mint/constants";
@@ -50,7 +54,6 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
   };
 
   const setImage = (fieldId: string, value: Image | null) => {
-    console.log(fieldId, value);
     setImages((prevState) => ({
       ...prevState,
       [fieldId]: value
@@ -165,6 +168,12 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     } else {
       payload["attrKml_"] = "";
     }
+
+    // Save metadata to database
+    const ref = await addDoc(collection(db, "metadata"), payload);
+    console.log(ref);
+
+    // TODO: Use same token id
 
     //? Submit the transaction on-chain
     try {
