@@ -9,6 +9,8 @@ import type { GenericFormState, SerializedMintFormFields } from "@T/Form";
 import type { Image } from "@T/Image";
 import type { Feature } from "geojson";
 import type { FileMetadata } from "@services/IPFS";
+import type { v230203TaterMetadataSchema } from "@T/TATR";
+import { MetadataSchemaVersions } from "@T/TATR";
 
 // Utils
 import { escapeQuotes, escapeColons } from "@utils/form";
@@ -26,6 +28,57 @@ import reducer from "@contexts/mint/reducer";
 import { DEFAULT_STATE } from "@contexts/mint/constants";
 
 const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
+
+/**
+ * Restructures schema in preparation for saving to Firestore.
+ * @param payload Serialized form field values.
+ * @returns Values conforming to v230203 metadata schema.
+ */
+function serializeMetadata(
+  payload: SerializedMintFormFields
+): v230203TaterMetadataSchema {
+  return {
+    name: payload.name_,
+    description: payload.description_,
+    image: payload.image_,
+    external_url: payload.externalUrl_,
+    attributes: [
+      {
+        trait_type: "Land Classification",
+        value: payload.attrLandClassification_
+      },
+      {
+        trait_type: "Building Classification",
+        value: payload.attrBuildingClassification_
+      },
+      {
+        trait_type: "Location",
+        value: payload.attrLocation_
+      },
+      {
+        trait_type: "Deed",
+        value: payload.attrDeed_
+      },
+      {
+        trait_type: "Parcels",
+        value: payload.attrParcels_
+      },
+      {
+        trait_type: "Owner",
+        value: payload.attrOwner_
+      },
+      {
+        trait_type: "KML",
+        value: payload.attrKml_
+      },
+      {
+        trait_type: "Tags",
+        value: payload.attrTag_
+      }
+    ],
+    schemaVersion: MetadataSchemaVersions.v230203
+  };
+}
 
 const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
   const web3 = useWeb3();
@@ -169,11 +222,29 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
       payload["attrKml_"] = "";
     }
 
-    // Save metadata to database
-    const ref = await addDoc(metadataCollection, payload);
-    console.log(ref);
+    // Structure metadata
+    const metadata = serializeMetadata(payload);
 
-    // TODO: Use same token id
+    // TODO: Connect wallet if necessary
+    //await web3.wallet.connect();
+
+    // TODO: Sign metadata
+
+    // const signatureResult = await web3.provider.send(
+    //   "eth_signTypedData_v4",
+    //   [web3.wallet.address, JSON.stringify(metadata)],
+    //   web3.wallet.address
+    // );
+
+    // console.log(signatureResult);
+
+    // TODO: Populate metadataImmutabilitySignature
+
+    // Save metadata to database
+    const ref = await addDoc(metadataCollection, metadata);
+    const tokenId = ref.id;
+
+    // TODO: Use tokenId for minting
 
     //? Submit the transaction on-chain
     try {
