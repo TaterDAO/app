@@ -18,6 +18,15 @@ import { useEffect } from "react";
 // Utils
 import { csr } from "@utils/browser";
 
+// Wallet Connect
+import { Web3Modal } from "@web3modal/react";
+import { WagmiConfig } from "wagmi";
+import {
+  WALLETCONNECT_PROJECT_ID,
+  ethereumClient,
+  wagmiClient
+} from "@services/WalletConnect";
+
 declare global {
   interface Window {
     td: {
@@ -45,11 +54,17 @@ function App({ Component, pageProps }: AppProps) {
         <title>TaterDAO</title>
       </Head>
       <GlobalStyle />
-      <Web3Provider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </Web3Provider>
+      <WagmiConfig client={wagmiClient}>
+        <Web3Provider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Web3Provider>
+      </WagmiConfig>
+      <Web3Modal
+        projectId={WALLETCONNECT_PROJECT_ID}
+        ethereumClient={ethereumClient}
+      />
       <ToastContainer hideProgressBar position="top-right" theme="colored" />
     </>
   );

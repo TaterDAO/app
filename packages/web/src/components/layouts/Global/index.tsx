@@ -14,6 +14,7 @@ import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
 import ProfileButton from "@components/global/ProfileButton";
+import { Web3Button } from "@web3modal/react";
 
 // Utils
 import { transactionsDisabled } from "@utils/flags";
@@ -119,6 +120,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
           <HeadNavContent>
             <Wordmark />
             <HeadNavRightContent>
+              <Web3Button />
               <ProfileButton />
             </HeadNavRightContent>
           </HeadNavContent>
