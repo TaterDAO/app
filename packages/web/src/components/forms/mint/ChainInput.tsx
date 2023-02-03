@@ -3,28 +3,35 @@ import MultiCheckboxInput from "../MultiCheckboxInput";
 
 // Hooks
 import useMintForm from "./useMintForm";
+import { useEffect, useState } from "react";
 
 // Types
-import { Chain } from "@contexts/mint/types";
 import { ActionType } from "@contexts/mint/types";
 
-const NameInput: React.FC<{}> = ({}) => {
-  const form = useMintForm();
+// Services
+import { chains } from "@services/WalletConnect";
 
-  return (
+const ChainInput: React.FC<{}> = ({}) => {
+  const form = useMintForm();
+  const [options, setOptions] = useState<Array<Array<string | number>>>([]);
+
+  //? Workaround to avoid React Hydration Error caused by chains not being available
+  //? during SSR.
+  useEffect(() => {
+    setOptions(
+      chains
+        .map((chain) => [chain.id, chain.name])
+        .sort((a, b) => (a[1] > b[1] ? 1 : 0))
+    );
+  }, []);
+
+  return options.length ? (
     <MultiCheckboxInput
       form={form}
       fieldId="chains"
       label="Mint To"
       description="Which blockchains would you like to mint on?"
-      options={[
-        [Chain.EthereumMainnet, "Ethereum"],
-        [Chain.EthereumGoerli, "Ethereum Goerli (Testnet)"],
-        [Chain.ArbitrumMainnet, "Arbitrum"],
-        [Chain.ArbitrumGoerli, "Arbitrum Goerli (Testnet)"],
-        [Chain.PolygonMainnet, "Polygon"],
-        [Chain.PolygonMumbai, "Polygon Mumbai (Testnet)"]
-      ]}
+      options={options}
       value={form.state.chains}
       onSelect={(value: string) =>
         form.dispatch({ type: ActionType.AddChain, value })
@@ -33,7 +40,9 @@ const NameInput: React.FC<{}> = ({}) => {
         form.dispatch({ type: ActionType.RemoveChain, value })
       }
     />
+  ) : (
+    <></>
   );
 };
 
-export default NameInput;
+export default ChainInput;
