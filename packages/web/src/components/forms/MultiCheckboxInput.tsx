@@ -31,7 +31,7 @@ const MultiCheckboxInput: React.FC<{
   fieldId: string;
   label: string;
   description: string;
-  options: Array<Array<string>>;
+  options: Array<Array<string | number>>;
   value: Set<string>;
   onSelect: (value: string) => void;
   onDeselect: (value: string) => void;

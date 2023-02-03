@@ -26,7 +26,7 @@ export interface State {
   attrKml_: File | undefined;
   // attrTag_: string;
   // images: { [fieldId: string]: Image | null };
-  chains: Set<Chain>;
+  chains: Set<number>;
 }
 
 export enum ActionType {
@@ -112,12 +112,12 @@ interface SetTagAction extends BaseAction {
 
 interface AddChainAction extends BaseAction {
   type: ActionType.AddChain;
-  value: string;
+  value: number;
 }
 
 interface RemoveChainAction extends BaseAction {
   type: ActionType.RemoveChain;
-  value: string;
+  value: number;
 }
 
 export type Action =

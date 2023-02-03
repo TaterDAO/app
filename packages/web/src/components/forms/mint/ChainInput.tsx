@@ -34,10 +34,10 @@ const ChainInput: React.FC<{}> = ({}) => {
       options={options}
       value={form.state.chains}
       onSelect={(value: string) =>
-        form.dispatch({ type: ActionType.AddChain, value })
+        form.dispatch({ type: ActionType.AddChain, value: parseInt(value) })
       }
       onDeselect={(value: string) =>
-        form.dispatch({ type: ActionType.RemoveChain, value })
+        form.dispatch({ type: ActionType.RemoveChain, value: parseInt(value) })
       }
     />
   ) : (
