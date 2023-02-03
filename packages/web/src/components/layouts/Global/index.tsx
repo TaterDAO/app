@@ -22,14 +22,19 @@ import { transactionsDisabled } from "@utils/flags";
 const Container = styled.div`
   min-height: 100vh;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: 60px auto;
 `;
 
 const VerticalNav = styled.div`
   width: 60px;
   border-right: 1px solid var(--global-color-border);
-
   padding: 0.5rem;
+`;
+
+const VerticalNavContents = styled.div`
+  position: sticky;
+  top: 0.5rem;
 
   display: flex;
   flex-direction: column;
@@ -37,15 +42,19 @@ const VerticalNav = styled.div`
 `;
 
 const Main = styled.div`
-  width: 100%;
+  display: grid;
+  grid-template-rows: 60px auto;
 `;
 
 const HeadNav = styled.div`
   height: 60px;
   width: 100%;
   border-bottom: 1px solid var(--global-color-border);
-
   padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  background-color: var(--global-color-bg);
+  z-index: 999;
 `;
 
 const ContentContainer = styled.div`
@@ -103,17 +112,19 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   return (
     <Container>
       <VerticalNav>
-        <Logo />
-        <ExploreButton />
-        {canCreate() && <CreateButton />}
-        <AboutButton />
-        <WhitepaperButton />
-        <Divider />
-        <SnapshotButton />
-        <DiscordButton />
-        <TwitterButton />
-        <Divider />
-        <TOSButton />
+        <VerticalNavContents>
+          <Logo />
+          <ExploreButton />
+          {canCreate() && <CreateButton />}
+          <AboutButton />
+          <WhitepaperButton />
+          <Divider />
+          <SnapshotButton />
+          <DiscordButton />
+          <TwitterButton />
+          <Divider />
+          <TOSButton />
+        </VerticalNavContents>
       </VerticalNav>
       <Main>
         <HeadNav>
