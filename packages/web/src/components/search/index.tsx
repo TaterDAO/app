@@ -24,15 +24,12 @@ const Search: React.FC<{
   const web3 = useWeb3();
   const index = `titles-${web3.network.internalId}`;
 
-  return web3.network.supported ? (
+  return (
     <InstantSearch searchClient={algolia} indexName={index}>
       <Configure hitsPerPage={10} filters={filters} />
       <SearchHeader index={index} />
       <Hits />
-      <StateResults />
     </InstantSearch>
-  ) : (
-    <UnsupportedNetwork />
   );
 };
 
