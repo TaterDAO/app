@@ -7,7 +7,6 @@ import {
   connectFirestoreEmulator,
   collection
 } from "firebase/firestore";
-import * as admin from "firebase-admin";
 // Utils
 import { csr } from "@utils/browser";
 
@@ -40,21 +39,4 @@ if (isBrowser && !getApps().length) {
   //}
 }
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      privateKey: process.env.FIREBASE_ADMIN_PK,
-      clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    })
-  });
-
-  // if (process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATORS) {
-  //   admin.firestore().settings({
-  //     host: "localhost:8080",
-  //     ssl: false
-  //   });
-  // }
-}
-
-export { metadataCollection, db, admin };
+export { metadataCollection, db };
