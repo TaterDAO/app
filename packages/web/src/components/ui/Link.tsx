@@ -12,6 +12,10 @@ const NoRedirectionLink = styled.a`
   cursor: default;
 `;
 
+const StyledLink = styled(NextLink)`
+  border-bottom: 1px dotted;
+`;
+
 const Link: React.FC<{ children: string; href: string }> = ({
   children,
   href
@@ -21,9 +25,9 @@ const Link: React.FC<{ children: string; href: string }> = ({
   return router.route == href ? (
     <NoRedirectionLink>{children}</NoRedirectionLink>
   ) : (
-    <NextLink href={href} passHref>
-      <a>{children}</a>
-    </NextLink>
+    <StyledLink href={href} passHref>
+      {children}
+    </StyledLink>
   );
 };
 
