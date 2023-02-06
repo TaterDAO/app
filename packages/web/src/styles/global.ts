@@ -114,7 +114,6 @@ export default createGlobalStyle`
     cursor: pointer;
     text-decoration: none;
     color: var(--global-color-font);
-    border-bottom: 1px dotted;
   }
   
   button {
