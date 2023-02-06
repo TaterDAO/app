@@ -6,7 +6,7 @@ export const CONTRACT_ADDRESSES: Record<number, string> = {
   // Arbitrum
   42161: "",
   // Arb Goerli
-  421613: "",
+  421613: "2099B72bD243053674599a1a76053641352e2394",
   // Polygon
   137: "",
   // Polygon Mumbai
@@ -39,4 +39,44 @@ export const BURN_ABI = {
     }
   ],
   outputs: []
+};
+
+export const TOKEN_ID_BY_METADATA_ABI = {
+  name: "tokenIdByMetadataId",
+  type: "function",
+  stateMutability: "view",
+  inputs: [
+    {
+      internalType: "string",
+      name: "metadataId_",
+      type: "string"
+    }
+  ],
+  outputs: [
+    {
+      internalType: "uint256",
+      name: "",
+      type: "uint256"
+    }
+  ]
+};
+
+export const OWNER_OF_ABI = {
+  name: "ownerOf",
+  type: "function",
+  stateMutability: "view",
+  inputs: [
+    {
+      internalType: "uint256",
+      name: "tokenId",
+      type: "uint256"
+    }
+  ],
+  outputs: [
+    {
+      internalType: "address",
+      name: "",
+      type: "address"
+    }
+  ]
 };
