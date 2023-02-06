@@ -1,21 +1,9 @@
 // Libs
-import { connectInfiniteHits } from "react-instantsearch-dom";
 import styled from "styled-components";
 
 // Components
 import Hit from "./Hit";
-import Button from "@components/ui/Button";
-
-// Types
-import type { Hit as T_Hit } from "@T/Search";
-import type { InfiniteHitsProvided } from "react-instantsearch-core";
-
-// Services
-import { query, getDocs } from "firebase/firestore";
-import { metadataCollection } from "@services/Firebase";
-
-// Hooks
-import { useEffect, useState } from "react";
+import { v230203TaterMetadataSchema } from "@T/TATR";
 
 const Container = styled.div`
   display: grid;
@@ -23,49 +11,27 @@ const Container = styled.div`
   gap: var(--global-space-margin);
 `;
 
-const Footer = styled.div`
-  margin-top: var(--global-space-y-margin);
-  display: flex;
-  justify-content: center;
-`;
-
-const Hits: React.FC<InfiniteHitsProvided> = ({
-  hasPrevious,
-  refinePrevious,
-  hasMore,
-  refineNext
-}) => {
-  const [hits, set] = useState<Array<T_Hit>>();
-
-  useEffect(() => {
-    (async () => {
-      const q = query(metadataCollection);
-      const snapshot = await getDocs(q);
-      const data: Array<T_Hit> = [];
-      snapshot.forEach((doc) => {
-        data.push({ tokenId: doc.id, ...doc.data() });
-      });
-      set(data);
-    })();
-  }, []);
-
-  const showFooter = hasPrevious || hasMore;
+const Hits: React.FC<{
+  hits: Array<{ id: string; metadata: v230203TaterMetadataSchema }>;
+  loaded: boolean;
+}> = ({ hits, loaded }) => {
   return (
     <div>
       <Container>
-        {hits !== undefined ? (
-          hits.map((hit) => <Hit key={hit.objectID} data={hit as T_Hit} />)
+        {loaded ? (
+          hits.length > 0 ? (
+            hits.map((hit) => (
+              <Hit key={hit.id} id={hit.id} metadata={hit.metadata} />
+            ))
+          ) : (
+            <i>No Results</i>
+          )
         ) : (
           <i>Loading...</i>
         )}
       </Container>
-      {showFooter && (
-        <Footer>
-          <Button onClick={refineNext}>Load More</Button>
-        </Footer>
-      )}
     </div>
   );
 };
 
-export default connectInfiniteHits(Hits);
+export default Hits;

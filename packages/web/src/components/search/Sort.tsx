@@ -1,6 +1,3 @@
-// Libs
-import { connectSortBy } from "react-instantsearch-dom";
-
 // Components
 import Select from "@components/ui/Select";
 
@@ -33,4 +30,4 @@ Sort.defaultProps = {
   disabled: false
 };
 
-export default connectSortBy(Sort);
+export default Sort;

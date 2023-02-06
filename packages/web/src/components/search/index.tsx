@@ -1,35 +1,82 @@
-// Types
-import type { SearchState } from "react-instantsearch-core";
-
 // Components
-import { InstantSearch, Configure } from "react-instantsearch-dom";
 import Hits from "@components/search/Hits";
-import StateResults from "./StateResults";
-import UnsupportedNetwork from "@components/UnsupportedNetwork";
+import SearchHeader from "./Header";
+import Button from "@components/ui/Button";
+
+// Types
+import type { v230203TaterMetadataSchema } from "@T/TATR";
 
 // Services
-import algolia from "@services/Algolia";
+import { query, getDocs, where } from "firebase/firestore";
+import { metadataCollection } from "@services/Firebase";
 
 // Hooks
-import useWeb3 from "@hooks/useWeb3";
-import SearchHeader from "./Header";
+import { useEffect, useState } from "react";
 
-const Search: React.FC<{
-  /**
-   * @see https://www.algolia.com/doc/api-reference/widgets/ui-state/react/
-   */
-  state?: SearchState;
-  filters?: string;
-}> = ({ state, filters }) => {
-  const web3 = useWeb3();
-  const index = `titles-${web3.network.internalId}`;
+// Libs
+import styled from "styled-components";
+
+const Footer = styled.div`
+  margin-top: var(--global-space-y-margin);
+  display: flex;
+  justify-content: center;
+`;
+
+const Search: React.FC<{}> = () => {
+  //const [paginationCursor, setPaginationCursor] = useState<number>(1);
+
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  const [queryValue, setQueryValue] = useState<string>("test");
+
+  const refinements: any[] = [];
+  if (queryValue !== "") {
+    refinements.push(where("metadata.name", ">=", queryValue));
+    refinements.push(where("metadata.name", "<=", `${queryValue}~`));
+  }
+  const q = query(metadataCollection, ...refinements);
+
+  const [hits, set] = useState<
+    Array<{ id: string; metadata: v230203TaterMetadataSchema }>
+  >([]);
+
+  useEffect(() => {
+    (async () => {
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        metadata: doc.data().metadata as v230203TaterMetadataSchema
+      }));
+      set(data);
+      setLoaded(true);
+    })();
+  }, [q]);
+
+  //? For now, show all results.
+  const showFooter = false;
 
   return (
-    <InstantSearch searchClient={algolia} indexName={index}>
-      <Configure hitsPerPage={10} filters={filters} />
-      <SearchHeader index={index} />
-      <Hits />
-    </InstantSearch>
+    <>
+      <SearchHeader
+        queryValue={queryValue}
+        setQueryValue={(value: string) => setQueryValue(value)}
+      />
+      <Hits hits={hits} loaded={loaded} />
+      {/* {showFooter && (
+        <Footer>
+          <Button
+            onClick={() =>
+              setPaginationCursor((cursor) => {
+                cursor += 25;
+                return cursor;
+              })
+            }
+          >
+            Load More
+          </Button>
+        </Footer>
+      )} */}
+    </>
   );
 };
 

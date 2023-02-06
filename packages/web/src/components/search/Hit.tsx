@@ -1,5 +1,5 @@
 // Types
-import type { Hit as T_Hit } from "@T/Search";
+import type { v230203TaterMetadataSchema } from "@T/TATR";
 
 // Components
 import NextLink from "next/link";
@@ -14,9 +14,6 @@ import {
   classificationLabel
 } from "@libs/TitleClassifications";
 import { isCoordinates, isPolygon } from "@libs/TitleLocation";
-
-// Hooks
-import useWeb3 from "@hooks/useWeb3";
 
 import { getImageSrc } from "@utils/image";
 
@@ -54,28 +51,38 @@ const Name = styled.h3`
   cursor: pointer;
 `;
 
-const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
-  const web3 = useWeb3();
-
+const Hit: React.FC<{ id: string; metadata: v230203TaterMetadataSchema }> = ({
+  id,
+  metadata
+}) => {
   //# Render
 
-  const endpoint = `/title/${web3.network.internalId}/${data.objectID}`;
+  const endpoint = `/tatr/${id}`;
+
+  const landClassificationValue = metadata.attributes.find(
+    (attr) => attr.trait_type === "Land Classification"
+  )?.value as string;
 
   const landClassification = getLandClassificationFromValue(
-    data["attr.LandClassification"]
+    landClassificationValue
   );
+
   const landClassificationLabel = !!landClassification
     ? classificationLabel(landClassification)
-    : data["attr.LandClassification"];
+    : landClassificationValue;
 
-  const location = data["attr.Location"] as string;
+  const location = metadata.attributes.find(
+    (attr) => attr.trait_type === "Location"
+  )?.value as string;
 
   const tags = [
     `Classification: ${landClassificationLabel}`,
     isCoordinates(location) && isPolygon(location)
       ? null
       : `Location: ${location}`,
-    `Parcels: ${data["attr.Parcels"]}`
+    `Parcels: ${
+      metadata.attributes.find((attr) => attr.trait_type === "Parcels")?.value
+    }`
   ].filter((v) => !!v);
 
   return (
@@ -83,23 +90,20 @@ const Hit: React.FC<{ data: T_Hit }> = ({ data }) => {
       <NextLink href={endpoint}>
         <ImageWrapper>
           <Image
-            src={getImageSrc(data.image)}
-            layout="fill"
-            objectFit="cover"
-            objectPosition="center"
+            src={getImageSrc(metadata.image)}
+            fill
+            style={{ objectFit: "cover" }}
+            alt={`Image of ${metadata.name}`}
           />
         </ImageWrapper>
       </NextLink>
       <Content>
         <Meta>
           <NextLink href={endpoint}>
-            <Name>{data.name}</Name>
+            <Name>{metadata.name}</Name>
           </NextLink>
-          <h5>
-            Created by <ProfileLink address={data.owner} />
-          </h5>
         </Meta>
-        {<Tags data={tags} tokenId={data.objectID} id="tags" />}
+        {<Tags data={tags} tokenId={id} id="tags" />}
       </Content>
     </Container>
   );
