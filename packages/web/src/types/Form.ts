@@ -57,7 +57,7 @@ interface MintFormErrorsByField extends Record<string, string> {
   attrTag_: string;
 }
 
-interface GenericFormState {
+interface MintFormContext {
   submitting: boolean;
   values: MintFormFields;
   images: { [fieldId: string]: Image | null };
@@ -65,16 +65,18 @@ interface GenericFormState {
   validationSchema: Joi.ObjectSchema<any>;
   setValue: (fieldId: string, value: any) => void;
   setImage: (fieldId: string, value: Image | null) => void;
-  setSubmitting: (bool: boolean) => void;
   submit: () => Promise<void>;
-  errors: MintFormErrorsByField;
+  errors: Record<string, string>;
   validateField: (fieldId: string, value?: any) => boolean;
+  validating: boolean;
+  validateFormState: () => Promise<void>;
+  validated: boolean;
   // TODO:
-  // Mixing Mint-form specific type declarations into the GenericFormState
+  // Mixing Mint-form specific type declarations into the MintFormContext
   // makes it non-generic... this should be rectified & Generic Form more generally
   // deprecated.
   dispatch: React.Dispatch<Action>;
   state: State;
 }
 
-export type { Option, ParentLinkedOption, GenericFormState };
+export type { Option, ParentLinkedOption, MintFormContext };

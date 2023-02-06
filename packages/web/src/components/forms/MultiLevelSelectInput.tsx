@@ -5,10 +5,10 @@ import MultiLevelSelect from "@components/ui/MultiLevelSelect";
 
 // Types
 import type { Option } from "@T/Form";
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 
 const MultiLevelSelectInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   label: string;
   description: string;
