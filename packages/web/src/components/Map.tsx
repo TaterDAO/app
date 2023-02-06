@@ -34,7 +34,6 @@ type DrawEvent = DrawCreateEvent | DrawDeleteEvent | DrawUpdateEvent;
 const MapContainer = styled.div`
   height: 400px;
   width: 100%;
-  max-width: 650px;
   position: relative;
 `;
 
