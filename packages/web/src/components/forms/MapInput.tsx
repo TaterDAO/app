@@ -65,10 +65,9 @@ const MapInput: React.FC<{
   };
 
   const handlePointSelection = (result: Result) => {
-    const [lat, lng] = result.geometry.coordinates;
     onChange({
       type: "Point",
-      coordinates: [lng, lat]
+      coordinates: result.geometry.coordinates
     });
   };
 
