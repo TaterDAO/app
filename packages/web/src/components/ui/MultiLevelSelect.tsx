@@ -9,7 +9,6 @@ import type { Option as OptionType, ParentLinkedOption } from "@T/Form";
 
 const Container = styled.div<{ disabled: boolean; invalid: boolean }>`
   width: 100%;
-  max-width: 650px;
   height: 400px;
   overflow-y: scroll;
   border-radius: var(--global-border-radius);
