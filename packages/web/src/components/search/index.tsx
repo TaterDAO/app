@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 // Libs
 import styled from "styled-components";
 
+// Utils
+import { csr } from "@utils/browser";
+
 const Footer = styled.div`
   margin-top: var(--global-space-y-margin);
   display: flex;
@@ -25,23 +28,36 @@ const Footer = styled.div`
 const Search: React.FC<{}> = () => {
   //const [paginationCursor, setPaginationCursor] = useState<number>(1);
 
+  //
+  //
+  // STATE
+  //
+  //
+
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const [queryValue, setQueryValue] = useState<string>("test");
-
-  const refinements: any[] = [];
-  if (queryValue !== "") {
-    refinements.push(where("metadata.name", ">=", queryValue));
-    refinements.push(where("metadata.name", "<=", `${queryValue}~`));
-  }
-  const q = query(metadataCollection, ...refinements);
+  const [queryValue, setQueryValue] = useState<string>("");
 
   const [hits, set] = useState<
     Array<{ id: string; metadata: v230203TaterMetadataSchema }>
   >([]);
 
+  //
+  //
+  // EFFECTS
+  //
+  //
+
+  const isClient = csr();
   useEffect(() => {
-    (async () => {
+    const refine = async () => {
+      const refinements: any[] = [];
+      if (queryValue !== "") {
+        refinements.push(where("metadata.name", ">=", queryValue));
+        refinements.push(where("metadata.name", "<=", `${queryValue}~`));
+      }
+      const q = query(metadataCollection, ...refinements);
+
       const snapshot = await getDocs(q);
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -49,8 +65,15 @@ const Search: React.FC<{}> = () => {
       }));
       set(data);
       setLoaded(true);
-    })();
-  }, [q]);
+    };
+    if (isClient) refine();
+  }, [isClient, queryValue]);
+
+  //
+  //
+  // RENDER
+  //
+  //
 
   //? For now, show all results.
   const showFooter = false;
