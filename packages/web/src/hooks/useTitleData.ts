@@ -6,7 +6,6 @@ import {
   TOKEN_ID_BY_METADATA_ABI,
   OWNER_OF_ABI
 } from "@constants/contract";
-import { memo } from "react";
 
 const activeChains = chains.filter((chain) => !!CONTRACT_ADDRESSES[chain.id]);
 
