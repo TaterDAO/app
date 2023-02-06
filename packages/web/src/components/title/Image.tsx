@@ -39,9 +39,8 @@ const Image: React.FC<{ src: string; loading?: boolean; alt?: string }> = ({
         <NextImage
           src={src}
           alt={alt}
-          layout="fill"
-          objectFit="contain"
-          objectPosition="center"
+          fill
+          style={{ objectFit: "contain", objectPosition: "center" }}
         />
       )}
     </Container>
