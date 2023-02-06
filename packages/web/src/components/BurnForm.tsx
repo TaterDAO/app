@@ -17,10 +17,7 @@ const Container = styled.div`
   margin: var(--global-space-y-margin) 0;
 `;
 
-const BurnForm: React.FC<{ tokenId: number; titleName: string }> = ({
-  tokenId,
-  titleName
-}) => {
+const BurnForm: React.FC<{ tokenId: number }> = ({ tokenId }) => {
   const web3 = useWeb3();
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [burning, setBurning] = useState<boolean>(false);
@@ -35,7 +32,7 @@ const BurnForm: React.FC<{ tokenId: number; titleName: string }> = ({
 
       router.push("/");
       toast.success(
-        `${titleName} has been burned. It will be removed from TaterDAO momentarily.`
+        `Title has been burned. It will be removed from TaterDAO momentarily.`
       );
     } catch (error) {
       setBurning(false);

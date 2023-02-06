@@ -15,6 +15,8 @@ import {
   polygonMumbai
 } from "wagmi/chains";
 
+import type { Chain } from "wagmi/chains";
+
 export const WALLETCONNECT_PROJECT_ID = process.env
   .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string;
 
@@ -25,6 +27,11 @@ export const chains =
   process.env.VERCEL_ENV === "production"
     ? prodChains
     : [...prodChains, ...testChains];
+
+export const chainsById: Record<number, Chain> = chains.reduce(
+  (memo, chain) => ({ ...memo, [chain.id]: chain }),
+  {}
+);
 
 // Wagmi client
 const { provider } = configureChains(chains, [

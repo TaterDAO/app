@@ -5,13 +5,11 @@ import Link from "@components/ui/Link";
 import { shortenAddress } from "@utils/Web3";
 
 // Hooks
-import useWeb3 from "@hooks/useWeb3";
+import { useAccount } from "wagmi";
 
 const ProfileLink: React.FC<{ address: string }> = ({ address }) => {
-  const web3 = useWeb3();
-
-  const connected = web3.initialized && web3.wallet.connected;
-  const isUser = connected && address === web3.wallet.address;
+  const { address: accountAddress } = useAccount();
+  const isUser = accountAddress === address;
 
   return (
     <Link href={isUser ? "/profile" : `/profile/${address}`}>
