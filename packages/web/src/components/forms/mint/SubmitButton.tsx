@@ -50,7 +50,7 @@ const SubmitButton: React.FC<{}> = ({}) => {
     form.state.metadataSignature as string
   );
 
-  const { isDisconnected } = useAccount();
+  const { isDisconnected, address } = useAccount();
 
   const { chain: activeChain } = useNetwork();
   //@ts-ignore
@@ -82,7 +82,10 @@ const SubmitButton: React.FC<{}> = ({}) => {
     ...config,
     onSuccess: async () => {
       if (!metadataSaved) {
-        await setDoc(firestoreDoc, form.metadata);
+        await setDoc(firestoreDoc, {
+          createdBy: address,
+          metadata: form.metadata
+        });
         setMetadataSaved(true);
 
         setMintedOn((chains) => {
