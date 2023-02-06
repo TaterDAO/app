@@ -26,7 +26,7 @@ export interface State {
   attrKml_: File | undefined;
   // attrTag_: string;
   // images: { [fieldId: string]: Image | null };
-  chains: Set<number>;
+  metadataSignature?: string;
 }
 
 export enum ActionType {
@@ -42,8 +42,7 @@ export enum ActionType {
   SetKML = "SET_KML",
   UnsetKML = "UNSET_KML",
   SetTag = "SET_TAG",
-  AddChain = "ADD_CHAIN",
-  RemoveChain = "REMOVE_CHAIN"
+  SetMetadataSignature = "SET_METADATA_SIGNATURE"
   // TODO: Images
 }
 
@@ -110,14 +109,9 @@ interface SetTagAction extends BaseAction {
   value: string;
 }
 
-interface AddChainAction extends BaseAction {
-  type: ActionType.AddChain;
-  value: number;
-}
-
-interface RemoveChainAction extends BaseAction {
-  type: ActionType.RemoveChain;
-  value: number;
+interface SetMetadataSignature extends BaseAction {
+  type: ActionType.SetMetadataSignature;
+  value: string;
 }
 
 export type Action =
@@ -133,8 +127,7 @@ export type Action =
   | SetKMLAction
   | UnsetKMLAction
   | SetTagAction
-  | AddChainAction
-  | RemoveChainAction;
+  | SetMetadataSignature;
 
 export interface ContextState extends State {
   dispatch: React.Dispatch<Action>;

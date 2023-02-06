@@ -17,8 +17,7 @@ interface OpenseaMetadataSchema extends ERC721MetadataSchema {
 }
 
 interface TaterMetadataSchema extends OpenseaMetadataSchema {
-  schemaVersion: MetadataSchemaVersions;
-  metadataImmutabilitySignature?: string;
+  schemaVersion?: MetadataSchemaVersions;
 }
 
 export interface v230203TaterMetadataSchema extends TaterMetadataSchema {

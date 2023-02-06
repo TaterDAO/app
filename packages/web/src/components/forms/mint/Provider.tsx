@@ -1,11 +1,10 @@
 import Context, { defaultState } from "./Context";
 
 // Hooks
-import { useReducer, useState } from "react";
-import useWeb3 from "@hooks/useWeb3";
+import React, { useReducer, useState } from "react";
 
 // Types
-import type { GenericFormState, SerializedMintFormFields } from "@T/Form";
+import type { MintFormContext, SerializedMintFormFields } from "@T/Form";
 import type { Image } from "@T/Image";
 import type { Feature } from "geojson";
 import type { FileMetadata } from "@services/IPFS";
@@ -18,10 +17,6 @@ import { serializeFeatures } from "@libs/TitleLocation";
 
 // Services
 import * as ipfs from "@services/IPFS";
-
-// Libs
-import { metadataCollection } from "@services/Firebase";
-import { addDoc } from "firebase/firestore";
 
 // Context
 import reducer from "@contexts/mint/reducer";
@@ -80,38 +75,49 @@ function serializeMetadata(
   };
 }
 
-const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
-  const web3 = useWeb3();
+const Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  //
+  //
+  // STATE
+  //
+  //
 
-  const [submitting, setSubmitting] = useState<boolean>(
-    defaultState.submitting
-  );
-  const [values, setValues] = useState<GenericFormState["values"]>(
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [validating, setValidating] = useState<boolean>(false);
+
+  const [metadata, setMetadata] = useState<v230203TaterMetadataSchema>();
+
+  const [values, setValues] = useState<MintFormContext["values"]>(
     defaultState.values
   );
-  const [images, setImages] = useState<GenericFormState["images"]>(
+  const [images, setImages] = useState<MintFormContext["images"]>(
     defaultState.images
   );
-  const [errors, setError] = useState<GenericFormState["errors"]>(
-    defaultState.errors
-  );
+  const [errors, setError] = useState<Record<string, string>>({});
 
   //! WIP | Currently: KML & Location
   const [state, dispatch] = useReducer(reducer, DEFAULT_STATE);
 
-  const setValue = (fieldId: string, value: string) => {
-    setValues((prevState) => ({
-      ...prevState,
-      [fieldId]: value
-    }));
-  };
+  //
+  //
+  // UI EFFECTS
+  //
+  //
 
-  const setImage = (fieldId: string, value: Image | null) => {
-    setImages((prevState) => ({
-      ...prevState,
-      [fieldId]: value
-    }));
-  };
+  function scrollToError(fieldId: string) {
+    (
+      document.getElementById(
+        //@ts-ignore
+        `form-input-metadata-${fieldId}`
+      ) as HTMLElement
+    ).scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+
+  //
+  //
+  // DATA VALIDATION
+  //
+  //
 
   /**
    * Validates that a given field's value is valid.
@@ -152,20 +158,23 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     return false;
   };
 
-  const submit = async () => {
-    setSubmitting(true);
-
+  async function validateAndSerializeFields(): Promise<{
+    payload: SerializedMintFormFields;
+    imageIPFSMetadata: FileMetadata | null;
+    kmlIPFSMetadata: FileMetadata | null;
+  }> {
     //@ts-ignore
-    const payload: SerializedMintFormFields = {};
-
-    // Validate
+    const payload: SerializedMintFormFields = {
+      image_: "",
+      attrKml_: ""
+    };
 
     // Validate and sanitize inputs
     for (const fieldId in values) {
       const valid = validateField(fieldId);
       if (!valid) {
-        setSubmitting(false);
-        throw { type: "field-validation", fieldId };
+        scrollToError(fieldId);
+        throw new Error();
       }
 
       let value = values[fieldId];
@@ -199,7 +208,8 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
 
       payload["attrLocation_"] = serializeFeatures(features);
     } else {
-      throw { type: "field-validation", fieldId: "attrLocation_" };
+      scrollToError("attrLocation_");
+      throw new Error();
     }
 
     //? IPFS UPLOADS
@@ -208,73 +218,60 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     let imageIPFSMetadata: FileMetadata | null = null;
     if (!!images.image_) {
       imageIPFSMetadata = await ipfs.uploadImage(images.image_);
-      payload["image_"] = imageIPFSMetadata.uri;
-    } else {
-      payload["image_"] = "";
+      payload.image_ = imageIPFSMetadata.uri;
     }
 
     // Upload KML to IPFS
     let kmlIPFSMetadata: FileMetadata | null = null;
     if (state.attrKml_) {
       kmlIPFSMetadata = await ipfs.uploadFile(state.attrKml_);
-      payload["attrKml_"] = kmlIPFSMetadata.uri;
-    } else {
-      payload["attrKml_"] = "";
+      payload.attrKml_ = kmlIPFSMetadata.uri;
     }
 
-    // Structure metadata
-    const metadata = serializeMetadata(payload);
+    return { payload, imageIPFSMetadata, kmlIPFSMetadata };
+  }
 
-    // TODO: Connect wallet if necessary
-    //await web3.wallet.connect();
-
-    // TODO: Sign metadata
-
-    // const signatureResult = await web3.provider.send(
-    //   "eth_signTypedData_v4",
-    //   [web3.wallet.address, JSON.stringify(metadata)],
-    //   web3.wallet.address
-    // );
-
-    // console.log(signatureResult);
-
-    // TODO: Populate metadataImmutabilitySignature
-
-    // Save metadata to database
-    const ref = await addDoc(metadataCollection, metadata);
-    const tokenId = ref.id;
-
-    // TODO: Use tokenId for minting
-
-    //? Submit the transaction on-chain
-    try {
-      await window.td.minter?.mint(payload, web3.wallet.address as string);
-    } catch (error) {
-      setSubmitting(false);
-      // Unpin image and KML files if present
-      if (imageIPFSMetadata) await ipfs.removeFile(imageIPFSMetadata.hash);
-      if (kmlIPFSMetadata) await ipfs.removeFile(kmlIPFSMetadata.hash);
-      throw error;
-    }
-  };
+  //
+  //
+  // RENDER
+  //
+  //
 
   return (
     <Context.Provider
       value={{
         ...defaultState,
-        submitting,
         values,
         images,
-        setValue,
-        setImage,
-        setSubmitting: (bool: boolean): void => {
-          setSubmitting(bool);
+        setValue: (fieldId: string, value: string) => {
+          setValues((prevState) => ({
+            ...prevState,
+            [fieldId]: value
+          }));
         },
-        submit,
+        setImage: (fieldId: string, value: Image | null) => {
+          setImages((prevState) => ({
+            ...prevState,
+            [fieldId]: value
+          }));
+        },
         errors,
         validateField,
         state,
-        dispatch
+        dispatch,
+        validating,
+        validateFormState: async () => {
+          try {
+            setValidating(true);
+            const res = await validateAndSerializeFields();
+            setMetadata(serializeMetadata(res.payload));
+          } catch (error) {
+          } finally {
+            setValidating(false);
+          }
+        },
+        validated: Boolean(metadata),
+        metadata
       }}
     >
       {children}

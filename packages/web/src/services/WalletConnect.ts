@@ -18,14 +18,13 @@ import {
 export const WALLETCONNECT_PROJECT_ID = process.env
   .NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string;
 
-export const chains = [
-  arbitrum,
-  arbitrumGoerli,
-  mainnet,
-  goerli,
-  polygon,
-  polygonMumbai
-];
+const prodChains = [mainnet, arbitrum, polygon];
+const testChains = [arbitrumGoerli, goerli, polygonMumbai];
+
+export const chains =
+  process.env.VERCEL_ENV === "production"
+    ? prodChains
+    : [...prodChains, ...testChains];
 
 // Wagmi client
 const { provider } = configureChains(chains, [

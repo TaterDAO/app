@@ -3,6 +3,7 @@ import type { Image } from "@T/Image";
 import type { FeatureCollection, Point } from "geojson";
 
 import type { State, Action } from "@contexts/mint/types";
+import type { v230203TaterMetadataSchema } from "./TATR";
 
 interface Option {
   value: string;
@@ -58,19 +59,18 @@ interface MintFormErrorsByField extends Record<string, string> {
 }
 
 interface MintFormContext {
-  submitting: boolean;
   values: MintFormFields;
   images: { [fieldId: string]: Image | null };
   requiredFields: Array<string>;
   validationSchema: Joi.ObjectSchema<any>;
   setValue: (fieldId: string, value: any) => void;
   setImage: (fieldId: string, value: Image | null) => void;
-  submit: () => Promise<void>;
   errors: Record<string, string>;
   validateField: (fieldId: string, value?: any) => boolean;
   validating: boolean;
   validateFormState: () => Promise<void>;
   validated: boolean;
+  metadata?: v230203TaterMetadataSchema;
   // TODO:
   // Mixing Mint-form specific type declarations into the MintFormContext
   // makes it non-generic... this should be rectified & Generic Form more generally
