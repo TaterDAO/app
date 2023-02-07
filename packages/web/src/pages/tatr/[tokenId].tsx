@@ -20,6 +20,7 @@ import Button from "@components/ui/Button";
 import Divider from "@components/ui/Divider";
 import Image from "@components/title/Image";
 import Map from "@components/Map";
+
 // Don't SSR on-chain data
 import dynamic from "next/dynamic";
 const ChainData = dynamic(() => import("@components/title/ChainData"), {
@@ -41,6 +42,7 @@ import {
 
 // Utils
 import { getImageSrc } from "@utils/image";
+import { csr } from "@utils/browser";
 
 // Hooks
 import { useMemo } from "react";
@@ -67,6 +69,10 @@ const TitlePage: NextPage<{
   // URLS
   //
   //
+
+  const metadataUrl = csr()
+    ? `${window.location.origin}/api/${window.location.pathname}`
+    : "";
 
   const deedValue = title.metadata.attributes.find(
     (attr) => attr.trait_type === "Deed"
@@ -162,20 +168,21 @@ const TitlePage: NextPage<{
       <Description>{title.metadata.description}</Description>
       <ActionButtons>
         {hasExternalUrl && (
-          <Row>
-            <Button
-              onClick={() => window.open(title.metadata.external_url, "_blank")}
-            >
-              External URL
-            </Button>
-          </Row>
+          <Button
+            onClick={() => window.open(title.metadata.external_url, "_blank")}
+          >
+            View Website (External)
+          </Button>
         )}
+        <Button onClick={() => window.open(metadataUrl, "_blank")}>
+          View Metadata
+        </Button>
       </ActionButtons>
       <Divider />
       <NamedProperty>
         <span>Creator</span> <ProfileLink address={title.createdBy} />
       </NamedProperty>
-      <ChainData metadataId={title.id} />
+      <ChainData metadataId={title.id} creatorAddress={title.createdBy} />
       <Divider />
       <Row>
         <h2>Attributes</h2>
