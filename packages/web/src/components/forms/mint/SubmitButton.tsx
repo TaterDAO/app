@@ -71,7 +71,8 @@ const SubmitButton: React.FC<{}> = ({}) => {
     address: `0x${CONTRACT_ADDRESSES[activeChainId]}`,
     abi: [MINT_ABI],
     functionName: "mint",
-    args: [form.state.metadataSignature]
+    args: [form.state.metadataSignature],
+    chainId: activeChainId
   });
 
   const {
