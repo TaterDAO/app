@@ -9,6 +9,6 @@ import type { AuthToken } from "./types";
  */
 export function getMessageToSignV1(authToken: AuthToken) {
   return authToken
-    ? `Welcome to TaterDAO.\n\nBy signing this message, you agree to abide by our Terms of Service (https://taterdao.com/info/terms).\n\nTaterDAO ID: ${authToken}\n\nAuth: v1.0`
+    ? `Welcome to TaterDAO.\n\nBy signing this message, you agree to abide by our Terms of Service (https://taterdao.com/info/terms).\n\nSigning this message does not incur any fee or submit a transaction on-chain.\n\nTaterDAO ID: ${authToken}\n\nAuth: v1.0`
     : "";
 }
