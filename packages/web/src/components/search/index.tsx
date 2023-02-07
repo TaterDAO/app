@@ -1,7 +1,6 @@
 // Components
 import Hits from "@components/search/Hits";
 import SearchHeader from "./Header";
-import Button from "@components/ui/Button";
 
 // Types
 import type { v230203TaterMetadataSchema } from "@T/TATR";
@@ -75,22 +74,25 @@ const Search: React.FC<{
           );
           snapshot.forEach((doc) => docs.push(doc));
         });
-      } else if (queryValue !== "") {
-        const refinements: any[] = [
-          where("metadata.name", ">=", queryValue),
-          where("metadata.name", "<=", `${queryValue}~`)
-        ];
+      } else {
+        const refinements: any[] = [];
+
+        // Filter by query value
+        if (queryValue !== "") {
+          refinements.push(where("metadata.name", ">=", queryValue));
+          refinements.push(where("metadata.name", "<=", `${queryValue}~`));
+        }
+
         const q = query(metadataCollection, ...refinements);
         const snapshot = await getDocs(q);
         snapshot.forEach((doc) => docs.push(doc));
       }
-
       const data = docs.map((doc) => ({
         id: doc.id,
         metadata: doc.data().metadata as v230203TaterMetadataSchema
       }));
-      set(data);
 
+      set(data);
       setLoaded(true);
     };
     if (isClient) refine();
