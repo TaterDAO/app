@@ -139,7 +139,7 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   //
   //
 
-  const requestToken = async (config: AuthenticateMethodConfig) => {
+  const requestToken = async (config: AuthenticateMethodConfig = {}) => {
     // Token cannot be requested until user connects their wallet. Prompt the
     // user to do so.
     if (isDisconnected) {

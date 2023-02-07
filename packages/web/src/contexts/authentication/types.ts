@@ -4,7 +4,7 @@ export type AuthenticateMethodConfig = Partial<{
 }>;
 
 export interface ContextMethods {
-  authenticate: (config: AuthenticateMethodConfig) => Promise<void>;
+  authenticate: (config?: AuthenticateMethodConfig) => Promise<void>;
 }
 
 export interface ContextState {
