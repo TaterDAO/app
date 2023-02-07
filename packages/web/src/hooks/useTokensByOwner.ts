@@ -1,11 +1,15 @@
+// Hooks
 import useActiveChains from "./useActiveChains";
 import { useContractReads } from "wagmi";
+import { useState } from "react";
+// Constants
 import { CONTRACT_ADDRESSES } from "@constants/contract";
 import {
   BALANCE_OF_ABI,
   TOKEN_OF_OWNER_BY_INDEX_ABI,
   METADATA_ID_BY_TOKEN_ID_ABI
 } from "@constants/contract";
+// Types
 import { BigNumber } from "ethers";
 
 /**
@@ -14,9 +18,12 @@ import { BigNumber } from "ethers";
  * @returns
  */
 function useTokensByOwner(ownerAddress?: string): Set<string> {
+  const [balances, setBalances] = useState<Array<number>>([]);
+  const [tokens, setTokens] = useState<Set<string>>(new Set([]));
+
   const activeChains = useActiveChains();
 
-  const balanceQuery = useContractReads({
+  useContractReads({
     contracts: activeChains.map((chain) => ({
       address: `0x${CONTRACT_ADDRESSES[chain.id]}`,
       abi: [BALANCE_OF_ABI],
@@ -24,13 +31,12 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
       args: [ownerAddress],
       chainId: chain.id
     })),
-    enabled: !!ownerAddress
+    enabled: !!ownerAddress,
+    onSuccess(data: Array<BigNumber>) {
+      const asNumbers = data.map((n) => n.toNumber());
+      setBalances(asNumbers);
+    }
   });
-
-  const balances =
-    (balanceQuery.data as Array<BigNumber>)?.map((balance) =>
-      balance ? parseInt(balance.toString()) : 0
-    ) || [];
 
   const tokenQueryContracts = balances.reduce((memo: any[], balance, index) => {
     const chain = activeChains[index];
@@ -51,7 +57,7 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
     enabled: balances.length > 0
   });
 
-  const metadataQuery = useContractReads({
+  useContractReads({
     contracts:
       (tokenQuery.data as Array<BigNumber>)?.map((tokenId, index) => {
         const tokenQueryContract = tokenQueryContracts[index];
@@ -64,10 +70,13 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
         };
       }) || [],
     enabled:
-      tokenQuery.isSuccess && tokenQuery.data && tokenQuery.data.length > 0
+      tokenQuery.isSuccess && tokenQuery.data && tokenQuery.data.length > 0,
+    onSuccess(data: Array<string>) {
+      setTokens(new Set(data));
+    }
   });
 
-  return new Set((metadataQuery.data as Array<string>) || []);
+  return tokens;
 }
 
 export default useTokensByOwner;
