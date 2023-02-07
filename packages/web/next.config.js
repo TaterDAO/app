@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // Disable strict mode to prevent duplicate mounting in development
+  reactStrictMode: false,
   compiler: {
     styledComponents: true
   },
