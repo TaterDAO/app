@@ -15,9 +15,14 @@ import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
 import ProfileButton from "@components/global/ProfileButton";
 import { Web3Button } from "@web3modal/react";
+import { Suspense } from "react";
 
 // Utils
 import { transactionsDisabled } from "@utils/flags";
+
+// hooks
+import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -109,6 +114,15 @@ function canCreate(): boolean {
 }
 
 const Layout = ({ children }: { children: JSX.Element }) => {
+  const { address } = useAccount();
+
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+
+  //? Need to use an effect in order to avoid ssr hydration error.
+  useEffect(() => {
+    if (!!address && !authenticated) setAuthenticated(true);
+  }, [address, authenticated]);
+
   return (
     <Container>
       <VerticalNav>
@@ -132,7 +146,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             <Wordmark />
             <HeadNavRightContent>
               <Web3Button />
-              <ProfileButton />
+              <Suspense>{authenticated && <ProfileButton />}</Suspense>
             </HeadNavRightContent>
           </HeadNavContent>
         </HeadNav>

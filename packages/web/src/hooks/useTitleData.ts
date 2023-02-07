@@ -1,13 +1,11 @@
 import { useContractReads } from "wagmi";
 
-import { chains } from "@services/WalletConnect";
+import useActiveChains from "./useActiveChains";
 import {
   CONTRACT_ADDRESSES,
   TOKEN_ID_BY_METADATA_ABI,
   OWNER_OF_ABI
 } from "@constants/contract";
-
-const activeChains = chains.filter((chain) => !!CONTRACT_ADDRESSES[chain.id]);
 
 /**
  * Determines which chains a title is minted on and returns pertinent data.
@@ -22,6 +20,8 @@ function useTitleData(metadataId: string): {
   // Array of owner ids. Indexing matches Token IDs
   ownerIds: Array<string>;
 } {
+  const activeChains = useActiveChains();
+
   const tokenIdQuery = useContractReads({
     contracts: activeChains.map((chain) => ({
       address: `0x${CONTRACT_ADDRESSES[chain.id]}`,

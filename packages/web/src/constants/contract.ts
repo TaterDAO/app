@@ -2,11 +2,11 @@ export const CONTRACT_ADDRESSES: Record<number, string> = {
   // Ethereum
   1: "",
   // Goerli
-  5: "7e7A0c7289f0EaB319E4bE0FEa7772a08e13A751",
+  5: "900899cc7cF830F5861f3A0e5d0103105F5D2b73",
   // Arbitrum
   42161: "",
   // Arb Goerli
-  421613: "2099B72bD243053674599a1a76053641352e2394",
+  421613: "",
   // Polygon
   137: "",
   // Polygon Mumbai
@@ -61,6 +61,14 @@ export const TOKEN_ID_BY_METADATA_ABI = {
   ]
 };
 
+export const METADATA_ID_BY_TOKEN_ID_ABI = {
+  name: "metadataIdByTokenId",
+  type: "function",
+  stateMutability: "view",
+  inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
+  outputs: [{ internalType: "string", name: "", type: "string" }]
+};
+
 export const OWNER_OF_ABI = {
   name: "ownerOf",
   type: "function",
@@ -79,4 +87,35 @@ export const OWNER_OF_ABI = {
       type: "address"
     }
   ]
+};
+
+export const BALANCE_OF_ABI = {
+  name: "balanceOf",
+  type: "function",
+  stateMutability: "view",
+  inputs: [
+    {
+      internalType: "address",
+      name: "owner",
+      type: "address"
+    }
+  ],
+  outputs: [
+    {
+      internalType: "uint256",
+      name: "",
+      type: "uint256"
+    }
+  ]
+};
+
+export const TOKEN_OF_OWNER_BY_INDEX_ABI = {
+  name: "tokenOfOwnerByIndex",
+  type: "function",
+  stateMutability: "view",
+  inputs: [
+    { internalType: "address", name: "owner", type: "address" },
+    { internalType: "uint256", name: "index", type: "uint256" }
+  ],
+  outputs: [{ internalType: "uint256", name: "", type: "uint256" }]
 };
