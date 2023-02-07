@@ -83,7 +83,12 @@ const AuthProvider: React.FC<{ children: React.ReactElement }> = ({
   const { signMessage } = useSignMessage({
     message: getMessageToSignV1(authToken),
     onMutate(args) {
-      toast.info("Open your wallet to continue");
+      toast.info(
+        "To proceed, you must authenticate your account. Please open your wallet.",
+        {
+          autoClose: false
+        }
+      );
     },
     onError(error, variables, context) {
       toast.error(error.message);
