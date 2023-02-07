@@ -6,7 +6,7 @@
     "dev:env": "vercel env pull .env.development.local",
     "dev:server": "next dev --port 3001",
     "dev:start": "yarn dev:env && yarn dev:server",
-    "build": "yarn dev:env && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write ./**/*.{json,js,ts,tsx}",
