@@ -2,56 +2,77 @@
 import Button from "@components/ui/Button";
 
 // hooks
-import { useState } from "react";
-import useWeb3 from "@hooks/useWeb3";
-import { useRouter } from "next/router";
+import {
+  usePrepareContractWrite,
+  useContractWrite,
+  useWaitForTransaction
+} from "wagmi";
+import { useEffect } from "react";
 
 // libs
 import styled from "styled-components";
 import { toast } from "react-toastify";
 
-// Utils
-import { transactionsDisabled } from "@utils/flags";
+// types
+import type { Chain } from "wagmi";
+
+// constants
+import { BURN_ABI, CONTRACT_ADDRESSES } from "@constants/contract";
 
 const Container = styled.div`
   margin: var(--global-space-y-margin) 0;
 `;
 
-const BurnForm: React.FC<{ tokenId: number }> = ({ tokenId }) => {
-  const web3 = useWeb3();
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [burning, setBurning] = useState<boolean>(false);
-  const router = useRouter();
+const BurnForm: React.FC<{ tokenId: number; chain: Chain }> = ({
+  tokenId,
+  chain
+}) => {
+  const { config } = usePrepareContractWrite({
+    address: `0x${CONTRACT_ADDRESSES[chain.id]}`,
+    abi: [BURN_ABI],
+    functionName: BURN_ABI.name,
+    args: [tokenId],
+    chainId: chain.id
+  });
 
-  const handleClick = async () => {
-    try {
-      setSubmitting(true);
-      setBurning(true);
-
-      await window.td.minter?.burn(tokenId, web3.wallet.address as string);
-
-      router.push("/");
+  const { write, isLoading, isSuccess, data, status } = useContractWrite({
+    ...config,
+    onSuccess: () => {
       toast.success(
-        `Title has been burned. It will be removed from TaterDAO momentarily.`
+        `Your transaction to burn TATR ${tokenId} on ${chain.name} successfully submitted. You will be notified once the transaction has been confirmed.`
       );
-    } catch (error) {
-      setBurning(false);
-      //@ts-ignore
+    },
+    onError(error, variables, context) {
       toast.error(error.message);
-    } finally {
-      setSubmitting(false);
     }
-  };
+  });
+
+  // After the burn has been submitted, wait for the transaction to confirm.
+  // Show a success message when it does.
+  useWaitForTransaction({
+    hash: data?.hash,
+    chainId: chain.id,
+    enabled: isSuccess,
+    onSuccess: (data) => {
+      toast.success(
+        `${tokenId} has successfully been burned on ${chain.name}!`
+      );
+    }
+  });
+
+  useEffect(() => {
+    if (isLoading) toast.info("Open your wallet to proceed.");
+  }, [isLoading]);
 
   return (
     <Container>
       <Button
-        disabled={submitting || transactionsDisabled()}
-        onClick={handleClick}
+        disabled={isLoading || isSuccess}
+        onClick={() => write?.()}
         primary
-        loading={burning}
+        loading={isLoading}
       >
-        Burn
+        {`Burn ${chain.name} TATR`}
       </Button>
     </Container>
   );

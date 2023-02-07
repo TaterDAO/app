@@ -182,7 +182,11 @@ const TitlePage: NextPage<{
       <NamedProperty>
         <span>Creator</span> <ProfileLink address={title.createdBy} />
       </NamedProperty>
-      <ChainData metadataId={title.id} creatorAddress={title.createdBy} />
+      <ChainData
+        metadataId={title.id}
+        creatorAddress={title.createdBy}
+        createdAt={title.createdAt}
+      />
       <Divider />
       <Row>
         <h2>Attributes</h2>
