@@ -1,26 +1,16 @@
 // Types
 import type { AppProps } from "next/app";
-import Minter from "@libs/Minter";
 
 // Components
 import Head from "next/head";
-import Web3Provider from "@components/providers/Web3Provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@components/layouts/Global";
 import AuthProvider from "@contexts/authentication/Provider";
+import WalletConnect from "@components/WalletConnect";
 
 // Styles
 import GlobalStyle from "@styles/global";
-
-// Wallet Connect
-import { Web3Modal } from "@web3modal/react";
-import { WagmiConfig } from "wagmi";
-import {
-  WALLETCONNECT_PROJECT_ID,
-  ethereumClient,
-  wagmiClient
-} from "@services/WalletConnect";
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -29,17 +19,13 @@ function App({ Component, pageProps }: AppProps) {
         <title>TaterDAO</title>
       </Head>
       <GlobalStyle />
-      <WagmiConfig client={wagmiClient}>
+      <WalletConnect>
         <AuthProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
         </AuthProvider>
-      </WagmiConfig>
-      <Web3Modal
-        projectId={WALLETCONNECT_PROJECT_ID}
-        ethereumClient={ethereumClient}
-      />
+      </WalletConnect>
       <ToastContainer hideProgressBar position="top-right" theme="colored" />
     </>
   );
