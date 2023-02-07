@@ -95,9 +95,8 @@ const TitlePage: NextPage<{
     (attr) => attr.trait_type === "Land Classification"
   )?.value as string;
 
-  const landClassification = useMemo(
-    () => getLandClassificationFromValue(landClassificationValue as string),
-    []
+  const landClassification = getLandClassificationFromValue(
+    landClassificationValue as string
   );
 
   const landClassificationLabel = !!landClassification
@@ -108,10 +107,8 @@ const TitlePage: NextPage<{
     (attr) => attr.trait_type === "Building Classification"
   )?.value as string;
 
-  const buildingClassification = useMemo(
-    () =>
-      getBuildingClassificationFromValue(buildingClassificationValue as string),
-    []
+  const buildingClassification = getBuildingClassificationFromValue(
+    buildingClassificationValue as string
   );
 
   const buildingClassificationLabel = !!buildingClassification
