@@ -8,6 +8,7 @@ import Web3Provider from "@components/providers/Web3Provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "@components/layouts/Global";
+import AuthProvider from "@contexts/authentication/Provider";
 
 // Styles
 import GlobalStyle from "@styles/global";
@@ -29,9 +30,11 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <GlobalStyle />
       <WagmiConfig client={wagmiClient}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
       </WagmiConfig>
       <Web3Modal
         projectId={WALLETCONNECT_PROJECT_ID}

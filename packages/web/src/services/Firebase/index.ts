@@ -15,7 +15,7 @@ let db: Firestore;
 
 // Constants
 
-export const METADATA_COLLECTION_ID = "metadata";
+import { METADATA_COLLECTION_ID, ACCOUNTS_COLLECTION_ID } from "./constants";
 
 // Set up libraries
 
@@ -39,4 +39,9 @@ if (isBrowser && !getApps().length) {
   //}
 }
 
-export { metadataCollection, db };
+export {
+  metadataCollection,
+  db,
+  METADATA_COLLECTION_ID,
+  ACCOUNTS_COLLECTION_ID
+};
