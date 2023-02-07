@@ -16,7 +16,6 @@ import {
 import { isCoordinates, deserializeFeatures } from "@libs/TitleLocation";
 
 // Components
-import ProfileLink from "@components/ProfileLink";
 import Button from "@components/ui/Button";
 import Divider from "@components/ui/Divider";
 import Image from "@components/title/Image";
@@ -26,6 +25,10 @@ import dynamic from "next/dynamic";
 const ChainData = dynamic(() => import("@components/title/ChainData"), {
   ssr: false
 });
+const ProfileLink = dynamic(() => import("@components/ProfileLink"), {
+  ssr: false
+});
+
 import {
   Name,
   Row,

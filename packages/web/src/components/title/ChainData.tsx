@@ -34,9 +34,11 @@ const ChainData: React.FC<{ metadataId: string }> = ({ metadataId }) => {
               <NamedProperty>
                 <span>Token ID</span> <code>{tokenId}</code>
               </NamedProperty>
-              <NamedProperty>
-                <span>Owner</span> <ProfileLink address={ownerId} />
-              </NamedProperty>
+              {ownerId && (
+                <NamedProperty>
+                  <span>Owner</span> <ProfileLink address={ownerId} />
+                </NamedProperty>
+              )}
               <ActionButtons>
                 {address === ownerId && <BurnForm tokenId={tokenId} />}
                 {explorer && (
