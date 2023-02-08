@@ -1,16 +1,17 @@
 // Components
-import Hits from "@components/search/Hits";
+import dynamic from "next/dynamic";
+const SearchResults = dynamic(() => import("./Results"), { ssr: false });
 import SearchHeader from "./Header";
 
 // Types
 import type { v230203TaterMetadataSchema } from "@T/TATR";
 
 // Services
-import { query, getDocs, where } from "firebase/firestore";
+import { query, getDocs } from "firebase/firestore";
 import { metadataCollection } from "@services/Firebase";
 
 // Hooks
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import useTokensByOwner from "@hooks/useTokensByOwner";
 
 // Libs
@@ -40,13 +41,19 @@ const Search: React.FC<{
   //
   //
 
-  const [loaded, setLoaded] = useState<boolean>(false);
+  const isClient = csr();
 
   const [queryValue, setQueryValue] = useState<string>("");
 
-  const [hits, set] = useState<
-    Array<{ id: string; metadata: v230203TaterMetadataSchema }>
-  >([]);
+  const [records, setRecords] = useState<
+    Record<
+      string,
+      {
+        id: string;
+        metadata: v230203TaterMetadataSchema;
+      }
+    >
+  >();
 
   //
   //
@@ -54,8 +61,7 @@ const Search: React.FC<{
   //
   //
 
-  const filterByOwner = !!ownerAddress;
-  const { tokenIds, isSuccessful: ownerQueryIsSuccessful } =
+  const { tokenIds, isLoading: ownerQueryIsLoading } =
     useTokensByOwner(ownerAddress);
 
   //
@@ -65,62 +71,30 @@ const Search: React.FC<{
   //
 
   /**
-   * Trigger search.
+   * On client-side mount, load all records from Firestore.
+   * This is a temporary patch (in lieu of using a 3rd party service) in order to enable
+   * full-text search.
    */
-  const isClient = csr();
   useEffect(() => {
-    const refine = async () => {
-      const docs: any[] = [];
-      const refinements: any[] = [];
+    async function loadRecords() {
+      const q = query(metadataCollection);
+      const snapshot = await getDocs(q);
 
-      // Filter by query value
-      // TODO: Re-enable text filtering
-      // if (queryValue !== "") {
-      //   refinements.push(where("metadata.name", ">=", queryValue));
-      //   refinements.push(where("metadata.name", "<=", `${queryValue}~`));
-      // }
+      const docs = snapshot.docs.reduce(
+        (memo, doc) => ({
+          ...memo,
+          [doc.id]: {
+            id: doc.id,
+            metadata: doc.data().metadata
+          }
+        }),
+        {}
+      );
 
-      if (tokenIds.size > 0) {
-        // It's necessary to chunk ids because Firebase limits to 10 per query.
-        await asyncForEach(chunk(Array.from(tokenIds), 10), async (ids) => {
-          const snapshot = await getDocs(
-            query(
-              metadataCollection,
-              ...[where("__name__", "in", ids), ...refinements]
-            )
-          );
-          snapshot.forEach((doc) => docs.push(doc));
-        });
-      } else {
-        const q = query(metadataCollection, ...refinements);
-        const snapshot = await getDocs(q);
-        snapshot.forEach((doc) => docs.push(doc));
-      }
-      const data = docs.map((doc) => ({
-        id: doc.id,
-        metadata: doc.data().metadata as v230203TaterMetadataSchema
-      }));
-
-      set(data);
-      setLoaded(true);
-    };
-
-    // Do not search during SSR.
-    if (!isClient) return;
-
-    if (filterByOwner) {
-      // Wait for query to finish
-      if (!ownerQueryIsSuccessful) return;
-
-      // Nothing to query for
-      if (tokenIds.size === 0) {
-        setLoaded(true);
-        return;
-      }
+      setRecords(docs);
     }
-
-    refine();
-  }, [isClient, filterByOwner, tokenIds, ownerQueryIsSuccessful, queryValue]);
+    if (isClient) loadRecords();
+  }, [isClient]);
 
   //
   //
@@ -137,7 +111,22 @@ const Search: React.FC<{
         queryValue={queryValue}
         setQueryValue={(value: string) => setQueryValue(value)}
       />
-      <Hits hits={hits} loaded={loaded} />
+      <SearchResults
+        loadingRecords={!records}
+        records={records}
+        filters={{
+          byOwner: {
+            active: !!ownerAddress,
+            filterValue: tokenIds,
+            loading: ownerQueryIsLoading
+          },
+          byName: {
+            active: !!queryValue,
+            filterValue: queryValue,
+            loading: false
+          }
+        }}
+      />
       {/* {showFooter && (
         <Footer>
           <Button
@@ -154,11 +143,6 @@ const Search: React.FC<{
       )} */}
     </>
   );
-};
-
-Search.defaultProps = {
-  state: {},
-  filters: ""
 };
 
 export default Search;
