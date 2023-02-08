@@ -9,7 +9,7 @@ const ProfileLayout: React.FC<{
 }> = ({ title, address, header }) => {
   return (
     <TitledPage title={title}>
-      <Search byOwner={address} />
+      <Search ownerAddress={address} />
     </TitledPage>
   );
 };

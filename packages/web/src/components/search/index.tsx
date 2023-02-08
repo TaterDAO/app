@@ -30,8 +30,8 @@ const Footer = styled.div`
 const Search: React.FC<{
   // Should search results be filtered by owner address?
   // If so, `byOwner` should be set to the address.
-  byOwner?: string;
-}> = ({ byOwner }) => {
+  ownerAddress?: string;
+}> = ({ ownerAddress }) => {
   //const [paginationCursor, setPaginationCursor] = useState<number>(1);
 
   //
@@ -54,7 +54,9 @@ const Search: React.FC<{
   //
   //
 
-  const metadataIds = useTokensByOwner(byOwner);
+  const filterByOwner = !!ownerAddress;
+  const { tokenIds, isSuccessful: ownerQueryIsSuccessful } =
+    useTokensByOwner(ownerAddress);
 
   //
   //
@@ -62,27 +64,34 @@ const Search: React.FC<{
   //
   //
 
+  /**
+   * Trigger search.
+   */
   const isClient = csr();
   useEffect(() => {
     const refine = async () => {
       const docs: any[] = [];
-      if (metadataIds.size > 0) {
+      const refinements: any[] = [];
+
+      // Filter by query value
+      // TODO: Re-enable text filtering
+      // if (queryValue !== "") {
+      //   refinements.push(where("metadata.name", ">=", queryValue));
+      //   refinements.push(where("metadata.name", "<=", `${queryValue}~`));
+      // }
+
+      if (tokenIds.size > 0) {
         // It's necessary to chunk ids because Firebase limits to 10 per query.
-        await asyncForEach(chunk(Array.from(metadataIds), 10), async (ids) => {
+        await asyncForEach(chunk(Array.from(tokenIds), 10), async (ids) => {
           const snapshot = await getDocs(
-            query(metadataCollection, where("__name__", "in", ids))
+            query(
+              metadataCollection,
+              ...[where("__name__", "in", ids), ...refinements]
+            )
           );
           snapshot.forEach((doc) => docs.push(doc));
         });
       } else {
-        const refinements: any[] = [];
-
-        // Filter by query value
-        if (queryValue !== "") {
-          refinements.push(where("metadata.name", ">=", queryValue));
-          refinements.push(where("metadata.name", "<=", `${queryValue}~`));
-        }
-
         const q = query(metadataCollection, ...refinements);
         const snapshot = await getDocs(q);
         snapshot.forEach((doc) => docs.push(doc));
@@ -95,8 +104,23 @@ const Search: React.FC<{
       set(data);
       setLoaded(true);
     };
-    if (isClient) refine();
-  }, [isClient, queryValue, metadataIds]);
+
+    // Do not search during SSR.
+    if (!isClient) return;
+
+    if (filterByOwner) {
+      // Wait for query to finish
+      if (!ownerQueryIsSuccessful) return;
+
+      // Nothing to query for
+      if (tokenIds.size === 0) {
+        setLoaded(true);
+        return;
+      }
+    }
+
+    refine();
+  }, [isClient, filterByOwner, tokenIds, ownerQueryIsSuccessful, queryValue]);
 
   //
   //

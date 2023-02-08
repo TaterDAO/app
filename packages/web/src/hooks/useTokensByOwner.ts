@@ -1,7 +1,7 @@
 // Hooks
 import useActiveChains from "./useActiveChains";
 import { useContractReads } from "wagmi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // Constants
 import { CONTRACT_ADDRESSES } from "@constants/contract";
 import {
@@ -12,16 +12,38 @@ import {
 // Types
 import { BigNumber } from "ethers";
 
+enum Status {
+  Idle = "IDLE",
+  Loading = "LOADING",
+  Success = "SUCCESS",
+  Error = "ERROR"
+}
+
 /**
  * Fetches tokens owned by a given address and returns a set of their metadata
  * @param ownerAddress
  * @returns
  */
-function useTokensByOwner(ownerAddress?: string): Set<string> {
+function useTokensByOwner(ownerAddress?: string): {
+  tokenIds: Set<string>;
+  status: Status;
+  isSuccessful: boolean;
+  isLoading: boolean;
+  isIdle: boolean;
+  isErrored: boolean;
+} {
+  const hasOwnerAddress = !!ownerAddress;
+
   const [balances, setBalances] = useState<Array<number>>([]);
-  const [tokens, setTokens] = useState<Set<string>>(new Set([]));
+  const [tokenIds, setTokenIds] = useState<Set<string>>(new Set([]));
+
+  const [status, setStatus] = useState<Status>(Status.Idle);
 
   const activeChains = useActiveChains();
+
+  useEffect(() => {
+    if (hasOwnerAddress) setStatus(Status.Loading);
+  }, [hasOwnerAddress]);
 
   useContractReads({
     contracts: activeChains.map((chain) => ({
@@ -31,10 +53,13 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
       args: [ownerAddress],
       chainId: chain.id
     })),
-    enabled: !!ownerAddress,
+    enabled: hasOwnerAddress,
     onSuccess(data: Array<BigNumber>) {
       const asNumbers = data.map((n) => n.toNumber());
       setBalances(asNumbers);
+    },
+    onError() {
+      setStatus(Status.Error);
     }
   });
 
@@ -54,7 +79,10 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
 
   const tokenQuery = useContractReads({
     contracts: tokenQueryContracts,
-    enabled: balances.length > 0
+    enabled: balances.length > 0,
+    onError() {
+      setStatus(Status.Error);
+    }
   });
 
   useContractReads({
@@ -72,11 +100,22 @@ function useTokensByOwner(ownerAddress?: string): Set<string> {
     enabled:
       tokenQuery.isSuccess && tokenQuery.data && tokenQuery.data.length > 0,
     onSuccess(data: Array<string>) {
-      setTokens(new Set(data));
+      setTokenIds(new Set(data));
+      setStatus(Status.Success);
+    },
+    onError() {
+      setStatus(Status.Error);
     }
   });
 
-  return tokens;
+  return {
+    tokenIds,
+    status,
+    isSuccessful: status === Status.Success,
+    isIdle: status === Status.Idle,
+    isLoading: status === Status.Loading,
+    isErrored: status === Status.Error
+  };
 }
 
 export default useTokensByOwner;
