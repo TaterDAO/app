@@ -37,7 +37,8 @@ const MapContainer = styled.div`
   position: relative;
 `;
 
-const DEFAULT_COORDINATES = [-70.9, 42.35]; // lng, lat
+// Default to Empire State Building
+const DEFAULT_COORDINATES = [-73.9857, 40.7484]; // lng, lat
 
 const CenterButton: React.FC<{ handleClick: () => void }> = ({
   handleClick

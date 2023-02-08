@@ -82,6 +82,7 @@ const MapInput: React.FC<{
         required={form.requiredFields.includes(fieldId)}
       />
       <Map
+        defaultZoom={16}
         onDraw={handleMapDraw}
         onGeocoderSelection={handlePointSelection}
         value={value}
