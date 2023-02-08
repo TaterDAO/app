@@ -177,20 +177,8 @@ const Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         throw new Error();
       }
 
-      let value = values[fieldId];
-
-      if (!!value) {
-        // Escape double quotes
-        value = escapeQuotes(value);
-
-        // If field isn't a domain, escape colons.
-        if (!domainFields.includes(fieldId)) {
-          value = escapeColons(value);
-        }
-      }
-
       //@ts-ignore
-      payload[fieldId] = value;
+      payload[fieldId] = values[fieldId];
     }
 
     // Serialize location
