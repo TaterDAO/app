@@ -11,6 +11,7 @@ import {
 import { csr } from "@utils/browser";
 
 let metadataCollection: CollectionReference;
+let tokensCollection: CollectionReference;
 let db: Firestore;
 
 // Constants
@@ -35,6 +36,7 @@ if (isBrowser && !getApps().length) {
   db = getFirestore(app);
 
   metadataCollection = collection(db, METADATA_COLLECTION_ID);
+  tokensCollection = collection(db, TOKENS_COLLECTION_ID);
 
   // ! Currently hanging on writes...
   //if (process.env.NEXT_PUBLIC_FIREBASE_USE_EMULATORS) {
@@ -48,5 +50,6 @@ export {
   db,
   METADATA_COLLECTION_ID,
   ACCOUNTS_COLLECTION_ID,
-  TOKENS_COLLECTION_ID
+  TOKENS_COLLECTION_ID,
+  tokensCollection
 };

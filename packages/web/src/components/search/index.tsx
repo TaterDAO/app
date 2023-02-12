@@ -8,7 +8,7 @@ import type { v230203TaterMetadataSchema } from "@T/TATR";
 
 // Services
 import { query, getDocs } from "firebase/firestore";
-import { metadataCollection } from "@services/Firebase";
+import { metadataCollection, tokensCollection } from "@services/Firebase";
 
 // Hooks
 import { useEffect, useState, useMemo } from "react";
@@ -77,19 +77,32 @@ const Search: React.FC<{
    */
   useEffect(() => {
     async function loadRecords() {
-      const q = query(metadataCollection);
-      const snapshot = await getDocs(q);
+      const metadataSnapshot = await getDocs(query(metadataCollection));
+      const tokensSnapshot = await getDocs(query(tokensCollection));
 
-      const docs = snapshot.docs.reduce(
-        (memo, doc) => ({
-          ...memo,
-          [doc.id]: {
-            id: doc.id,
-            metadata: doc.data().metadata
-          }
-        }),
-        {}
-      );
+      // Map metadata to whether all tokens for that metadata have been burned.
+      const burntMap = tokensSnapshot.docs.reduce((memo, doc) => {
+        const data = doc.data();
+        const metadataId = data.metadata.id;
+
+        // If an unburnt token has been found, maintain `false`.
+        return memo[metadataId] === false
+          ? memo
+          : { ...memo, [metadataId]: data.burnt as boolean };
+      }, {}) as Record<string, boolean>;
+
+      const docs = metadataSnapshot.docs.reduce((memo, doc) => {
+        // If all of the tokens associated with metadata have been burned, filter it.
+        return burntMap[doc.id]
+          ? memo
+          : {
+              ...memo,
+              [doc.id]: {
+                id: doc.id,
+                metadata: doc.data().metadata
+              }
+            };
+      }, {});
 
       setRecords(docs);
     }

@@ -43,7 +43,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
       tokenId: parseInt(tokenId.replace("0x", "")),
       metadata: db
         .collection(METADATA_COLLECTION_ID)
-        .doc(match.params.metadataId_)
+        .doc(match.params.metadataId_),
+      burnt: false
     });
   } else if (match.signature.startsWith("burn")) {
     const tokenId = parseInt(match.params.tokenId_);
@@ -57,7 +58,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
       await db
         .collection(TOKENS_COLLECTION_ID)
         .doc(snapshot.docs[0].id)
-        .update({ burned: true });
+        .update({ burnt: true });
     }
   }
 
