@@ -10,7 +10,11 @@ import {
 import type { Chain } from "wagmi/chains";
 
 const prodChains = [mainnet, arbitrum, polygon];
-const testChains = [arbitrumGoerli, goerli, polygonMumbai];
+const testChains = [
+  arbitrumGoerli,
+  goerli
+  //polygonMumbai
+];
 
 export const chains =
   process.env.VERCEL_ENV === "production"

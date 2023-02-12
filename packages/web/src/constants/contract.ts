@@ -8,9 +8,9 @@ export const CONTRACT_ADDRESSES: Record<number, string> = {
   // Arb Goerli
   421613: "b72f6d74b929a95a440245c9154ab0cd31ee263b",
   // Polygon
-  137: "",
+  137: ""
   // Polygon Mumbai
-  80001: ""
+  //80001: ""
 };
 
 export const MINT_ABI = {
