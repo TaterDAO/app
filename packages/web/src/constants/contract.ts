@@ -6,7 +6,7 @@ export const CONTRACT_ADDRESSES: Record<number, string> = {
   // Arbitrum
   42161: "",
   // Arb Goerli
-  421613: "",
+  421613: "b72f6d74b929a95a440245c9154ab0cd31ee263b",
   // Polygon
   137: "",
   // Polygon Mumbai

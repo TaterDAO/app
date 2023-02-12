@@ -11,7 +11,7 @@ const sentinelIds = {
   1: "",
   5: process.env.OZD_GOERLI_SENTINEL_ID,
   42161: "",
-  421613: "",
+  421613: process.env.OZD_ARB_GOERLI_SENTINEL_ID,
   137: "",
   80001: ""
 };
