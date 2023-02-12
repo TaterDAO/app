@@ -8,11 +8,11 @@ import {
 } from "@services/Firebase";
 
 const sentinelIds = {
-  1: "",
+  1: process.env.OZD_ETHEREUM_SENTINEL_ID,
   5: process.env.OZD_GOERLI_SENTINEL_ID,
-  42161: "",
+  42161: process.env.OZD_ARB_SENTINEL_ID,
   421613: process.env.OZD_ARB_GOERLI_SENTINEL_ID,
-  137: ""
+  137: process.env.OZD_POLYGON_SENTINEL_ID
   //80001: ""
 };
 
