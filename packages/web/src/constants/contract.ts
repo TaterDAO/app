@@ -2,7 +2,7 @@ export const CONTRACT_ADDRESSES: Record<number, string> = {
   // Ethereum
   1: "",
   // Goerli
-  5: "900899cc7cF830F5861f3A0e5d0103105F5D2b73",
+  5: "E43a71604B64f8Cd15072096B75a8449E3AcC4dd",
   // Arbitrum
   42161: "",
   // Arb Goerli

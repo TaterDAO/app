@@ -15,7 +15,11 @@ let db: Firestore;
 
 // Constants
 
-import { METADATA_COLLECTION_ID, ACCOUNTS_COLLECTION_ID } from "./constants";
+import {
+  METADATA_COLLECTION_ID,
+  ACCOUNTS_COLLECTION_ID,
+  TOKENS_COLLECTION_ID
+} from "./constants";
 
 // Set up libraries
 
@@ -43,5 +47,6 @@ export {
   metadataCollection,
   db,
   METADATA_COLLECTION_ID,
-  ACCOUNTS_COLLECTION_ID
+  ACCOUNTS_COLLECTION_ID,
+  TOKENS_COLLECTION_ID
 };
