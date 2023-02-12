@@ -5,7 +5,10 @@ import type { FeatureCollection } from "geojson";
 
 // Services
 import admin from "@services/Firebase/admin";
-import { METADATA_COLLECTION_ID } from "@services/Firebase";
+import {
+  METADATA_COLLECTION_ID,
+  TOKENS_COLLECTION_ID
+} from "@services/Firebase";
 
 // Libs
 import {
@@ -62,6 +65,7 @@ const TitlePage: NextPage<{
     metadata: v230203TaterMetadataSchema;
     createdBy: string;
     createdAt: string;
+    tokens: Array<{ chainId: number; tokenId: number; burnt: boolean }>;
   };
 }> = ({ title }) => {
   //
@@ -183,6 +187,7 @@ const TitlePage: NextPage<{
         metadataId={title.id}
         creatorAddress={title.createdBy}
         createdAt={title.createdAt}
+        tokens={title.tokens}
       />
       <Divider />
       <Row>
@@ -296,7 +301,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const tokenId = context.params?.tokenId as string;
 
   const db = admin.firestore();
-  const doc = await db.collection(METADATA_COLLECTION_ID).doc(tokenId).get();
+  const ref = db.collection(METADATA_COLLECTION_ID).doc(tokenId);
+  const doc = await ref.get();
 
   if (!doc.exists) return { notFound: true };
 
@@ -305,14 +311,31 @@ export const getStaticProps: GetStaticProps = async (context) => {
     createdBy: string;
   };
 
+  // Query tokens
+  const tokensSnapshot = await db
+    .collection(TOKENS_COLLECTION_ID)
+    .where("metadata", "==", ref)
+    .get();
+  const tokens = tokensSnapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      chainId: data.chainId,
+      tokenId: data.tokenId,
+      burnt: data.burnt
+    };
+  });
+
+  // If all tokens are burnt, do not render
+  if (tokens.every((token) => token.burnt)) return { notFound: true };
+
   return {
     props: {
       title: {
         id: tokenId,
         metadata: data.metadata,
         createdBy: data.createdBy,
-        //@ts-expect-error
-        createdAt: doc.createTime.toDate().toLocaleString()
+        createdAt: doc.createTime.toDate().toLocaleString(),
+        tokens
       }
     }
   };

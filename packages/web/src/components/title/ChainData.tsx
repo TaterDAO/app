@@ -1,5 +1,4 @@
 // Hooks
-import useTokenIds from "@hooks/useTokenIds";
 import { useAccount } from "wagmi";
 import useTokenOwners from "@hooks/useTokenOwners";
 // Services
@@ -21,16 +20,10 @@ const ChainData: React.FC<{
   metadataId: string;
   creatorAddress: string;
   createdAt: string;
-}> = ({ metadataId, creatorAddress, createdAt }) => {
-  const {
-    data: tokenIds,
-    isLoading: loadingIds,
-    isSuccess: successfullyLoadedIds
-  } = useTokenIds(metadataId);
-  const { data: ownerIds, isLoading: loadingOwners } = useTokenOwners(tokenIds);
+  tokens: Array<{ chainId: number; tokenId: number; burnt: boolean }>;
+}> = ({ metadataId, creatorAddress, createdAt, tokens }) => {
+  const { data: ownerIds, isLoading: loadingOwners } = useTokenOwners(tokens);
   const { address } = useAccount();
-
-  const hasToken = !!tokenIds.find((x) => x.minted);
 
   // If token was minted recently, transaction may not have been processed through all
   // of the necessary confirmations. As such, show a message to the user.
@@ -40,9 +33,7 @@ const ChainData: React.FC<{
   const diff = now - creationDatetime;
   const diffMinutes = Math.floor(diff / 1000 / 60);
 
-  const loading = loadingIds || loadingOwners;
-
-  return successfullyLoadedIds && !hasToken ? (
+  return tokens.length === 0 ? (
     <>
       <Row>
         <strong>No Minted Tokens</strong>
@@ -76,43 +67,45 @@ const ChainData: React.FC<{
     </>
   ) : (
     <>
-      {!loading &&
-        tokenIds.map(({ chainId, tokenId, minted }, index) => {
-          const chain = chainsById[chainId];
-          const ownerId = ownerIds[index];
-          const explorer = chain.blockExplorers?.default;
+      {tokens.map(({ chainId, tokenId, burnt }, index) => {
+        const chain = chainsById[chainId];
+        const ownerId = ownerIds[index];
+        const explorer = chain.blockExplorers?.default;
 
-          return (
-            <Row key={`${chainId}-token-data`}>
-              <ChainName>{chain.name}</ChainName>
-              <NamedProperty>
-                <span>Token ID</span> <code>{tokenId}</code>
-              </NamedProperty>
-              {ownerId && (
-                <NamedProperty>
-                  <span>Owner</span> <ProfileLink address={ownerId} />
-                </NamedProperty>
+        return (
+          <Row key={`${chainId}-token-data`}>
+            <ChainName>{chain.name}</ChainName>
+            <NamedProperty>
+              <span>Token ID</span> <code>{tokenId}</code>
+            </NamedProperty>
+            <NamedProperty>
+              <span>Owner</span>{" "}
+              {loadingOwners ? (
+                <i>Loading...</i>
+              ) : (
+                <ProfileLink address={ownerId} />
               )}
-              <ActionButtons>
-                {address === ownerId && (
-                  <BurnForm tokenId={tokenId} chain={chain} />
-                )}
-                {explorer && (
-                  <Button
-                    onClick={() =>
-                      window.open(
-                        `${explorer.url}/token/0x${CONTRACT_ADDRESSES[chainId]}?a=${tokenId}`,
-                        "_blank"
-                      )
-                    }
-                  >
-                    {explorer.name}
-                  </Button>
-                )}
-              </ActionButtons>
-            </Row>
-          );
-        })}
+            </NamedProperty>
+            <ActionButtons>
+              {address === ownerId && (
+                <BurnForm tokenId={tokenId} chain={chain} />
+              )}
+              {explorer && (
+                <Button
+                  onClick={() =>
+                    window.open(
+                      `${explorer.url}/token/0x${CONTRACT_ADDRESSES[chainId]}?a=${tokenId}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  {explorer.name}
+                </Button>
+              )}
+            </ActionButtons>
+          </Row>
+        );
+      })}
     </>
   );
 };
