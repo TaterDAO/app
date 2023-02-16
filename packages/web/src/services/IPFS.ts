@@ -59,3 +59,16 @@ export async function uploadFile(file: File): Promise<FileMetadata | never> {
 export async function uploadImage(image: Image): Promise<FileMetadata | never> {
   return uploadFile(image.src as File);
 }
+
+/**
+ * Returns a url for a given CID in order to view files.
+ * @param cid IPFS CID
+ * @returns URL.
+ */
+export function cidToURL(cid: string): URL {
+  const withoutProtocol = cid.replace("ipfs://", "");
+  const url = new URL(
+    `${process.env.NEXT_PUBLIC_INFURA_IPFS_API_ENDPOINT}/ipfs/${withoutProtocol}`
+  );
+  return url;
+}

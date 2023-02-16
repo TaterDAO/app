@@ -9,6 +9,7 @@ import {
   METADATA_COLLECTION_ID,
   TOKENS_COLLECTION_ID
 } from "@services/Firebase";
+import { cidToURL } from "@services/IPFS";
 
 // Libs
 import {
@@ -82,12 +83,11 @@ const TitlePage: NextPage<{
     (attr) => attr.trait_type === "Deed"
   )?.value;
 
-  const kmlValue = title.metadata.attributes.find(
+  const kmlCID = title.metadata.attributes.find(
     (attr) => attr.trait_type === "KML"
   )?.value;
 
   const deedURL = makeURL(deedValue);
-  const kmlURL = makeURL(kmlValue);
 
   //
   //
@@ -151,11 +151,12 @@ const TitlePage: NextPage<{
   //
 
   const hasExternalUrl = !!title.metadata.external_url;
+  const imageSrc = getImageSrc(title.metadata.image);
 
   return (
     <>
       <Banner withMap={showMap}>
-        <Image src={getImageSrc(title.metadata.image)} alt="TATR Main Image" />
+        <Image src={imageSrc} alt="TATR Main Image" />
         {showMap && (
           <Map
             defaultZoom={18}
@@ -197,7 +198,17 @@ const TitlePage: NextPage<{
             {!!title.metadata.image && title.metadata.image.startsWith("ipfs") && (
               <tr>
                 <td>Pinned Image</td>
-                <td>{title.metadata.image}</td>
+                {!imageSrc.includes("placeholder") && (
+                  <td>
+                    <a
+                      href={cidToURL(title.metadata.image).href}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {title.metadata.image}
+                    </a>
+                  </td>
+                )}
               </tr>
             )}
             <tr>
@@ -243,9 +254,13 @@ const TitlePage: NextPage<{
             <tr>
               <td>KML</td>
               <td>
-                {kmlURL ? (
-                  <a href={kmlValue} target="_blank" rel="noreferrer">
-                    View KML
+                {kmlCID ? (
+                  <a
+                    href={`/api/kml/${kmlCID.replace("ipfs://", "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {kmlCID}
                   </a>
                 ) : (
                   "None Provided"

@@ -1,3 +1,5 @@
+import { cidToURL } from "@services/IPFS";
+
 /**
  * Reads the dimensions of a Javascript File representing an image.
  * @param image File
@@ -25,8 +27,7 @@ async function getImageDimensionsFromFile(
 function getImageSrc(src: string | undefined): string {
   if (!src) return "/images/placeholder.jpeg";
   if (src.startsWith("ipfs://")) {
-    const hash = src.replace("ipfs://", "");
-    return `${process.env.NEXT_PUBLIC_INFURA_IPFS_API_ENDPOINT}/ipfs/${hash}`;
+    return cidToURL(src).href;
   } else {
     return src;
   }
