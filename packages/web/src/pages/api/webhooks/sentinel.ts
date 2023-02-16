@@ -8,6 +8,8 @@ import {
   CONTRACT_EVENTS_COLLECTION_ID
 } from "@services/Firebase";
 
+import { BigNumber } from "ethers";
+
 const sentinelIds = {
   1: process.env.OZD_ETHEREUM_SENTINEL_ID,
   5: process.env.OZD_GOERLI_SENTINEL_ID,
@@ -40,10 +42,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
   const match = matchReasons[0];
 
   if (match.signature.startsWith("mint")) {
-    const tokenId = transaction.logs[0].topics[3] as string;
+    const tokenId = BigNumber.from(transaction.logs[0].topics[3] as string);
     await db.collection(TOKENS_COLLECTION_ID).add({
       chainId,
-      tokenId: parseInt(tokenId.replace("0x", "")),
+      tokenId: tokenId.toNumber(),
       metadata: db
         .collection(METADATA_COLLECTION_ID)
         .doc(match.params.metadataId_),
