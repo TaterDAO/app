@@ -8,7 +8,8 @@ export const DEFAULT_STATE = {
   // attrDeed_: "",
   // attrParcels_: "",
   // attrOwner_: "",
-  attrKml_: undefined
+  attrKml_: undefined,
   // attrTag_: "",
   // images: {}
+  chains: new Set([])
 };

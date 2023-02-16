@@ -7,28 +7,14 @@ const Container = styled.div``;
 const Row = styled.div`
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   padding: 1rem 0 2rem 0;
+  row-gap: 1rem;
   margin-bottom: 1rem;
 
   ${ButtonSC} {
     margin-left: auto;
   }
-`;
-
-const FieldMeta = styled.div`
-  width: 200px;
-  margin-right: var(--global-space-x-margin);
-  display: flex;
-  flex-direction: column;
-  row-gap: 0.2rem;
-`;
-
-const FieldLabel = styled.strong``;
-
-const FieldSecondaryLabel = styled.div`
-  color: var(--global-color-font-secondary);
-  font-weight: 600;
 `;
 
 const placeholderCSS = css`
@@ -155,21 +141,4 @@ const ErrorMessage = styled.div`
   font-size: 0.9rem;
 `;
 
-const FieldDescription = styled.small`
-  margin-top: calc(var(--global-space-y-margin) / 3);
-  line-height: 2;
-  color: var(--color-silver);
-`;
-
-export {
-  Container,
-  Row,
-  FieldMeta,
-  FieldLabel,
-  FieldSecondaryLabel,
-  Input,
-  FileInput,
-  ErrorMessage,
-  FieldDescription,
-  Select
-};
+export { Container, Row, Input, FileInput, ErrorMessage, Select };

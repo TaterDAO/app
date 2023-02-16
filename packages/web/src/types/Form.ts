@@ -3,6 +3,7 @@ import type { Image } from "@T/Image";
 import type { FeatureCollection, Point } from "geojson";
 
 import type { State, Action } from "@contexts/mint/types";
+import type { v230203TaterMetadataSchema } from "./TATR";
 
 interface Option {
   value: string;
@@ -15,8 +16,7 @@ interface ParentLinkedOption extends Option {
   parent: Option | null;
 }
 
-export interface MintFormFields {
-  [fieldId: string]: any;
+export interface MintFormFields extends Record<string, string> {
   name_: string;
   description_: string;
   externalUrl_: string;
@@ -43,8 +43,7 @@ export interface SerializedMintFormFields {
   attrTag_: string;
 }
 
-type MintFormErrorsByField = {
-  [fieldId: string]: string;
+interface MintFormErrorsByField extends Record<string, string> {
   name_: string;
   description_: string;
   externalUrl_: string;
@@ -57,26 +56,27 @@ type MintFormErrorsByField = {
   attrOwner_: string;
   attrKml_: string;
   attrTag_: string;
-};
+}
 
-interface GenericFormState {
-  submitting: boolean;
+interface MintFormContext {
   values: MintFormFields;
   images: { [fieldId: string]: Image | null };
   requiredFields: Array<string>;
   validationSchema: Joi.ObjectSchema<any>;
   setValue: (fieldId: string, value: any) => void;
   setImage: (fieldId: string, value: Image | null) => void;
-  setSubmitting: (bool: boolean) => void;
-  submit: () => Promise<void>;
-  errors: MintFormErrorsByField;
+  errors: Record<string, string>;
   validateField: (fieldId: string, value?: any) => boolean;
+  validating: boolean;
+  validateFormState: () => Promise<void>;
+  validated: boolean;
+  metadata?: v230203TaterMetadataSchema;
   // TODO:
-  // Mixing Mint-form specific type declarations into the GenericFormState
+  // Mixing Mint-form specific type declarations into the MintFormContext
   // makes it non-generic... this should be rectified & Generic Form more generally
   // deprecated.
   dispatch: React.Dispatch<Action>;
   state: State;
 }
 
-export type { Option, ParentLinkedOption, GenericFormState };
+export type { Option, ParentLinkedOption, MintFormContext };

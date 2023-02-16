@@ -6,7 +6,6 @@ import Wordmark from "@components/global/Wordmark";
 import Logo from "@components/global/Logo";
 import ExploreButton from "@components/global/ExploreButton";
 import CreateButton from "@components/global/CreateButton";
-import Wallets from "@components/Wallets";
 import SnapshotButton from "@components/global//SnapshotButton";
 import DiscordButton from "@components/global/DiscordButton";
 import AboutButton from "@components/global/AboutButton";
@@ -14,21 +13,33 @@ import TwitterButton from "@components/global/TwitterButton";
 import WhitepaperButton from "@components/global/WhitepaperButton";
 import Divider from "@components/ui/Divider";
 import TOSButton from "@components/global/TOSButton";
+import ProfileButton from "@components/global/ProfileButton";
+import { Web3Button } from "@web3modal/react";
+import { Suspense } from "react";
 
 // Utils
 import { transactionsDisabled } from "@utils/flags";
 
+// hooks
+import { useAccount } from "wagmi";
+import { useEffect, useState } from "react";
+
 const Container = styled.div`
   min-height: 100vh;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: 60px auto;
 `;
 
 const VerticalNav = styled.div`
   width: 60px;
   border-right: 1px solid var(--global-color-border);
-
   padding: 0.5rem;
+`;
+
+const VerticalNavContents = styled.div`
+  position: sticky;
+  top: 0.5rem;
 
   display: flex;
   flex-direction: column;
@@ -36,15 +47,19 @@ const VerticalNav = styled.div`
 `;
 
 const Main = styled.div`
-  width: 100%;
+  display: grid;
+  grid-template-rows: 60px auto;
 `;
 
 const HeadNav = styled.div`
   height: 60px;
   width: 100%;
   border-bottom: 1px solid var(--global-color-border);
-
   padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  background-color: var(--global-color-bg);
+  z-index: 999;
 `;
 
 const ContentContainer = styled.div`
@@ -63,6 +78,12 @@ const HeadNavContent = styled(MainContent)`
   justify-content: space-between;
   align-items: center;
   height: 100%;
+`;
+
+const HeadNavRightContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--global-space-nav-margin);
 `;
 
 const AlertBanner = styled.div`
@@ -93,26 +114,40 @@ function canCreate(): boolean {
 }
 
 const Layout = ({ children }: { children: JSX.Element }) => {
+  const { address } = useAccount();
+
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+
+  //? Need to use an effect in order to avoid ssr hydration error.
+  useEffect(() => {
+    if (!!address && !authenticated) setAuthenticated(true);
+  }, [address, authenticated]);
+
   return (
     <Container>
       <VerticalNav>
-        <Logo />
-        <ExploreButton />
-        {canCreate() && <CreateButton />}
-        <AboutButton />
-        <WhitepaperButton />
-        <Divider />
-        <SnapshotButton />
-        <DiscordButton />
-        <TwitterButton />
-        <Divider />
-        <TOSButton />
+        <VerticalNavContents>
+          <Logo />
+          <ExploreButton />
+          {canCreate() && <CreateButton />}
+          <AboutButton />
+          <WhitepaperButton />
+          <Divider />
+          <SnapshotButton />
+          <DiscordButton />
+          <TwitterButton />
+          <Divider />
+          <TOSButton />
+        </VerticalNavContents>
       </VerticalNav>
       <Main>
         <HeadNav>
           <HeadNavContent>
             <Wordmark />
-            <Wallets />
+            <HeadNavRightContent>
+              <Web3Button />
+              <Suspense>{authenticated && <ProfileButton />}</Suspense>
+            </HeadNavRightContent>
           </HeadNavContent>
         </HeadNav>
         {showAlertBanner() && <AlertBanner>{alertBannerMessage()}</AlertBanner>}

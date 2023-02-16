@@ -4,6 +4,15 @@ import type { FeatureCollection, Point } from "geojson";
 // TODO: Migrate to Location types file
 export type Location = FeatureCollection | Point | undefined;
 
+export enum Chain {
+  EthereumMainnet = "ETHEREUM_MAINNET",
+  EthereumGoerli = "ETHEREUM_GOERLI",
+  ArbitrumMainnet = "ARBITRUM_MAINNET",
+  ArbitrumGoerli = "ARBITRUM_GOERLI",
+  PolygonMainnet = "POLYGON_MAINNET",
+  PolygonMumbai = "POLYGON_MUMBAI"
+}
+
 export interface State {
   // name_: string;
   // description_: string;
@@ -17,6 +26,7 @@ export interface State {
   attrKml_: File | undefined;
   // attrTag_: string;
   // images: { [fieldId: string]: Image | null };
+  metadataSignature?: string;
 }
 
 export enum ActionType {
@@ -31,7 +41,8 @@ export enum ActionType {
   SetOwner = "SET_OWNER",
   SetKML = "SET_KML",
   UnsetKML = "UNSET_KML",
-  SetTag = "SET_TAG"
+  SetTag = "SET_TAG",
+  SetMetadataSignature = "SET_METADATA_SIGNATURE"
   // TODO: Images
 }
 
@@ -98,6 +109,11 @@ interface SetTagAction extends BaseAction {
   value: string;
 }
 
+interface SetMetadataSignature extends BaseAction {
+  type: ActionType.SetMetadataSignature;
+  value: string;
+}
+
 export type Action =
   | SetNameAction
   | SetDescriptionAction
@@ -110,7 +126,8 @@ export type Action =
   | SetOwnerAction
   | SetKMLAction
   | UnsetKMLAction
-  | SetTagAction;
+  | SetTagAction
+  | SetMetadataSignature;
 
 export interface ContextState extends State {
   dispatch: React.Dispatch<Action>;

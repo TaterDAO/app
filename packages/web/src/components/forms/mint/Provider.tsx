@@ -1,14 +1,15 @@
 import Context, { defaultState } from "./Context";
 
 // Hooks
-import { useReducer, useState } from "react";
-import useWeb3 from "@hooks/useWeb3";
+import React, { useReducer, useState } from "react";
 
 // Types
-import type { GenericFormState, SerializedMintFormFields } from "@T/Form";
+import type { MintFormContext, SerializedMintFormFields } from "@T/Form";
 import type { Image } from "@T/Image";
 import type { Feature } from "geojson";
 import type { FileMetadata } from "@services/IPFS";
+import type { v230203TaterMetadataSchema } from "@T/TATR";
+import { MetadataSchemaVersions } from "@T/TATR";
 
 // Utils
 import { escapeQuotes, escapeColons } from "@utils/form";
@@ -23,39 +24,100 @@ import { DEFAULT_STATE } from "@contexts/mint/constants";
 
 const domainFields = ["externalUrl_", "attrDeed_", "attrKml_"];
 
-const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
-  const web3 = useWeb3();
+/**
+ * Restructures schema in preparation for saving to Firestore.
+ * @param payload Serialized form field values.
+ * @returns Values conforming to v230203 metadata schema.
+ */
+function serializeMetadata(
+  payload: SerializedMintFormFields
+): v230203TaterMetadataSchema {
+  return {
+    name: payload.name_,
+    description: payload.description_,
+    image: payload.image_,
+    external_url: payload.externalUrl_,
+    attributes: [
+      {
+        trait_type: "Land Classification",
+        value: payload.attrLandClassification_
+      },
+      {
+        trait_type: "Building Classification",
+        value: payload.attrBuildingClassification_
+      },
+      {
+        trait_type: "Location",
+        value: payload.attrLocation_
+      },
+      {
+        trait_type: "Deed",
+        value: payload.attrDeed_
+      },
+      {
+        trait_type: "Parcels",
+        value: payload.attrParcels_
+      },
+      {
+        trait_type: "Owner",
+        value: payload.attrOwner_
+      },
+      {
+        trait_type: "KML",
+        value: payload.attrKml_
+      },
+      {
+        trait_type: "Tags",
+        value: payload.attrTag_
+      }
+    ],
+    schemaVersion: MetadataSchemaVersions.v230203
+  };
+}
 
-  const [submitting, setSubmitting] = useState<boolean>(
-    defaultState.submitting
-  );
-  const [values, setValues] = useState<GenericFormState["values"]>(
+const Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  //
+  //
+  // STATE
+  //
+  //
+
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [validating, setValidating] = useState<boolean>(false);
+
+  const [metadata, setMetadata] = useState<v230203TaterMetadataSchema>();
+
+  const [values, setValues] = useState<MintFormContext["values"]>(
     defaultState.values
   );
-  const [images, setImages] = useState<GenericFormState["images"]>(
+  const [images, setImages] = useState<MintFormContext["images"]>(
     defaultState.images
   );
-  const [errors, setError] = useState<GenericFormState["errors"]>(
-    defaultState.errors
-  );
+  const [errors, setError] = useState<Record<string, string>>({});
 
   //! WIP | Currently: KML & Location
   const [state, dispatch] = useReducer(reducer, DEFAULT_STATE);
 
-  const setValue = (fieldId: string, value: string) => {
-    setValues((prevState) => ({
-      ...prevState,
-      [fieldId]: value
-    }));
-  };
+  //
+  //
+  // UI EFFECTS
+  //
+  //
 
-  const setImage = (fieldId: string, value: Image | null) => {
-    console.log(fieldId, value);
-    setImages((prevState) => ({
-      ...prevState,
-      [fieldId]: value
-    }));
-  };
+  function scrollToError(fieldId: string) {
+    (
+      document.getElementById(
+        //@ts-ignore
+        `form-input-metadata-${fieldId}`
+      ) as HTMLElement
+    ).scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+
+  //
+  //
+  // DATA VALIDATION
+  //
+  //
 
   /**
    * Validates that a given field's value is valid.
@@ -96,36 +158,27 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     return false;
   };
 
-  const submit = async () => {
-    setSubmitting(true);
-
+  async function validateAndSerializeFields(): Promise<{
+    payload: SerializedMintFormFields;
+    imageIPFSMetadata: FileMetadata | null;
+    kmlIPFSMetadata: FileMetadata | null;
+  }> {
     //@ts-ignore
-    const payload: SerializedMintFormFields = {};
-
-    // Validate
+    const payload: SerializedMintFormFields = {
+      image_: "",
+      attrKml_: ""
+    };
 
     // Validate and sanitize inputs
     for (const fieldId in values) {
       const valid = validateField(fieldId);
       if (!valid) {
-        setSubmitting(false);
-        throw { type: "field-validation", fieldId };
-      }
-
-      let value = values[fieldId];
-
-      if (!!value) {
-        // Escape double quotes
-        value = escapeQuotes(value);
-
-        // If field isn't a domain, escape colons.
-        if (!domainFields.includes(fieldId)) {
-          value = escapeColons(value);
-        }
+        scrollToError(fieldId);
+        throw new Error();
       }
 
       //@ts-ignore
-      payload[fieldId] = value;
+      payload[fieldId] = values[fieldId];
     }
 
     // Serialize location
@@ -143,7 +196,8 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
 
       payload["attrLocation_"] = serializeFeatures(features);
     } else {
-      throw { type: "field-validation", fieldId: "attrLocation_" };
+      scrollToError("attrLocation_");
+      throw new Error();
     }
 
     //? IPFS UPLOADS
@@ -152,49 +206,60 @@ const Provider: React.FC<{ children: React.ReactChild }> = ({ children }) => {
     let imageIPFSMetadata: FileMetadata | null = null;
     if (!!images.image_) {
       imageIPFSMetadata = await ipfs.uploadImage(images.image_);
-      payload["image_"] = imageIPFSMetadata.uri;
-    } else {
-      payload["image_"] = "";
+      payload.image_ = imageIPFSMetadata.uri;
     }
 
     // Upload KML to IPFS
     let kmlIPFSMetadata: FileMetadata | null = null;
     if (state.attrKml_) {
       kmlIPFSMetadata = await ipfs.uploadFile(state.attrKml_);
-      payload["attrKml_"] = kmlIPFSMetadata.uri;
-    } else {
-      payload["attrKml_"] = "";
+      payload.attrKml_ = kmlIPFSMetadata.uri;
     }
 
-    //? Submit the transaction on-chain
-    try {
-      await window.td.minter?.mint(payload, web3.wallet.address as string);
-    } catch (error) {
-      setSubmitting(false);
-      // Unpin image and KML files if present
-      if (imageIPFSMetadata) await ipfs.removeFile(imageIPFSMetadata.hash);
-      if (kmlIPFSMetadata) await ipfs.removeFile(kmlIPFSMetadata.hash);
-      throw error;
-    }
-  };
+    return { payload, imageIPFSMetadata, kmlIPFSMetadata };
+  }
+
+  //
+  //
+  // RENDER
+  //
+  //
 
   return (
     <Context.Provider
       value={{
         ...defaultState,
-        submitting,
         values,
         images,
-        setValue,
-        setImage,
-        setSubmitting: (bool: boolean): void => {
-          setSubmitting(bool);
+        setValue: (fieldId: string, value: string) => {
+          setValues((prevState) => ({
+            ...prevState,
+            [fieldId]: value
+          }));
         },
-        submit,
+        setImage: (fieldId: string, value: Image | null) => {
+          setImages((prevState) => ({
+            ...prevState,
+            [fieldId]: value
+          }));
+        },
         errors,
         validateField,
         state,
-        dispatch
+        dispatch,
+        validating,
+        validateFormState: async () => {
+          try {
+            setValidating(true);
+            const res = await validateAndSerializeFields();
+            setMetadata(serializeMetadata(res.payload));
+          } catch (error) {
+          } finally {
+            setValidating(false);
+          }
+        },
+        validated: Boolean(metadata),
+        metadata
       }}
     >
       {children}

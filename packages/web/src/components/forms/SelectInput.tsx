@@ -3,10 +3,10 @@ import { Row, Select, ErrorMessage } from "@components/ui/Form";
 import InputMeta from "./InputMetadata";
 
 // Types
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 
 const SelectInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   label: string;
   description: string;

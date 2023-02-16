@@ -14,7 +14,7 @@ import styled from "styled-components";
 import { useState } from "react";
 
 // Types
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ type HandleFilesUpload = (
 ) => Promise<void>;
 
 const BaseFileInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   label: string;
   description: string;

@@ -3,10 +3,10 @@ import { Row, Input, ErrorMessage } from "@components/ui/Form";
 import InputMeta from "./InputMetadata";
 
 // Types
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 
 const TextInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   placeholder: string;
   label: string;

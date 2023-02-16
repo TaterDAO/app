@@ -7,7 +7,7 @@ import { useRef } from "react";
 
 // Types
 import type { Image } from "@T/Image";
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 import { ImageSrcType } from "@T/Image";
 
 // Constants
@@ -17,7 +17,7 @@ import { MAX_IMAGE_FILE_SIZE } from "@constants/image";
 import { getImageDimensionsFromFile } from "@utils/image";
 
 const ImageInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   label: string;
   description: string;

@@ -4,7 +4,7 @@ import InputMeta from "./InputMetadata";
 import Map from "@components/Map";
 
 // Types
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 import type { DrawEvent } from "@components/Map";
 import type { Result } from "@mapbox/mapbox-gl-geocoder";
 import type { Location } from "@contexts/mint/types";
@@ -13,7 +13,7 @@ import type { Location } from "@contexts/mint/types";
 import { useEffect } from "react";
 
 const MapInput: React.FC<{
-  form: GenericFormState;
+  form: MintFormContext;
   fieldId: string;
   label: string;
   description: string;
@@ -65,10 +65,9 @@ const MapInput: React.FC<{
   };
 
   const handlePointSelection = (result: Result) => {
-    const [lat, lng] = result.geometry.coordinates;
     onChange({
       type: "Point",
-      coordinates: [lng, lat]
+      coordinates: result.geometry.coordinates
     });
   };
 
@@ -83,6 +82,7 @@ const MapInput: React.FC<{
         required={form.requiredFields.includes(fieldId)}
       />
       <Map
+        defaultZoom={16}
         onDraw={handleMapDraw}
         onGeocoderSelection={handlePointSelection}
         value={value}

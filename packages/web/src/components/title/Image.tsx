@@ -26,9 +26,10 @@ const Container = styled.div`
   }
 `;
 
-const Image: React.FC<{ src: string; loading?: boolean }> = ({
+const Image: React.FC<{ src: string; loading?: boolean; alt?: string }> = ({
   src,
-  loading = false
+  loading = false,
+  alt = ""
 }) => {
   return (
     <Container>
@@ -37,9 +38,9 @@ const Image: React.FC<{ src: string; loading?: boolean }> = ({
       ) : (
         <NextImage
           src={src}
-          layout="fill"
-          objectFit="contain"
-          objectPosition="center"
+          alt={alt}
+          fill
+          style={{ objectFit: "contain", objectPosition: "center" }}
         />
       )}
     </Container>

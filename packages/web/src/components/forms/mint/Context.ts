@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { GenericFormState } from "@T/Form";
+import type { MintFormContext } from "@T/Form";
 import Joi from "joi";
 
 const defaultState = {
@@ -17,7 +17,7 @@ const defaultState = {
     attrParcels_: "",
     attrOwner_: "",
     attrTag_: ""
-  } as GenericFormState["values"],
+  } as MintFormContext["values"],
   requiredFields: [
     "name_",
     "description_",
@@ -55,25 +55,11 @@ const defaultState = {
     attrOwner_: Joi.string().allow(""),
     attrKml_: Joi.string().allow("").uri(),
     attrTag_: Joi.string().allow("")
-  }),
-  errors: {
-    name_: "",
-    description_: "",
-    externalUrl_: "",
-    image_: "",
-    attrLandClassification_: "",
-    attrBuildingClassification_: "",
-    attrLocation_: "",
-    attrDeed_: "",
-    attrParcels_: "",
-    attrOwner_: "",
-    attrKml_: "",
-    attrTag_: ""
-  }
+  })
 };
 
 //@ts-ignore
-const MintFormContext = createContext(defaultState as GenericFormState);
+const MintFormContext = createContext(defaultState as MintFormContext);
 MintFormContext.displayName = "MintFormContext";
 
 export default MintFormContext;

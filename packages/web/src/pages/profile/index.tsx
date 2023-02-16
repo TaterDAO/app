@@ -2,9 +2,9 @@
 import type { NextPage } from "next";
 
 // Hooks
-import useWeb3 from "@hooks/useWeb3";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useAccount } from "wagmi";
 
 // Components
 import ProfileLayout from "@components/layouts/Profile";
@@ -29,33 +29,20 @@ const MintingCaption = styled.strong`
 `;
 
 const MyProfilePage: NextPage = ({}) => {
-  const web3 = useWeb3();
   const router = useRouter();
+  const { address, isDisconnected } = useAccount();
 
   /**
    * Ensure that the user is logged in.
    */
   useEffect(() => {
-    if (web3.initialized && !web3.wallet.connected) {
-      router.push("/");
-    }
-  }, [web3.initialized, web3.wallet.connected, router]);
+    if (isDisconnected) router.push("/");
+  }, [router, isDisconnected]);
 
-  return web3.initialized && web3.wallet.connected ? (
-    <ProfileLayout
-      title="My Titles"
-      address={web3.wallet.address as string}
-      header={
-        <Header>
-          <MintingCaption>
-            Titles still minting will appear momentarily
-          </MintingCaption>
-          <Button onClick={web3.wallet.disconnect}>Disconnect</Button>
-        </Header>
-      }
-    />
-  ) : (
+  return isDisconnected ? (
     <></>
+  ) : (
+    <ProfileLayout title="My Titles" address={address as string} />
   );
 };
 

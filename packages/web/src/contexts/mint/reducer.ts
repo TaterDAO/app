@@ -1,3 +1,4 @@
+// Types
 import type { State, Action } from "./types";
 import { ActionType } from "./types";
 
@@ -39,6 +40,9 @@ function reducer(state: State, action: Action): State {
     // case ActionType.SetTag: {
     //   return { ...state, attrTag_: action.value };
     // }
+    case ActionType.SetMetadataSignature: {
+      return { ...state, metadataSignature: action.value };
+    }
     default: {
       return state;
     }
