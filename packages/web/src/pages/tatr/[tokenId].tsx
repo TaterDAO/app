@@ -352,7 +352,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
         createdAt: doc.createTime.toDate().toLocaleString(),
         tokens
       }
-    }
+    },
+    // Attempt to re-generate the page when a request comes in
+    revalidate: 10 // in seconds
   };
 };
 
