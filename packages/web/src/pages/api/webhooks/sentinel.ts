@@ -4,7 +4,8 @@ import { methods } from "@utils/api/middleware";
 import admin from "@services/Firebase/admin";
 import {
   TOKENS_COLLECTION_ID,
-  METADATA_COLLECTION_ID
+  METADATA_COLLECTION_ID,
+  CONTRACT_EVENTS_COLLECTION_ID
 } from "@services/Firebase";
 
 const sentinelIds = {
@@ -20,6 +21,10 @@ const sentinelIds = {
  * Fetches metadata for a given token.
  */
 async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
+  // Write event to the database
+  const db = admin.firestore();
+  await db.collection(CONTRACT_EVENTS_COLLECTION_ID).add(req.body);
+
   const {
     matchReasons,
     transaction,
@@ -33,8 +38,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<{}>) {
   }
 
   const match = matchReasons[0];
-
-  const db = admin.firestore();
 
   if (match.signature.startsWith("mint")) {
     const tokenId = transaction.logs[0].topics[3] as string;
