@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev:env": "vercel env pull .env.development.local",
+    "prd:env": "vercel env pull --environment production .env.production.local",
     "dev:server": "next dev --port 3001",
     "dev:start": "yarn dev:env && yarn dev:server",
     "build": "next build",
