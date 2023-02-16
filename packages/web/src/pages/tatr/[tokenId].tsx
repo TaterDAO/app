@@ -340,8 +340,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   });
 
-  // If all tokens are burnt, do not render
-  if (tokens.every((token) => token.burnt)) return { notFound: true };
+  if (tokens.length > 0 && tokens.every((token) => token.burnt === true))
+    return { notFound: true };
 
   return {
     props: {
