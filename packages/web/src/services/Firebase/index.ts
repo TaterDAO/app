@@ -19,7 +19,8 @@ let db: Firestore;
 import {
   METADATA_COLLECTION_ID,
   ACCOUNTS_COLLECTION_ID,
-  TOKENS_COLLECTION_ID
+  TOKENS_COLLECTION_ID,
+  CONTRACT_EVENTS_COLLECTION_ID
 } from "./constants";
 
 // Set up libraries
@@ -51,5 +52,6 @@ export {
   METADATA_COLLECTION_ID,
   ACCOUNTS_COLLECTION_ID,
   TOKENS_COLLECTION_ID,
-  tokensCollection
+  tokensCollection,
+  CONTRACT_EVENTS_COLLECTION_ID
 };
