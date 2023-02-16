@@ -5,7 +5,8 @@ import Button from "@components/ui/Button";
 import {
   usePrepareContractWrite,
   useContractWrite,
-  useWaitForTransaction
+  useWaitForTransaction,
+  useNetwork
 } from "wagmi";
 import { useEffect } from "react";
 
@@ -27,6 +28,8 @@ const BurnForm: React.FC<{ tokenId: number; chain: Chain }> = ({
   tokenId,
   chain
 }) => {
+  const { chain: activeChain } = useNetwork();
+
   const { config } = usePrepareContractWrite({
     address: `0x${CONTRACT_ADDRESSES[chain.id]}`,
     abi: [BURN_ABI],
@@ -64,15 +67,19 @@ const BurnForm: React.FC<{ tokenId: number; chain: Chain }> = ({
     if (isLoading) toast.info("Open your wallet to proceed.");
   }, [isLoading]);
 
+  const wrongChain = activeChain.id !== chain.id;
+
   return (
     <Container>
       <Button
-        disabled={isLoading || isSuccess}
+        disabled={isLoading || isSuccess || wrongChain}
         onClick={() => write?.()}
         primary
         loading={isLoading}
       >
-        {`Burn ${chain.name} TATR`}
+        {wrongChain
+          ? `Switch to ${chain.name} to burn`
+          : `Burn ${chain.name} TATR`}
       </Button>
     </Container>
   );
