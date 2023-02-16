@@ -14,9 +14,6 @@ import {
   usePrepareContractWrite
 } from "wagmi";
 
-// Types
-import type { Chain } from "wagmi";
-
 // Services
 import { chains } from "@services/WalletConnect";
 import { METADATA_COLLECTION_ID, db } from "@services/Firebase";
@@ -60,12 +57,7 @@ const SubmitButton: React.FC<{}> = ({}) => {
     switchNetwork,
     isLoading: networkSwitchIsLoading,
     error: switchNetworkError
-  } = useSwitchNetwork({
-    // Submit transaction
-    onSuccess(data) {
-      write?.();
-    }
-  });
+  } = useSwitchNetwork();
 
   const { config } = usePrepareContractWrite({
     address: `0x${CONTRACT_ADDRESSES[activeChainId]}`,
@@ -99,21 +91,6 @@ const SubmitButton: React.FC<{}> = ({}) => {
 
   //
   //
-  // EVENT HANDLERS
-  //
-  //
-
-  const handleClick = (chain: Chain) => {
-    if (activeChainId === chain.id) write?.();
-    else {
-      toast.info(`Switching to ${chain.name}. Please check your wallet.`);
-      //@ts-ignore
-      switchNetwork(chain.id);
-    }
-  };
-
-  //
-  //
   // RENDER
   //
   //
@@ -131,16 +108,31 @@ const SubmitButton: React.FC<{}> = ({}) => {
       {mintError && (
         <ErrorMessage>Error minting. Please try again!</ErrorMessage>
       )}
-      {chains.map((chain) => (
-        <Button
-          primary
-          key={`mint-btn-${chain.id}`}
-          onClick={() => handleClick(chain)}
-          disabled={
-            isLoading || !CONTRACT_ADDRESSES[chain.id] || mintedOn.has(chain.id)
-          }
-        >{`Mint to ${chain.name}`}</Button>
-      ))}
+      {chains.map((chain) => {
+        const isActive = chain.id === activeChainId;
+        return (
+          <Button
+            primary={isActive}
+            key={`mint-btn-${chain.id}`}
+            onClick={() => {
+              if (isActive) write?.();
+              else {
+                toast.info(
+                  `Switching to ${chain.name}. Please check your wallet.`
+                );
+                switchNetwork(chain.id);
+              }
+            }}
+            disabled={
+              isLoading ||
+              !CONTRACT_ADDRESSES[chain.id] ||
+              mintedOn.has(chain.id)
+            }
+          >
+            {isActive ? `Mint to ${chain.name}` : `Switch to ${chain.name}`}
+          </Button>
+        );
+      })}
       {metadataSaved && (
         <SuccessMessage>
           Your title has been successfully minted. You can view it{" "}

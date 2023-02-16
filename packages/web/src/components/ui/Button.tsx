@@ -12,7 +12,7 @@ const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
 
   padding: 0.75rem 1.25rem;
 
-  width: ${({ primary }) => (primary ? "100%" : "auto")};
+  width: 100%;
 
   font-weight: 600;
   font-size: ${({ primary }) => (primary ? "1" : "0.9")}rem;
