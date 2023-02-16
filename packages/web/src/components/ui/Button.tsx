@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import { SunLight } from "iconoir-react";
 
-const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
+const ButtonSC = styled.button<{
+  primary?: boolean;
+  secondary?: boolean;
+  $loading?: boolean;
+}>`
   border-radius: var(--global-border-radius);
   background-color: ${({ primary }) =>
     primary ? "var(--global-color-attention)" : "transparent"};
@@ -12,7 +16,8 @@ const ButtonSC = styled.button<{ primary?: boolean; $loading?: boolean }>`
 
   padding: 0.75rem 1.25rem;
 
-  width: 100%;
+  width: ${({ primary, secondary }) =>
+    primary || secondary ? "100%" : "auto"};
 
   font-weight: 600;
   font-size: ${({ primary }) => (primary ? "1" : "0.9")}rem;
@@ -72,6 +77,7 @@ const Text = styled.span<{ $loading: boolean }>`
 
 const Button: React.FC<{
   primary?: boolean;
+  secondary?: boolean;
   disabled?: boolean;
   loading?: boolean;
   children: string | React.ReactElement;
@@ -79,6 +85,7 @@ const Button: React.FC<{
 }> = ({
   children,
   primary = false,
+  secondary = false,
   loading = false,
   disabled = false,
   onClick
@@ -86,6 +93,7 @@ const Button: React.FC<{
   return (
     <ButtonSC
       primary={primary}
+      secondary={secondary}
       $loading={loading}
       onClick={onClick}
       disabled={loading || disabled}

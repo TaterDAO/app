@@ -113,6 +113,7 @@ const SubmitButton: React.FC<{}> = ({}) => {
         return (
           <Button
             primary={isActive}
+            secondary={!isActive}
             key={`mint-btn-${chain.id}`}
             onClick={() => {
               if (isActive) write?.();
