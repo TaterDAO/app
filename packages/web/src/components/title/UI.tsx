@@ -30,6 +30,8 @@ export const Attributes = styled.table`
       &:first-of-type {
         padding-right: 2rem;
         color: var(--global-color-font-secondary);
+        display: flex;
+        align-items: flex-start;
       }
       &:nth-of-type(2) {
       }

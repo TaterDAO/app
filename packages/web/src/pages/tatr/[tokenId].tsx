@@ -153,6 +153,16 @@ const TitlePage: NextPage<{
   const hasExternalUrl = !!title.metadata.external_url;
   const imageSrc = getImageSrc(title.metadata.image);
 
+  const kmlLink = kmlCID ? (
+    <a
+      href={`/api/kml/${kmlCID.replace("ipfs://", "")}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {kmlCID}
+    </a>
+  ) : null;
+
   return (
     <>
       <Banner withMap={showMap}>
@@ -221,7 +231,13 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>Location</td>
-              <td>{location ? location.replace(/,/g, ", ") : ""}</td>
+              <td>
+                {location
+                  ? kmlCID && location.length > 400
+                    ? kmlLink
+                    : location.replace(/,/g, ", ")
+                  : ""}
+              </td>
             </tr>
             <tr>
               <td>Deed</td>
@@ -253,19 +269,7 @@ const TitlePage: NextPage<{
             </tr>
             <tr>
               <td>KML</td>
-              <td>
-                {kmlCID ? (
-                  <a
-                    href={`/api/kml/${kmlCID.replace("ipfs://", "")}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {kmlCID}
-                  </a>
-                ) : (
-                  "None Provided"
-                )}
-              </td>
+              <td>{kmlCID ? kmlLink : "None Provided"}</td>
             </tr>
             <tr>
               <td>Tags</td>
