@@ -12,7 +12,6 @@ const ProfileLink: React.FC<{ address?: string }> = ({ address }) => {
   const isUser = accountAddress === address;
 
   return (
-    !!accountAddress &&
     !!address && (
       <Link href={isUser ? "/profile" : `/profile/${address}`}>
         {isUser ? "You" : shortenAddress(address)}
