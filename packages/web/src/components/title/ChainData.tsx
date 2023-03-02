@@ -87,7 +87,7 @@ const ChainData: React.FC<{
               )}
             </NamedProperty>
             <ActionButtons>
-              {address === ownerId && (
+              {!!address && address === ownerId && (
                 <BurnForm tokenId={tokenId} chain={chain} />
               )}
               {explorer && (
