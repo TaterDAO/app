@@ -5,8 +5,9 @@ import BaseFileInput from "@components/forms/BaseFileInput";
 import useMintForm from "../useMintForm";
 import { useRef } from "react";
 
-// libs
-import { kml as makeKML } from "@tmcw/togeojson";
+// Utils
+import { stringToXMLDocument } from "@utils/xml";
+import { kmlToGeoJson } from "@utils/kml";
 
 const FIELD_ID = "attrKml_";
 
@@ -17,6 +18,12 @@ const KMLInput: React.FC<{}> = ({}) => {
   const form = useMintForm();
   const el = useRef<HTMLInputElement>(null);
 
+  // ====================================================
+  // Handlers
+  // ====================================================
+
+  // Given a KML file, parses it and updates the form state.
+  // This value is then used to update the map's current position.
   const handleUpload = async (
     file: File,
     setError: React.Dispatch<React.SetStateAction<string>>
@@ -25,9 +32,8 @@ const KMLInput: React.FC<{}> = ({}) => {
     const reader = new FileReader();
     reader.onload = (_event) => {
       try {
-        // Use coordinates to set Location value
-        const xml = _event.target?.result as string;
-        const kml = makeKML(new DOMParser().parseFromString(xml, "text/xml"));
+        const kml = stringToXMLDocument(_event.target?.result as string);
+        const geojson = kmlToGeoJson(kml);
 
         // Update location
         form.dispatch({
@@ -35,7 +41,7 @@ const KMLInput: React.FC<{}> = ({}) => {
           value: {
             type: "FeatureCollection",
             //@ts-ignore
-            features: kml.features
+            features: geojson.features
           }
         });
       } catch (error) {
